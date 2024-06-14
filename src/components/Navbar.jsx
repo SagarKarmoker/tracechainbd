@@ -14,7 +14,9 @@ function Navbar() {
   return (
     <nav className="bg-green-400">
       <div className="container mx-auto flex justify-between items-center p-2">
-        <h1 className="text-2xl font-bold text-red-500">TraceChainBD</h1>
+        <h1 className="text-2xl font-bold text-red-500">
+          <a href="/">TraceChainBD</a>
+        </h1>
         <div>
           <ul className="flex items-baseline gap-x-4 font-semibold">
             <li>
