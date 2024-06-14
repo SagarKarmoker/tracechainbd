@@ -5,15 +5,14 @@ import { Link, BrowserRouter, Routes, Route } from "react-router-dom";
 import Roles from "../pages/Roles";
 import Error404 from "../pages/Error404";
 import Dashboard from "../pages/Dashboard";
+import { Button, Avatar } from '@chakra-ui/react'
+import AvatarButton from "./AvatarButton";
 
 function Navbar({ visible }) {
-  const smartAccount = useActiveAccount();
+  
+  const handleAvatar = () => {
 
-  useEffect(() => {
-    if (smartAccount) {
-      console.log("Account: ", smartAccount.address);
-    }
-  }, []);
+  }
 
   return (
     <BrowserRouter>
@@ -39,7 +38,7 @@ function Navbar({ visible }) {
                 </>
               )}
               <li>
-                <Wallet />
+                <AvatarButton />
               </li>
             </ul>
           </div>
