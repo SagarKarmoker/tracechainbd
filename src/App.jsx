@@ -4,6 +4,7 @@ import {
 } from "thirdweb/react";
 import { inAppWallet } from "thirdweb/wallets";
 import { createThirdwebClient } from "thirdweb";
+import { ChakraProvider } from '@chakra-ui/react'
 
 // we need to use env variables to store the client id
 const client = createThirdwebClient({
@@ -21,6 +22,7 @@ const wallets = [
 export default function App() {
   return (
     <ThirdwebProvider>
+      <ChakraProvider>
       <ConnectButton
         client={client}
         wallets={wallets}
@@ -29,7 +31,8 @@ export default function App() {
           size: "wide",
           showThirdwebBranding: false,
         }}
-      />
+        />
+        </ChakraProvider>
     </ThirdwebProvider>
   );
 }
