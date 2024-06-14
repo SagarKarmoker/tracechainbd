@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Wallet from "./Wallet";
 import { useActiveAccount } from "thirdweb/react";
+import { Link } from "react-router-dom";
 
 function Navbar({ visible }) {
   const smartAccount = useActiveAccount();

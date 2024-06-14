@@ -10,17 +10,12 @@ import { useActiveAccount } from "thirdweb/react";
 
 const router = createBrowserRouter([
   {
-    path: "/roles",
+    path: "/",
     element: <Roles />,
     errorElement: <Error404 />,
   },
   {
-    path: "/",
-    element: <Dashboard />,
-    errorElement: <Error404 />,
-  },
-  {
-    path: "/home",
+    path: "/dashboard",
     element: <Dashboard />,
     errorElement: <Error404 />,
   },

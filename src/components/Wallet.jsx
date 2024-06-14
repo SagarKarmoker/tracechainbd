@@ -22,3 +22,5 @@ function Wallet() {
 }
 
 export default Wallet;
+
+/* https://portal.thirdweb.com/connect/account-abstraction/guides/react */
