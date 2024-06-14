@@ -28,9 +28,9 @@ export default function App() {
     <ThirdwebProvider>
       <ChakraProvider>
         {
-          smartAccount !== null ? <Navbar visible={true} /> : <Navbar visible={false} />
+          smartAccount && smartAccount.address ? <Navbar visible={true} /> : <Navbar visible={false} />
         }
-        <RouterProvider router={router} />
+        {/* <RouterProvider router={router} /> */}
       </ChakraProvider>
     </ThirdwebProvider>
   );

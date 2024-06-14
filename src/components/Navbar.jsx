@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
 import Wallet from "./Wallet";
 import { useActiveAccount } from "thirdweb/react";
-import { Link } from "react-router-dom";
+import { Link, BrowserRouter, Routes, Route } from "react-router-dom";
+import Roles from "../pages/Roles";
+import Error404 from "../pages/Error404";
+import Dashboard from "../pages/Dashboard";
 
 function Navbar({ visible }) {
   const smartAccount = useActiveAccount();
@@ -13,34 +16,43 @@ function Navbar({ visible }) {
   }, []);
 
   return (
-    <nav className="bg-green-400">
-      <div className="container mx-auto flex justify-between items-center p-2">
-        <h1 className="text-2xl font-bold text-red-500">
-          <a href="/">TraceChainBD</a>
-        </h1>
-        <div>
-          <ul className="flex items-baseline gap-x-4 font-semibold">
-            {visible && (
-              <>
-                <li>
-                  <a href="#" className="text-white">
-                    Dashboard
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white">
-                    Importars
-                  </a>
-                </li>
-              </>
-            )}
-            <li>
-              <Wallet />
-            </li>
-          </ul>
+    <BrowserRouter>
+      <nav className="bg-green-400">
+        <div className="container mx-auto flex justify-between items-center p-2">
+          <h1 className="text-2xl font-bold text-red-500">
+            <a href="/">TraceChainBD</a>
+          </h1>
+          <div>
+            <ul className="flex items-baseline gap-x-4 font-semibold">
+              {visible && (
+                <>
+                  <li>
+                    <Link to="/dashboard" className="text-white">
+                      Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/importar" className="text-white">
+                      Importar
+                    </Link>
+                  </li>
+                </>
+              )}
+              <li>
+                <Wallet />
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Roles />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/*" element={<Error404 />} />
+        <Route path="*" element={<Error404 />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
