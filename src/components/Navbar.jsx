@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Wallet from "./Wallet";
 import { useActiveAccount } from "thirdweb/react";
 
-function Navbar() {
+function Navbar({ visible }) {
   const smartAccount = useActiveAccount();
 
   useEffect(() => {
@@ -19,16 +19,20 @@ function Navbar() {
         </h1>
         <div>
           <ul className="flex items-baseline gap-x-4 font-semibold">
-            <li>
-              <a href="#" className="text-white">
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-white">
-                Importars
-              </a>
-            </li>
+            {visible && (
+              <>
+                <li>
+                  <a href="#" className="text-white">
+                    Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-white">
+                    Importars
+                  </a>
+                </li>
+              </>
+            )}
             <li>
               <Wallet />
             </li>
