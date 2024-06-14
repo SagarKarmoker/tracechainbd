@@ -1,5 +1,6 @@
 import { ConnectButton } from "thirdweb/react";
-import { client, wallets } from "../contants.js";
+import { client, wallets, AAFactory} from "../contants.js";
+import { sepolia } from "thirdweb/chains";
 
 function Wallet() {
   return (
@@ -7,6 +8,11 @@ function Wallet() {
       client={client}
       wallets={wallets}
       theme={"dark"}
+      accountAbstraction={{
+        chain: sepolia,
+        factoryAddress: AAFactory,
+        gasless: true,
+      }}
       connectModal={{
         size: "wide",
         showThirdwebBranding: false,

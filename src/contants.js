@@ -22,4 +22,6 @@ const wallets = [
   }),
 ];
 
-export { client, wallets };
+const AAFactory = "0x5F5eD3842852ffc5F917e0D45DB9Aa39e5EEe2D1"
+
+export { client, wallets, AAFactory };

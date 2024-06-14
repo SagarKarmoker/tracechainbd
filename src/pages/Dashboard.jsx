@@ -1,11 +1,10 @@
 import React from "react";
-import Wallet from "../components/Wallet";
-
+import Navbar from "../components/Navbar";
 
 function Dashboard() {
   return (
     <>
-      <Wallet />
+      <Navbar />
     </>
   );
 }
