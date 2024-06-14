@@ -11,14 +11,21 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { MdOutlineCallMade } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 function Roles() {
+  let navigate = useNavigate();
 
-
-    // handle buttons
-  const handleAdmin = () => window.location.href = "/admin";
-  const handleDistributor = () => window.location.href = "/distributor";
-  const handleImportar = () => window.location.href = "/importar";
+  // handle buttons
+  const handleAdmin = () => {
+    navigate("/admin");
+  };
+  const handleDistributor = () => {
+    navigate("/distributor");
+  }
+  const handleImportar = () => {
+    navigate("/importar");
+  }
 
   return (
     <div className="w-full flex justify-center items-center mt-10">
