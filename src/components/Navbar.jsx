@@ -9,10 +9,6 @@ import { Button, Avatar } from '@chakra-ui/react'
 import AvatarButton from "./AvatarButton";
 
 function Navbar({ visible }) {
-  
-  const handleAvatar = () => {
-
-  }
 
   return (
     <BrowserRouter>
