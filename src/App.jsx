@@ -7,31 +7,54 @@ import Navbar from "./components/Navbar";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Error404 from "./pages/Error404";
 import { useActiveAccount } from "thirdweb/react";
+import Importer from "./pages/Importer.jsx"
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Roles />,
-    errorElement: <Error404 />,
+  
   },
   {
-    path: "/dashboard",
+    path: "dashboard",
     element: <Dashboard />,
-    errorElement: <Error404 />,
+    
   },
+  {
+    path: "importer",
+    element: <Importer/>
+   
+  },
+  {
+    path: "*",
+    element: <Error404 />,
+  }
 ]);
 
 export default function App() {
   const smartAccount = useActiveAccount();
 
   return (
+    <>
+
+    
+    
+
     <ThirdwebProvider>
       <ChakraProvider>
+
+   
+
+     
         {
+
           smartAccount && smartAccount.address ? <Navbar visible={true} /> : <Navbar visible={false} />
+        
         }
         {/* <RouterProvider router={router} /> */}
       </ChakraProvider>
     </ThirdwebProvider>
+    </>
+   
   );
 }

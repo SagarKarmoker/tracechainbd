@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import {
   Card,
   CardHeader,
@@ -15,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 function Roles() {
   let navigate = useNavigate();
-
+   
   // handle buttons
   const handleAdmin = () => {
     navigate("/admin");
@@ -24,7 +25,7 @@ function Roles() {
     navigate("/distributor");
   }
   const handleImportar = () => {
-    navigate("/importar");
+    navigate("/importer");
   }
 
   return (
@@ -32,7 +33,7 @@ function Roles() {
       <Card className="w-2/4 shadow-lg">
         <CardHeader>
           <Heading size="md" className="text-center">
-            Choice Your Role
+            Choose Your Role First !
           </Heading>
         </CardHeader>
 
@@ -65,11 +66,16 @@ function Roles() {
                 </Text>
                 <Button
                   colorScheme="blue"
-                  onClick={handleImportar}
+                  // onClick={handleImportar}
                   rightIcon={<MdOutlineCallMade />}
                 >
-                  Importar Panel
+                 <Link to="/importer">
+                 Importer Panel
+                 </Link>
+
+
                 </Button>
+                
               </div>
             </Box>
             <Box>
