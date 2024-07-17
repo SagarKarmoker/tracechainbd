@@ -13,17 +13,17 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Roles />,
-  
+
   },
   {
     path: "dashboard",
     element: <Dashboard />,
-    
+
   },
   {
     path: "importer",
-    element: <Importer/>
-   
+    element: <Importer />
+
   },
   {
     path: "*",
@@ -36,25 +36,15 @@ export default function App() {
 
   return (
     <>
-
-    
-    
-
-    <ThirdwebProvider>
-      <ChakraProvider>
-
-   
-
-     
-        {
-
-          smartAccount && smartAccount.address ? <Navbar visible={true} /> : <Navbar visible={false} />
-        
-        }
-        {/* <RouterProvider router={router} /> */}
-      </ChakraProvider>
-    </ThirdwebProvider>
+      <ThirdwebProvider>
+        <ChakraProvider>
+          {
+            smartAccount && smartAccount.address ? <Navbar visible={true} /> : <Navbar visible={false} />
+          }
+          {/* <RouterProvider router={router} /> */}
+        </ChakraProvider>
+      </ThirdwebProvider>
     </>
-   
+
   );
 }
