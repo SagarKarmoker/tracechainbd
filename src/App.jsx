@@ -3,7 +3,6 @@ import { ChakraProvider } from "@chakra-ui/react";
 import Dashboard from "./pages/Dashboard";
 import Roles from "./pages/Roles";
 import Navbar from "./components/Navbar";
-
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Error404 from "./pages/Error404";
 import { useActiveAccount } from "thirdweb/react";
