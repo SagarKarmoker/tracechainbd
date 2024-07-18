@@ -6,7 +6,7 @@ import Dashboard from "../pages/Dashboard";
 import AvatarButton from "./AvatarButton";
 import Importer from "../pages/importer/Importer";
 import Distributor from "./Distributor";
-import AdminPanel from "./admin/AdminPanel";
+import AdminPanel from "../pages/admin/AdminPanel";
 import ImporterDashboard from "../pages/importer/ImporterDashboard"
 import ImporterProductChain from "../pages/importer/ImporterProductChain";
 import { useActiveAccount } from "thirdweb/react";
