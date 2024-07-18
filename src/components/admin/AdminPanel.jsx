@@ -1,8 +1,8 @@
 import {useState} from 'react'
 import { useActiveAccount } from 'thirdweb/react'
-import { adminAddr } from '../contants';
-import AddAndShowAdmin from './admin/AddAndShowAdmin';
-import AdminDashboard from './admin/AdminDashboard';
+import { adminAddr } from '../../contants';
+import AddAndShowAdmin from './AddAndShowAdmin';
+import AdminDashboard from './AdminDashboard';
 
 function AdminPanel() {
   const activeAccount = useActiveAccount();
@@ -14,6 +14,8 @@ function AdminPanel() {
         return <AdminDashboard setActiveComponent={setActiveComponent} />;
       case 'admin-management':
         return <AddAndShowAdmin />;
+      case 'applications':
+        return <AdminApplications />
       default:
         return <AdminDashboard />;
     }

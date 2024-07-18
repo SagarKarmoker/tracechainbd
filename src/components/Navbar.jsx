@@ -4,11 +4,11 @@ import Roles from "../pages/Roles";
 import Error404 from "../pages/Error404";
 import Dashboard from "../pages/Dashboard";
 import AvatarButton from "./AvatarButton";
-import Importer from "../pages/Importer";
+import Importer from "../pages/importer/Importer";
 import Distributor from "./Distributor";
-import AdminPanel from "./AdminPanel";
-import ImporterDashboard from "../pages/ImporterDashboard"
-import ImporterProductChain from "../pages/ImporterProductChain";
+import AdminPanel from "./admin/AdminPanel";
+import ImporterDashboard from "../pages/importer/ImporterDashboard"
+import ImporterProductChain from "../pages/importer/ImporterProductChain";
 import { useActiveAccount } from "thirdweb/react";
 import { adminAddr } from "../contants";
 
@@ -60,10 +60,12 @@ function Navbar({ visible }) {
 
       <Routes>
         <Route path="/" element={<Roles />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        {activeAccount?.address === adminAddr ?
+          (<Route path="/dashboard" element={<AdminPanel />} />) :
+          (<Route path="/dashboard" element={<Dashboard />} />)}
+          
         <Route path="/importer" element={<Importer />} />
         <Route path="/distributor" element={<Distributor />} />
-
         <Route path="/importerdashboard" element={<ImporterDashboard />} />
         <Route path="/Importerproductchain " element={<ImporterProductChain />} />
         <Route path="/*" element={<Error404 />} />
