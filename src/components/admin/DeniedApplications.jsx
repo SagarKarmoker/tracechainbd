@@ -1,13 +1,13 @@
 import { Divider, IconButton } from '@chakra-ui/react'
 import { BsBack } from 'react-icons/bs'
 
-function AdminApplications() {
+function DeniedApplications() {
   return (
     <>
       <div className='px-10 py-5'>
         <div className='flex justify-between'>
           <IconButton icon={<BsBack />} />
-          <h1 className='text-center font-bold text-4xl'>Registation Applications</h1>
+          <h1 className='text-center font-bold text-4xl'>Denied Applications</h1>
           <p></p>
         </div>
         <Divider className='mt-5' />
@@ -19,4 +19,4 @@ function AdminApplications() {
   )
 }
 
-export default AdminApplications
+export default DeniedApplications

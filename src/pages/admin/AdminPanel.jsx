@@ -1,8 +1,11 @@
-import {useState} from 'react'
+import { useState } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { adminAddr } from '../../contants';
 import AddAndShowAdmin from '../../components/admin/AddAndShowAdmin';
 import AdminDashboard from '../../components/admin/AdminDashboard';
+import AdminApplications from '../../components/admin/AdminApplications'
+import AcceptedApplications from '../../components/admin/AcceptedApplications';
+import DeniedApplications from '../../components/admin/DeniedApplications';
 
 function AdminPanel() {
   const activeAccount = useActiveAccount();
@@ -16,6 +19,10 @@ function AdminPanel() {
         return <AddAndShowAdmin />;
       case 'applications':
         return <AdminApplications />
+      case 'accepted-applications':
+        return <AcceptedApplications />
+      case 'denied-applications':
+        return <DeniedApplications />
       default:
         return <AdminDashboard />;
     }
