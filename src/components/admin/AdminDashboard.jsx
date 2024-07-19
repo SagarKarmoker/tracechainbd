@@ -28,6 +28,10 @@ function AdminDashboard({ setActiveComponent }) {
                         <h1 className='text-2xl font-bold'>Manage Admins</h1>
                         <p>Manage admins and all details</p>
                     </div>
+                    <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer' onClick={() => { setActiveComponent('customs-management') }}>
+                        <h1 className='text-2xl font-bold'>Manage Customs</h1>
+                        <p>Manage customs and all details</p>
+                    </div>
                     <div className='bg-blue-500 text-white p-5 rounded-lg'>
                         <h1 className='text-2xl font-bold'>Manage Users</h1>
                         <p>Manage users and their roles</p>

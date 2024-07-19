@@ -16,7 +16,9 @@ function AdminPanel() {
       case 'dashboard':
         return <AdminDashboard setActiveComponent={setActiveComponent} />;
       case 'admin-management':
-        return <AddAndShowAdmin />;
+        return <AddAndShowAdmin isAdmin={true} />;
+      case 'customs-management':
+        return <AddAndShowAdmin isAdmin={false} />;
       case 'applications':
         return <AdminApplications />
       case 'accepted-applications':
