@@ -11,6 +11,7 @@ import ImporterDashboard from "../pages/importer/ImporterDashboard"
 import ImporterProductChain from "../pages/importer/ImporterProductChain";
 import { useActiveAccount } from "thirdweb/react";
 import { adminAddr } from "../contants";
+import CustomsPanel from "../pages/customs/CustomsPanel";
 
 
 function Navbar({ visible }) {
@@ -73,6 +74,9 @@ function Navbar({ visible }) {
 
         {/* admin routes */}
         <Route path="/admin" element={<AdminPanel />} />
+
+        {/* customs routes */}
+        <Route path="/customs" element={<CustomsPanel />} />
       </Routes>
     </BrowserRouter>
   );

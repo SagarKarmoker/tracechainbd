@@ -16,11 +16,15 @@ import { useNavigate } from "react-router-dom";
 
 function Roles() {
   let navigate = useNavigate();
-   
+
   // handle buttons
   const handleAdmin = () => {
     navigate("/admin");
   };
+  const handleCustom = () => {
+    navigate("/customs");
+  };
+
   const handleDistributor = () => {
     navigate("/distributor");
   }
@@ -58,6 +62,23 @@ function Roles() {
             </Box>
             <Box>
               <Heading size="xs" textTransform="uppercase">
+                Customs
+              </Heading>
+              <div className="flex justify-between">
+                <Text pt="2" fontSize="sm">
+                  View a summary of all your clients over the last month.
+                </Text>
+                <Button
+                  colorScheme="blue"
+                  onClick={handleCustom}
+                  rightIcon={<MdOutlineCallMade />}
+                >
+                  Customs Panel
+                </Button>
+              </div>
+            </Box>
+            <Box>
+              <Heading size="xs" textTransform="uppercase">
                 Importar
               </Heading>
               <div className="flex justify-between">
@@ -69,13 +90,10 @@ function Roles() {
                   // onClick={handleImportar}
                   rightIcon={<MdOutlineCallMade />}
                 >
-                 <Link to="/importer">
-                 Importer Panel
-                 </Link>
-
-
+                  <Link to="/importer">
+                    Importer Panel
+                  </Link>
                 </Button>
-                
               </div>
             </Box>
             <Box>
