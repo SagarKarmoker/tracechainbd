@@ -131,7 +131,7 @@ function Roles() {
                   onClick={handleRetailer}
                   rightIcon={<MdOutlineCallMade />}
                 >
-                  Reailer Panel
+                  Retailer Panel
                 </Button>
               </div>
             </Box>

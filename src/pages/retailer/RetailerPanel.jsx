@@ -30,10 +30,15 @@ function RetailerPanel() {
         }
     };
 
-    if (activeAccount?.address == '') {
+    if (activeAccount?.address !== '') {
         return (
-            <div>
-                <p>Please login first</p>
+            <div className='flex flex-col justify-center items-center h-[90vh]'>
+                <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
+                <br />
+                <p className='text-red-400'>Please login to account</p>
+                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4' onClick={() => { window.history.back(); }}>
+                    Go back
+                </button>
             </div>
         )
     }
