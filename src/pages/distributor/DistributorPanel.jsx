@@ -33,7 +33,7 @@ function DistributorPanel() {
         }
     };
 
-    if (activeAccount?.address !== '') {
+    if (activeAccount?.address == '') {
         return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>

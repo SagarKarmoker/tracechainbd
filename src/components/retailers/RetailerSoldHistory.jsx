@@ -4,9 +4,9 @@ function RetailerSoldHistory() {
   return (
     <>
       <div>
-        <h1 className='text-center text-4xl font-bold mb-5'>Distributor to Retailer Dispatch History</h1>
+        <h1 className='text-center text-4xl font-bold mb-5'>Retailer Selling History</h1>
         <div>
-          show table as dispatch history 
+          show table as selling history 
         </div>
       </div>
     </>

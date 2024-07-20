@@ -5,6 +5,8 @@ import { useToast } from '@chakra-ui/react'
 function DispatchToRetailer() {
   const toast = useToast();
   const [productId, setProductId] = useState("")
+  const [quantity, setQuantity] = useState('')
+  const [dispatchTo, setDispatchTo] = useState("")
   const [isHidden, setIsHidden] = useState(true)
   const [hideGetBtn, setHideGetBtn] = useState(false)
 
@@ -22,14 +24,14 @@ function DispatchToRetailer() {
     }
   }
 
-  const handleDispatch = () =>{
+  const handleDispatch = () => {
     console.log("dispatch product")
   }
 
   return (
     <>
       <div>
-        <h1 className='text-center font-bold text-4xl'>Distributor Dispatch Dashbord</h1>
+        <h1 className='text-center font-bold text-4xl'>Distributor Dispatch Dashboard</h1>
         <div className='flex justify-center mt-10'>
           <div className='flex flex-col gap-4 w-96'>
             <input type="number" className='p-3 border rounded-lg' placeholder='Enter product ID to get details' value={productId} onChange={(e) => setProductId(e.target.value)} required />
@@ -87,10 +89,6 @@ function DispatchToRetailer() {
                     <td>20/07/2024</td>
                   </tr>
                   <tr>
-                    <td>Imported Date</td>
-                    <td>20/07/2024</td>
-                  </tr>
-                  <tr>
                     <td>Imported Address</td>
                     <td>0x.......24</td>
                   </tr>
@@ -101,13 +99,17 @@ function DispatchToRetailer() {
                 </tbody>
               </table>
 
-              <div className='mt-5'>
-                <button onClick={handleDispatch} className='bg-blue-600 p-3 text-white font-bold rounded-xl'>Dispatch Product to Importer</button>
+              <div className='mt-5 flex flex-col gap-4'>
+                <input type="number" className='p-3 border rounded-lg w-96' placeholder='Enter address (receiver)' value={dispatchTo} onChange={(e) => setDispatchTo(e.target.value)} required />
+
+                <input type="number" className='p-3 border rounded-lg w-96' placeholder='Enter quantity to dispatch' value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
+
+                <button onClick={handleDispatch} className='bg-blue-600 p-3 text-white font-bold rounded-xl'>Dispatch Product to Retailer</button>
               </div>
             </div>
             :
             <p>
-              
+
             </p>
           }
 

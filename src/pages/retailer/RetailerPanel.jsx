@@ -6,6 +6,7 @@ import AcceptProduct from '../../components/retailers/AcceptProduct'
 import RetailerDashboard from '../../components/retailers/RetailerDashboard'
 import SellProduct from '../../components/retailers/SellProduct'
 import RetailerSoldHistory from '../../components/retailers/RetailerSoldHistory'
+import ReportProduct from '../../components/ReportProduct'
 
 function RetailerPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -25,12 +26,14 @@ function RetailerPanel() {
                 return <RetailerSoldHistory />;
             case 'track-product':
                 return <TrackProduct />;
+            case 'report-product':
+                return <ReportProduct />;
             default:
                 return <RetailerDashboard />;
         }
     };
 
-    if (activeAccount?.address !== '') {
+    if (activeAccount?.address == '') {
         return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
