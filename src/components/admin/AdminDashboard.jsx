@@ -33,16 +33,12 @@ function AdminDashboard({ setActiveComponent }) {
                         <p>Manage customs and all details</p>
                     </div>
                     <div className='bg-blue-500 text-white p-5 rounded-lg'>
-                        <h1 className='text-2xl font-bold'>Manage Users</h1>
+                        <h1 className='text-2xl font-bold'>Manage Other Users</h1>
                         <p>Manage users and their roles</p>
                     </div>
                     <div className='bg-blue-500 text-white p-5 rounded-lg'>
                         <h1 className='text-2xl font-bold'>Manage Products</h1>
                         <p>Manage products and their details</p>
-                    </div>
-                    <div className='bg-blue-500 text-white p-5 rounded-lg'>
-                        <h1 className='text-2xl font-bold'>Manage Orders</h1>
-                        <p>Manage orders and their details</p>
                     </div>
                 </div>
 
