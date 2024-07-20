@@ -25,6 +25,13 @@ function AdminPanel() {
         return <AcceptedApplications />
       case 'denied-applications':
         return <DeniedApplications />
+      // report management
+      case 'report-applications':
+        return <DeniedApplications />
+      case 'accepted-report-applications':
+        return <DeniedApplications />
+      case 'denied-report-applications':
+        return <DeniedApplications />
       default:
         return <AdminDashboard />;
     }

@@ -58,6 +58,12 @@ function DistributorDashboard({ setActiveComponent }) {
                         <h1 className='text-2xl font-bold'>Track Product</h1>
                         <p>Get current state of a product</p>
                     </div>
+
+                    <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
+                        onClick={() => { setActiveComponent('report-product') }}>
+                        <h1 className='text-2xl font-bold'>Report Product</h1>
+                        <p>Report any product to Govt./Respective Entity</p>
+                    </div>
                 </div>
             </div>
         </>

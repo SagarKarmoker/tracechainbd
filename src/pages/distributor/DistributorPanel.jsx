@@ -7,6 +7,7 @@ import DispatchToRetailer from '../../components/distributors/DispatchToRetailer
 import PendingProduct from '../../components/distributors/PendingProduct'
 import AcceptProduct from '../../components/distributors/AcceptProduct'
 import DistributorDispatchHistory from '../../components/distributors/DistributorDispatchHistory'
+import ReportProduct from '../../components/ReportProduct'
 
 function DistributorPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -28,6 +29,8 @@ function DistributorPanel() {
                 return <DistributorDispatchHistory />;
             case 'track-product':
                 return <TrackProduct />;
+            case 'report-product':
+                return <ReportProduct />;
             default:
                 return <DistributorDashboard />;
         }

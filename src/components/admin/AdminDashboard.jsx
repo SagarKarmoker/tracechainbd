@@ -66,6 +66,27 @@ function AdminDashboard({ setActiveComponent }) {
                         </div>
                     </div>
                 </div>
+
+                <div className='mt-4'>
+                    <h1 className='text-3xl font-bold text-black-500'>Report Management</h1>
+                    <div className='grid grid-cols-3 gap-4 mt-4'>
+                        {/* all report applications */}
+                        <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer' onClick={() => { setActiveComponent('report-applications') }}>
+                            <h1 className='text-2xl font-bold'>All Reports</h1>
+                            <p>Get all applictons and details</p>
+                        </div>
+                        {/* Accpeted report Application */}
+                        <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer' onClick={() => { setActiveComponent('accepted-report-applications') }}>
+                            <h1 className='text-2xl font-bold'>Accepted Reports</h1>
+                            <p>Get all accepted applictons and details</p>
+                        </div>
+                        {/* Denied report Applications */}
+                        <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer' onClick={() => { setActiveComponent('denied-report-applications') }}>
+                            <h1 className='text-2xl font-bold'>Denied Reports</h1>
+                            <p>Get all denied applictons and details</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </>
     )
