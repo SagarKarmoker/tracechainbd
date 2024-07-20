@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import AddProduct from '../../components/customs/AddProduct'
-import DispatchToImporter from '../../components/customs/DispatchToImporter'
-import CustomsDispatchHistory from '../../components/customs/CustomsDispatchHistory'
-import TrackProduct from '../../components/customs/TrackProduct'
-import AllImporterList from '../../components/customs/AllImporterList'
+import TrackProduct from '../../components/retailers/TrackProduct'
 import { useActiveAccount } from 'thirdweb/react'
+import PendingProduct from '../../components/retailers/PendingProduct'
+import AcceptProduct from '../../components/retailers/AcceptProduct'
 import RetailerDashboard from '../../components/retailers/RetailerDashboard'
+import SellProduct from '../../components/retailers/SellProduct'
+import RetailerSoldHistory from '../../components/retailers/RetailerSoldHistory'
 
 function RetailerPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -15,14 +15,14 @@ function RetailerPanel() {
         switch (activeComponent) {
             case 'dashboard':
                 return <RetailerDashboard setActiveComponent={setActiveComponent} />;
-            case 'add-product':
-                return <AddProduct />;
-            case 'importer-list':
-                return <AllImporterList />;
-            case 'dispatch-to-importer':
-                return <DispatchToImporter />;
-            case 'dispatch-history':
-                return <CustomsDispatchHistory />;
+            case 'accept-product':
+                return <AcceptProduct />;
+            case 'pending-product':
+                return <PendingProduct />;
+            case 'sell-product':
+                return <SellProduct />;
+            case 'sold-history':
+                return <RetailerSoldHistory />;
             case 'track-product':
                 return <TrackProduct />;
             default:

@@ -32,31 +32,25 @@ function RetailerDashboard({ setActiveComponent }) {
                     <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
                         onClick={() => { setActiveComponent('accept-product') }}>
                         <h1 className='text-2xl font-bold'>Accept Product</h1>
-                        <p>Manage all of importer accept products </p>
+                        <p>Manage all of distributor accept products </p>
                     </div>
 
                     <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
-                        onClick={() => { setActiveComponent('retailer-list') }}>
-                        <h1 className='text-2xl font-bold'>Manager Retailers</h1>
-                        <p>Manage retailers and their details</p>
-                    </div>
-
-                    <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
-                        onClick={() => { setActiveComponent('dispatch-to-retailer') }}>
-                        <h1 className='text-2xl font-bold'>Dispatch Product</h1>
+                        onClick={() => { setActiveComponent('sell-product') }}>
+                        <h1 className='text-2xl font-bold'>Sell Product</h1>
                         <p>Dispatch accepted product to Retailer</p>
                     </div>
 
                     <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
-                        onClick={() => { setActiveComponent('dispatch-history') }}>
-                        <h1 className='text-2xl font-bold'>Dispatch History</h1>
-                        <p>Dispatch history of product to retailer</p>
+                        onClick={() => { setActiveComponent('sold-history') }}>
+                        <h1 className='text-2xl font-bold'>Sold History</h1>
+                        <p>Sold product history</p>
                     </div>
 
                     <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
                         onClick={() => { setActiveComponent('track-product') }}>
                         <h1 className='text-2xl font-bold'>Track Product</h1>
-                        <p>Get current state of a product</p>
+                        <p>Get customs to retailer step by step details</p>
                     </div>
                 </div>
             </div>
