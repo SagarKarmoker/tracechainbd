@@ -4,14 +4,12 @@ import Roles from "../pages/Roles";
 import Error404 from "../pages/Error404";
 import Dashboard from "../pages/Dashboard";
 import AvatarButton from "./AvatarButton";
-import Importer from "../pages/importer/Importer";
-import Distributor from "./Distributor";
 import AdminPanel from "../pages/admin/AdminPanel";
-import ImporterDashboard from "../pages/importer/ImporterDashboard"
-import ImporterProductChain from "../pages/importer/ImporterProductChain";
 import { useActiveAccount } from "thirdweb/react";
 import { adminAddr } from "../contants";
 import CustomsPanel from "../pages/customs/CustomsPanel";
+import DistributorPanel from "../pages/distributor/DistributorPanel";
+import RetailerPanel from "../pages/retailer/RetailerPanel";
 
 
 function Navbar({ visible }) {
@@ -65,18 +63,26 @@ function Navbar({ visible }) {
           (<Route path="/dashboard" element={<AdminPanel />} />) :
           (<Route path="/dashboard" element={<Dashboard />} />)}
           
-        <Route path="/importer" element={<Importer />} />
+        {/* <Route path="/importer" element={<Importer />} />
         <Route path="/distributor" element={<Distributor />} />
         <Route path="/importerdashboard" element={<ImporterDashboard />} />
-        <Route path="/Importerproductchain " element={<ImporterProductChain />} />
-        <Route path="/*" element={<Error404 />} />
-        <Route path="*" element={<Error404 />} />
-
+        <Route path="/Importerproductchain " element={<ImporterProductChain />} /> */}
+        
         {/* admin routes */}
         <Route path="/admin" element={<AdminPanel />} />
 
         {/* customs routes */}
         <Route path="/customs" element={<CustomsPanel />} />
+
+        {/* distributor routes */}
+        <Route path="/distributor" element={<DistributorPanel />} />
+
+        {/* retailer routes */}
+        <Route path="/retailer" element={<RetailerPanel />} />
+
+        {/* common routes */}
+        <Route path="/*" element={<Error404 />} />
+        <Route path="*" element={<Error404 />} />
       </Routes>
     </BrowserRouter>
   );
