@@ -32,6 +32,16 @@ function Navbar({ visible }) {
                     </Link>
                   </li>
                   <li>
+                    <Link to="/admin" className="text-black font-semibold">
+                      Retailer
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/customs" className="text-black font-semibold">
+                      Retailer
+                    </Link>
+                  </li>
+                  <li>
                     <Link to="/importer" className="text-black font-semibold">
                       Importar
                     </Link>

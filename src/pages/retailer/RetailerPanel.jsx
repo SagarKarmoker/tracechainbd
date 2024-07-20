@@ -5,7 +5,7 @@ import CustomsDispatchHistory from '../../components/customs/CustomsDispatchHist
 import TrackProduct from '../../components/customs/TrackProduct'
 import AllImporterList from '../../components/customs/AllImporterList'
 import { useActiveAccount } from 'thirdweb/react'
-import CustomsDashboard from '../../components/customs/CustomsDashboard'
+import RetailerDashboard from '../../components/retailers/RetailerDashboard'
 
 function RetailerPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -14,7 +14,7 @@ function RetailerPanel() {
     const renderComponent = () => {
         switch (activeComponent) {
             case 'dashboard':
-                return <CustomsDashboard setActiveComponent={setActiveComponent} />;
+                return <RetailerDashboard setActiveComponent={setActiveComponent} />;
             case 'add-product':
                 return <AddProduct />;
             case 'importer-list':
@@ -26,7 +26,7 @@ function RetailerPanel() {
             case 'track-product':
                 return <TrackProduct />;
             default:
-                return <CustomsDashboard />;
+                return <RetailerDashboard />;
         }
     };
 
@@ -40,13 +40,6 @@ function RetailerPanel() {
 
     return (
         <div className='px-10 pt-5'>
-            {/* customs dashboard */}
-            {/* <AddProduct /> */}
-            {/* <DispatchToImporter /> */}
-            {/* <CustomsDispatchHistory /> */}
-            {/* <TrackProduct /> */}
-            {/* <AllImporterList /> */}
-
             <div>
                 {renderComponent()}
             </div>

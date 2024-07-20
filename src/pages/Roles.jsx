@@ -25,12 +25,17 @@ function Roles() {
     navigate("/customs");
   };
 
-  const handleDistributor = () => {
-    navigate("/distributor");
-  }
   const handleImportar = () => {
     navigate("/importer");
   }
+
+  const handleDistributor = () => {
+    navigate("/distributor");
+  }
+
+  const handleRetailer = () => {
+    navigate("/retailer");
+  };
 
   return (
     <div className="w-full flex justify-center items-center mt-10">
@@ -110,6 +115,23 @@ function Roles() {
                   rightIcon={<MdOutlineCallMade />}
                 >
                   Distributor Panel
+                </Button>
+              </div>
+            </Box>
+            <Box>
+              <Heading size="xs" textTransform="uppercase">
+                Retailer
+              </Heading>
+              <div className="flex justify-between">
+                <Text pt="2" fontSize="sm">
+                  View a summary of all your clients over the last month.
+                </Text>
+                <Button
+                  colorScheme="blue"
+                  onClick={handleRetailer}
+                  rightIcon={<MdOutlineCallMade />}
+                >
+                  Reailer Panel
                 </Button>
               </div>
             </Box>
