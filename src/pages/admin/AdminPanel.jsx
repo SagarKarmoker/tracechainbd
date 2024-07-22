@@ -6,6 +6,7 @@ import AdminDashboard from '../../components/admin/AdminDashboard';
 import AdminApplications from '../../components/admin/AdminApplications'
 import AcceptedApplications from '../../components/admin/AcceptedApplications';
 import DeniedApplications from '../../components/admin/DeniedApplications';
+import AllProducts from '../../components/admin/AllProducts';
 
 function AdminPanel() {
   const activeAccount = useActiveAccount();
@@ -25,6 +26,9 @@ function AdminPanel() {
         return <AcceptedApplications />
       case 'denied-applications':
         return <DeniedApplications />
+      // product management
+      case 'all-products':
+        return <AllProducts />
       // report management
       case 'report-applications':
         return <DeniedApplications />

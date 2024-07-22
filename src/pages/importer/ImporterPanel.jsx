@@ -7,7 +7,7 @@ import AllImporterList from '../../components/customs/AllImporterList'
 import { useActiveAccount } from 'thirdweb/react'
 import CustomsDashboard from '../../components/customs/CustomsDashboard'
 
-function CustomsPanel() {
+function ImporterPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
     const activeAccount = useActiveAccount();
 
@@ -54,4 +54,4 @@ function CustomsPanel() {
     )
 }
 
-export default CustomsPanel
+export default ImporterPanel

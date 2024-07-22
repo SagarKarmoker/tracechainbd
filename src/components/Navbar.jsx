@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Link, BrowserRouter, Routes, Route } from "react-router-dom";
 import Roles from "../pages/Roles";
 import Error404 from "../pages/Error404";
-import Dashboard from "../pages/Dashboard";
 import AvatarButton from "./AvatarButton";
 import AdminPanel from "../pages/admin/AdminPanel";
 import { useActiveAccount } from "thirdweb/react";
@@ -10,6 +9,7 @@ import { adminAddr } from "../contants";
 import CustomsPanel from "../pages/customs/CustomsPanel";
 import DistributorPanel from "../pages/distributor/DistributorPanel";
 import RetailerPanel from "../pages/retailer/RetailerPanel";
+import Importer from "../pages/importer/Importer";
 
 
 function Navbar({ visible }) {
@@ -82,7 +82,7 @@ function Navbar({ visible }) {
         <Route path="/customs" element={<CustomsPanel />} />
 
         {/* importer routes */}
-        <Route path="/importer" element={<CustomsPanel />} />
+        <Route path="/importer" element={<Importer />} />
 
         {/* distributor routes */}
         <Route path="/distributor" element={<DistributorPanel />} />
