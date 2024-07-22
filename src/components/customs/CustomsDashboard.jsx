@@ -25,7 +25,7 @@ function CustomsDashboard({ setActiveComponent }) {
                 <div className='grid grid-cols-4 gap-4'>
                     <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
                         onClick={() => { setActiveComponent('add-product') }}>
-                        <h1 className='text-2xl font-bold'>Add and Accept Product</h1>
+                        <h1 className='text-2xl font-bold'>Entry and Accept Product</h1>
                         <p>Manage all of customs accept products </p>
                     </div>
 
@@ -33,6 +33,12 @@ function CustomsDashboard({ setActiveComponent }) {
                         onClick={() => { setActiveComponent('importer-list') }}>
                         <h1 className='text-2xl font-bold'>Manager Importer</h1>
                         <p>Manage importers and their details</p>
+                    </div>
+
+                    <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
+                        onClick={() => { setActiveComponent('products-list') }}>
+                        <h1 className='text-2xl font-bold'>Manager Products</h1>
+                        <p>Manage accpeted products and their details</p>
                     </div>
 
                     <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'

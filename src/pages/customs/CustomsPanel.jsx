@@ -6,6 +6,7 @@ import TrackProduct from '../../components/customs/TrackProduct'
 import AllImporterList from '../../components/customs/AllImporterList'
 import { useActiveAccount } from 'thirdweb/react'
 import CustomsDashboard from '../../components/customs/CustomsDashboard'
+import AllProductsList from '../../components/customs/AllProductsList'
 
 function CustomsPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -19,6 +20,8 @@ function CustomsPanel() {
                 return <AddProduct />;
             case 'importer-list':
                 return <AllImporterList />;
+            case 'products-list':
+                return <AllProductsList />
             case 'dispatch-to-importer':
                 return <DispatchToImporter />;
             case 'dispatch-history':
