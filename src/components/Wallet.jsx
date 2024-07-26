@@ -35,8 +35,7 @@ function Wallet() {
           theme={"dark"}
           accountAbstraction={{
             chain: polygonAmoy,
-            sponsorGas: true,
-            factoryAddress: AAFactory
+            sponsorGas: true
           }}
           connectModal={{
             size: "wide",

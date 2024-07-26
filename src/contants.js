@@ -26,8 +26,7 @@ const wallets = [
     },
     smartAccount: {
       chain: polygonAmoy,
-      sponsorGas: true,
-      factoryAddress: AAFactory
+      sponsorGas: true
     }
   }),
 ];

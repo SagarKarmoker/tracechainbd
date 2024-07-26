@@ -3,10 +3,10 @@ import { create } from 'ipfs-http-client'
 import { useActiveAccount } from 'thirdweb/react';
 import { useToast } from '@chakra-ui/react';
 import { prepareContractCall } from "thirdweb"
-import { useSendAndConfirmTransaction  } from "thirdweb/react";
-import { TraceChainContract } from '../contants';
+import { useSendAndConfirmTransaction, useSendTransaction  } from "thirdweb/react";
+import { contract } from '../chain';
 
-const ipfs = create({ url: "http://127.0.0.1:5001" }); 
+const ipfs = create({ url: "http://127.0.0.1:5001" });
 
 // single component for reg
 function RegApplication() {
@@ -21,7 +21,9 @@ function RegApplication() {
     // detect the role using url param 
     const [role, setRole] = useState('')
     const activeAccount = useActiveAccount();
-    const { mutate: sendAndConfirmTx, data: transactionReceipt } = useSendAndConfirmTransaction ();
+
+    // const { mutate: sendAndConfirmTx, data: transactionReceipt } = useSendAndConfirmTransaction ();
+    const { mutate: sendTransaction } = useSendTransaction();
 
     // ipfs
     const [tin, setTin] = useState(null);
@@ -119,30 +121,40 @@ function RegApplication() {
         console.log(role)
 
         const transaction = prepareContractCall({
-            contract: TraceChainContract,
+            contract,
             method: "function regForRole(string _name, string _locAddress, string _contractNumber, string _countryOfOrigin, string _tinNumber, string _vatRegNumber, string _ipfsDocHash, string _role)",
             params: [compName, locAddress, contractNumber, countryOfOrigin, tinNumber, vatRegNumber, ipfsDocHash, role]
         });
 
-        sendAndConfirmTx(transaction);
+        sendTransaction(transaction);
 
-        if (transactionReceipt) {
-            toast({
-                title: "Success",
-                description: "Registration application submitted successfully.",
-                status: "success",
-                duration: 5000,
-                isClosable: true,
-            })
-        } else {
-            toast({
-                title: "Error",
-                description: "Error submitting registration application.",
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-            })
-        }
+        setCompName('');
+        setLocAddress('');
+        setContractNumber('');
+        setCountryOfOrigin('');
+        setTinNumber('');
+        setVatRegNumber('');
+        setIpfsDocHash('');
+        setRole('');
+        
+
+        // if (transactionReceipt) {
+        //     toast({
+        //         title: "Success",
+        //         description: "Registration application submitted successfully.",
+        //         status: "success",
+        //         duration: 5000,
+        //         isClosable: true,
+        //     })
+        // } else {
+        //     toast({
+        //         title: "Error",
+        //         description: "Error submitting registration application.",
+        //         status: "error",
+        //         duration: 5000,
+        //         isClosable: true,
+        //     })
+        // }
     }
 
     return (
