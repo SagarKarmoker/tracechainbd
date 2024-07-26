@@ -11,7 +11,7 @@ import { createThirdwebClient } from "thirdweb";
 
 // we need to use env variables to store the client id
 const client = createThirdwebClient({
-  clientId: "09231887360f89b7395c795d725494e6", // PC
+  clientId: "556f2fc16f1a66b07065b18bf962cbd1", // PC
 });
 
 const wallets = [
@@ -24,6 +24,6 @@ const wallets = [
 
 const AAFactory = "0x7607132B9d67414E7DCdC411aAD9A78bB87Eb337" // PC
 const adminAddr = "0x776f5b481881DF6A0d32930118Bbcc52D313485B"
-const TraceChainContract = "0xE852de90A1EFc604D30b65c7a05Ef29eaf6B223e"
+const TraceChainContract = "0xC5962D17D16208dAC9E566bB2869b4C44Ca29092"
 
 export { client, wallets, AAFactory, adminAddr, TraceChainContract };

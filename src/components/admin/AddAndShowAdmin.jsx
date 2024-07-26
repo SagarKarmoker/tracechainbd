@@ -1,5 +1,4 @@
-'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Box,
     Button,
@@ -16,8 +15,8 @@ import {
     Divider, Center, useToast
 } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
-import { prepareContractCall } from "thirdweb"
-import { TransactionButton, useSendTransaction } from "thirdweb/react";
+import { prepareContractCall } from "thirdweb";
+import { useReadContract, useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { contract } from "../../chain";
 
 function AddAndShowAdmin({ isAdmin }) {
@@ -25,6 +24,9 @@ function AddAndShowAdmin({ isAdmin }) {
     const [loading, setLoading] = useState(false);
     const [adminAddr, setAdminAddr] = useState('');
     const { mutate: sendTransaction } = useSendTransaction();
+    const activeAccount = useActiveAccount();
+    const [adminList, setAdminList] = useState([]);
+    const [customsList, setCustomsList] = useState([]);
 
     // use to add admins and customs role
     const addRole = () => {
@@ -38,28 +40,27 @@ function AddAndShowAdmin({ isAdmin }) {
             });
             console.log(transaction)
             sendTransaction(transaction)
-
-            // .then(() => {
-            //     setLoading(false);
-            //     // Show toast success message
-            //     toast({
-            //         title: "Admin added successfully",
-            //         status: "success",
-            //         duration: 9000,
-            //         isClosable: true,
-            //     });
-            // })
-            // .catch((error) => {
-            //     setLoading(false);
-            //     // Show toast error message
-            //     toast({
-            //         title: "Failed to add admin",
-            //         description: error.message,
-            //         status: "error",
-            //         duration: 9000,
-            //         isClosable: true,
-            //     });
-            // });
+                .then(() => {
+                    setLoading(false);
+                    // Show toast success message
+                    toast({
+                        title: "Admin added successfully",
+                        status: "success",
+                        duration: 9000,
+                        isClosable: true,
+                    });
+                })
+                .catch((error) => {
+                    setLoading(false);
+                    // Show toast error message
+                    toast({
+                        title: "Failed to add admin",
+                        description: error.message,
+                        status: "error",
+                        duration: 9000,
+                        isClosable: true,
+                    });
+                });
         } else if (adminAddr !== '' && !isAdmin) {
             const _account = adminAddr;
             const transaction = prepareContractCall({
@@ -80,6 +81,47 @@ function AddAndShowAdmin({ isAdmin }) {
             });
         }
     }
+
+    const handleDelete = (_account) => {
+        if (isAdmin) {
+            const transaction = prepareContractCall({
+                contract,
+                method: "function deleteAdmins(address _account)",
+                params: [_account]
+            });
+            sendTransaction(transaction);
+        } else {
+            const transaction = prepareContractCall({
+                contract,
+                method: "function deleteCustoms(address _account)",
+                params: [_account]
+            });
+            sendTransaction(transaction);
+        }
+    }
+
+    const { data: admins, isLoading: adminsLoding } = useReadContract({
+        contract,
+        method: "function getAllAdmins() view returns (address[])",
+        params: []
+    });
+
+    const { data: customs, isLoading: customsLoading } = useReadContract({
+        contract,
+        method: "function getAllCustoms() view returns (address[])",
+        params: []
+    });
+
+    useEffect(() => {
+        console.log(admins)
+        if (admins) {
+            setAdminList(admins);
+        }
+
+        if (customs) {
+            setCustomsList(customs)
+        }
+    }, [admins, customs]);
 
     return (
         <div className='px-20'>
@@ -116,24 +158,52 @@ function AddAndShowAdmin({ isAdmin }) {
                     <Table variant="simple">
                         <Thead>
                             <Tr>
-                                <Th>Email</Th>
+                                <Th>Sl No</Th>
+                                <Th>ID</Th>
                                 <Th>Address</Th>
                                 <Th>Actions</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
-                            <Tr>
-                                <Td>John Doe</Td>
-                                <Td>john.doe@example.com</Td>
-                                <Td>
-                                    <IconButton
-                                        aria-label="Delete Admin"
-                                        icon={<DeleteIcon />}
-                                        colorScheme="red"
-                                    />
-                                </Td>
-                            </Tr>
-                            {/* Add more rows as needed */}
+                            {
+                                isAdmin ? (
+                                    adminList
+                                        .filter(admin => admin !== '0x0000000000000000000000000000000000000000')
+                                        .map((admin, index) => (
+                                            <Tr key={index}>
+                                                <Td>{index + 1}</Td>
+                                                <Td>admin@tracechain</Td>
+                                                <Td>{admin}</Td>
+                                                <Td>
+                                                    <IconButton
+                                                        aria-label="Delete Admin"
+                                                        icon={<DeleteIcon />}
+                                                        colorScheme="red"
+                                                        onClick={() => handleDelete(admin)}
+                                                    />
+                                                </Td>
+                                            </Tr>
+                                        ))
+                                ) : (
+                                    customsList
+                                        .filter(customs => customs !== '0x0000000000000000000000000000000000000000')
+                                        .map((customs, index) => (
+                                            <Tr key={index}>
+                                                <Td>{index + 1}</Td>
+                                                <Td>customs@tracechain</Td>
+                                                <Td>{customs}</Td>
+                                                <Td>
+                                                    <IconButton
+                                                        aria-label="Delete Customs"
+                                                        icon={<DeleteIcon />}
+                                                        colorScheme="red"
+                                                        onClick={() => handleDelete(customs)}
+                                                    />
+                                                </Td>
+                                            </Tr>
+                                        ))
+                                )
+                            }
                         </Tbody>
                     </Table>
                 </Box>

@@ -1,16 +1,17 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AddProduct from '../../components/customs/AddProduct'
 import DispatchToImporter from '../../components/customs/DispatchToImporter'
 import CustomsDispatchHistory from '../../components/customs/CustomsDispatchHistory'
 import TrackProduct from '../../components/customs/TrackProduct'
 import AllImporterList from '../../components/customs/AllImporterList'
-import { useActiveAccount } from 'thirdweb/react'
+import { useActiveAccount, useActiveWalletConnectionStatus } from 'thirdweb/react'
 import CustomsDashboard from '../../components/customs/CustomsDashboard'
 import AllProductsList from '../../components/customs/AllProductsList'
 
 function CustomsPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
     const activeAccount = useActiveAccount();
+    const status = useActiveWalletConnectionStatus();
 
     const renderComponent = () => {
         switch (activeComponent) {
@@ -33,7 +34,7 @@ function CustomsPanel() {
         }
     };
 
-    if (activeAccount?.address == '') {
+    if (status === 'disconnected') {
         return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
@@ -45,6 +46,14 @@ function CustomsPanel() {
             </div>
         )
     }
+
+    // if(activeAccount?.address ==)
+
+    useEffect(() => {
+
+    }, [])
+
+    console.log(activeAccount?.address)
 
     return (
         <div className='px-10 pt-5'>

@@ -6,6 +6,6 @@ import { ABI } from "./contractABI";
 export const contract = getContract({
     client,
     chain: defineChain(80002),
-    address: "0xE852de90A1EFc604D30b65c7a05Ef29eaf6B223e",
-    abi: ABI
+    address: "0xC5962D17D16208dAC9E566bB2869b4C44Ca29092",
+    // abi: ABI
 });
