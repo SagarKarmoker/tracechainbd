@@ -79,14 +79,14 @@ function AcceptedApplications() {
       <div className='px-10 py-5'>
         <div className='flex justify-between'>
           <IconButton icon={<ArrowLeftIcon />} />
-          <h1 className='text-center font-bold text-4xl'>Registration Applications</h1>
+          <h1 className='text-center font-bold text-4xl'>Registered Companies</h1>
           <p></p>
         </div>
         <Divider className='mt-5' />
         <div className='mt-5 border'>
           <TableContainer className='rounded-md'>
             <Table variant='striped' colorScheme='teal'>
-              <TableCaption>Apply for Registration</TableCaption>
+              <TableCaption>List of all registered company</TableCaption>
               <Thead>
                 <Tr>
                   <Th>SL No</Th>
