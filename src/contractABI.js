@@ -1,1432 +1,1867 @@
 export const ABI = [
     {
-        "type": "error",
+        "inputs": [],
         "name": "InvalidInitialization",
-        "inputs": [],
-        "outputs": []
+        "type": "error"
     },
     {
-        "type": "error",
+        "inputs": [],
         "name": "NotInitializing",
-        "inputs": [],
-        "outputs": []
+        "type": "error"
     },
     {
-        "type": "event",
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "locAddress",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "contractNumber",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "countryOfOrigin",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "tinNumber",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "vatRegNumber",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "ipfsDocHash",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "role",
+                "type": "string"
+            }
+        ],
         "name": "AppliedForReg",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "account",
-                "indexed": false,
-                "internalType": "address"
-            },
-            {
-                "type": "string",
-                "name": "name",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "locAddress",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "contractNumber",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "countryOfOrigin",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "tinNumber",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "vatRegNumber",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "ipfsDocHash",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "role",
-                "indexed": false,
-                "internalType": "string"
-            }
-        ],
-        "outputs": [],
-        "anonymous": false
+        "type": "event"
     },
     {
-        "type": "event",
-        "name": "Initialized",
+        "anonymous": false,
         "inputs": [
             {
-                "type": "uint64",
+                "indexed": false,
+                "internalType": "uint64",
                 "name": "version",
-                "indexed": false,
-                "internalType": "uint64"
+                "type": "uint64"
             }
         ],
-        "outputs": [],
-        "anonymous": false
+        "name": "Initialized",
+        "type": "event"
     },
     {
-        "type": "event",
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "updatedOn",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "updatedBy",
+                "type": "address"
+            }
+        ],
+        "name": "PriceUpdatedByImporter",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "description",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "category",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "countryOfOrigin",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "manufacturer",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "quantity",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "importedDate",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "importerAddr",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "customsAddr",
+                "type": "address"
+            }
+        ],
         "name": "ProductAdded",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "id",
-                "indexed": false,
-                "internalType": "uint256"
-            },
-            {
-                "type": "string",
-                "name": "name",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "description",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "category",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "countryOfOrigin",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "manufacturer",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "uint256",
-                "name": "price",
-                "indexed": false,
-                "internalType": "uint256"
-            },
-            {
-                "type": "uint256",
-                "name": "quantity",
-                "indexed": false,
-                "internalType": "uint256"
-            },
-            {
-                "type": "uint256",
-                "name": "importedDate",
-                "indexed": false,
-                "internalType": "uint256"
-            },
-            {
-                "type": "address",
-                "name": "importerAddr",
-                "indexed": false,
-                "internalType": "address"
-            },
-            {
-                "type": "address",
-                "name": "customsAddr",
-                "indexed": false,
-                "internalType": "address"
-            }
-        ],
-        "outputs": [],
-        "anonymous": false
+        "type": "event"
     },
     {
-        "type": "event",
-        "name": "ProductDelivered",
+        "anonymous": false,
         "inputs": [
             {
-                "type": "uint256",
-                "name": "id",
                 "indexed": false,
-                "internalType": "uint256"
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
             },
             {
-                "type": "address",
+                "indexed": false,
+                "internalType": "address",
                 "name": "receiver",
-                "indexed": false,
-                "internalType": "address"
+                "type": "address"
             },
             {
-                "type": "uint256",
-                "name": "timestamp",
                 "indexed": false,
-                "internalType": "uint256"
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
             }
         ],
-        "outputs": [],
-        "anonymous": false
+        "name": "ProductDelivered",
+        "type": "event"
     },
     {
-        "type": "event",
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "productId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "ipfsDocHash",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "quantity",
+                "type": "uint256"
+            }
+        ],
         "name": "ProductDispatched",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
         "inputs": [
             {
-                "type": "uint256",
+                "indexed": false,
+                "internalType": "uint256",
                 "name": "id",
-                "indexed": false,
-                "internalType": "uint256"
+                "type": "uint256"
             },
             {
-                "type": "uint256",
-                "name": "productId",
                 "indexed": false,
-                "internalType": "uint256"
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
             },
             {
-                "type": "string",
-                "name": "ipfsDocHash",
                 "indexed": false,
-                "internalType": "string"
+                "internalType": "string",
+                "name": "description",
+                "type": "string"
             },
             {
-                "type": "address",
-                "name": "from",
                 "indexed": false,
-                "internalType": "address"
+                "internalType": "string",
+                "name": "category",
+                "type": "string"
             },
             {
-                "type": "address",
-                "name": "to",
                 "indexed": false,
-                "internalType": "address"
+                "internalType": "string",
+                "name": "countryOfOrigin",
+                "type": "string"
             },
             {
-                "type": "uint256",
-                "name": "timestamp",
                 "indexed": false,
-                "internalType": "uint256"
+                "internalType": "string",
+                "name": "manufacturer",
+                "type": "string"
             },
             {
-                "type": "uint256",
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
                 "name": "quantity",
+                "type": "uint256"
+            },
+            {
                 "indexed": false,
-                "internalType": "uint256"
+                "internalType": "uint256",
+                "name": "importedDate",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "importerAddr",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "customsAddr",
+                "type": "address"
             }
         ],
-        "outputs": [],
-        "anonymous": false
-    },
-    {
-        "type": "event",
-        "name": "ProductTracked",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "id",
-                "indexed": false,
-                "internalType": "uint256"
-            },
-            {
-                "type": "uint256",
-                "name": "dispatchId",
-                "indexed": false,
-                "internalType": "uint256"
-            },
-            {
-                "type": "address",
-                "name": "currentHolder",
-                "indexed": false,
-                "internalType": "address"
-            },
-            {
-                "type": "string",
-                "name": "ipfsDocHash",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "uint256",
-                "name": "timestamp",
-                "indexed": false,
-                "internalType": "uint256"
-            }
-        ],
-        "outputs": [],
-        "anonymous": false
-    },
-    {
-        "type": "event",
         "name": "ProductUpdated",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "id",
-                "indexed": false,
-                "internalType": "uint256"
-            },
-            {
-                "type": "string",
-                "name": "name",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "description",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "category",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "countryOfOrigin",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "manufacturer",
-                "indexed": false,
-                "internalType": "string"
-            },
-            {
-                "type": "uint256",
-                "name": "price",
-                "indexed": false,
-                "internalType": "uint256"
-            },
-            {
-                "type": "uint256",
-                "name": "quantity",
-                "indexed": false,
-                "internalType": "uint256"
-            },
-            {
-                "type": "uint256",
-                "name": "importedDate",
-                "indexed": false,
-                "internalType": "uint256"
-            },
-            {
-                "type": "address",
-                "name": "importerAddr",
-                "indexed": false,
-                "internalType": "address"
-            },
-            {
-                "type": "address",
-                "name": "customsAddr",
-                "indexed": false,
-                "internalType": "address"
-            }
-        ],
-        "outputs": [],
-        "anonymous": false
+        "type": "event"
     },
     {
-        "type": "event",
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "reportId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "acceptedBy",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "acceptedOn",
+                "type": "uint256"
+            }
+        ],
+        "name": "ReportAccepted",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "reportId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "reason",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "deniedBy",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "deniedOn",
+                "type": "uint256"
+            }
+        ],
+        "name": "ReportDenied",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "productID",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "reportDesc",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "reportBy",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "reportFor",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "reportedOn",
+                "type": "uint256"
+            }
+        ],
+        "name": "ReportForProduct",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "enum RolesUtils.Roles",
+                "name": "role",
+                "type": "uint8"
+            }
+        ],
         "name": "RoleAdded",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "account",
-                "indexed": false,
-                "internalType": "address"
-            },
-            {
-                "type": "uint8",
-                "name": "role",
-                "indexed": false,
-                "internalType": "enum TraceChainRoles.Roles"
-            }
-        ],
-        "outputs": [],
-        "anonymous": false
+        "type": "event"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_reportId",
+                "type": "uint256"
+            }
+        ],
+        "name": "acceptReport",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "acceptedReports",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "productID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "reportDesc",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "proofHash",
+                "type": "string"
+            },
+            {
+                "internalType": "address",
+                "name": "reportBy",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "reportFor",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "reportedOn",
+                "type": "uint256"
+            },
+            {
+                "internalType": "enum TraceChainReport.Status",
+                "name": "status",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_account",
+                "type": "address"
+            }
+        ],
         "name": "addAdmins",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
-            }
-        ],
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_account",
+                "type": "address"
+            }
+        ],
         "name": "addCustoms",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
-            }
-        ],
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "_name",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_description",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_category",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_countryOfOrigin",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_manufacturer",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_price",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_quantity",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_importerAddr",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_customsAddr",
+                "type": "address"
+            }
+        ],
+        "name": "addMultipleProduct",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "_name",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_description",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_category",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_countryOfOrigin",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_manufacturer",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_price",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_quantity",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_importerAddr",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_customsAddr",
+                "type": "address"
+            }
+        ],
         "name": "addProduct",
-        "inputs": [
-            {
-                "type": "string",
-                "name": "_name",
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "_description",
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "_category",
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "_countryOfOrigin",
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "_manufacturer",
-                "internalType": "string"
-            },
-            {
-                "type": "uint256",
-                "name": "_price",
-                "internalType": "uint256"
-            },
-            {
-                "type": "uint256",
-                "name": "_quantity",
-                "internalType": "uint256"
-            },
-            {
-                "type": "uint256",
-                "name": "_importedDate",
-                "internalType": "uint256"
-            },
-            {
-                "type": "address",
-                "name": "_importerAddr",
-                "internalType": "address"
-            },
-            {
-                "type": "address",
-                "name": "_customsAddr",
-                "internalType": "address"
-            }
-        ],
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
         "name": "admins",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "",
-                "internalType": "uint256"
-            }
-        ],
         "outputs": [
             {
-                "type": "address",
+                "internalType": "address",
                 "name": "",
-                "internalType": "address"
+                "type": "address"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
-        "name": "approveDistributor",
         "inputs": [
             {
-                "type": "address",
+                "internalType": "address",
                 "name": "_account",
-                "internalType": "address"
-            }
-        ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
-    },
-    {
-        "type": "function",
-        "name": "approveImporter",
-        "inputs": [
+                "type": "address"
+            },
             {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
+                "internalType": "string",
+                "name": "_role",
+                "type": "string"
             }
         ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
-    },
-    {
-        "type": "function",
-        "name": "approveRetailer",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
-            }
-        ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
-    },
-    {
-        "type": "function",
         "name": "approveRole",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
-            },
-            {
-                "type": "string",
-                "name": "_role",
-                "internalType": "string"
-            }
-        ],
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_dispatchId",
+                "type": "uint256"
+            }
+        ],
         "name": "confirmDelivery",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "_dispatchId",
-                "internalType": "uint256"
-            }
-        ],
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
         "name": "customs",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "",
-                "internalType": "uint256"
-            }
-        ],
         "outputs": [
             {
-                "type": "address",
+                "internalType": "address",
                 "name": "",
-                "internalType": "address"
+                "type": "address"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_account",
+                "type": "address"
+            }
+        ],
         "name": "deleteAdmins",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
-            }
-        ],
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_account",
+                "type": "address"
+            }
+        ],
         "name": "deleteCustoms",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
-            }
-        ],
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
-        "name": "detectRole",
         "inputs": [
             {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
-            }
-        ],
-        "outputs": [
+                "internalType": "uint256",
+                "name": "_reportId",
+                "type": "uint256"
+            },
             {
-                "type": "string",
-                "name": "roleName",
-                "internalType": "string"
+                "internalType": "string",
+                "name": "_reason",
+                "type": "string"
             }
         ],
-        "stateMutability": "view"
+        "name": "deniedReport",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [],
         "name": "dispatchCounter",
-        "inputs": [],
         "outputs": [
             {
-                "type": "uint256",
+                "internalType": "uint256",
                 "name": "",
-                "internalType": "uint256"
+                "type": "uint256"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_productId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_to",
+                "type": "address"
+            },
+            {
+                "internalType": "string",
+                "name": "_ipfsDocHash",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_quantity",
+                "type": "uint256"
+            }
+        ],
         "name": "dispatchProductToDistributor",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "_productId",
-                "internalType": "uint256"
-            },
-            {
-                "type": "address",
-                "name": "_to",
-                "internalType": "address"
-            },
-            {
-                "type": "string",
-                "name": "_ipfsDocHash",
-                "internalType": "string"
-            },
-            {
-                "type": "uint256",
-                "name": "_quantity",
-                "internalType": "uint256"
-            }
-        ],
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_productId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_to",
+                "type": "address"
+            },
+            {
+                "internalType": "string",
+                "name": "_ipfsDocHash",
+                "type": "string"
+            }
+        ],
         "name": "dispatchProductToImporter",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "_productId",
-                "internalType": "uint256"
-            },
-            {
-                "type": "address",
-                "name": "_to",
-                "internalType": "address"
-            },
-            {
-                "type": "string",
-                "name": "_ipfsDocHash",
-                "internalType": "string"
-            }
-        ],
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_productId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_to",
+                "type": "address"
+            },
+            {
+                "internalType": "string",
+                "name": "_ipfsDocHash",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_quantity",
+                "type": "uint256"
+            }
+        ],
         "name": "dispatchProductToRetailer",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "_productId",
-                "internalType": "uint256"
-            },
-            {
-                "type": "address",
-                "name": "_to",
-                "internalType": "address"
-            },
-            {
-                "type": "string",
-                "name": "_ipfsDocHash",
-                "internalType": "string"
-            },
-            {
-                "type": "uint256",
-                "name": "_quantity",
-                "internalType": "uint256"
-            }
-        ],
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
         "name": "dispatches",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "",
-                "internalType": "uint256"
-            }
-        ],
         "outputs": [
             {
-                "type": "uint256",
+                "internalType": "uint256",
                 "name": "productId",
-                "internalType": "uint256"
+                "type": "uint256"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "ipfsDocHash",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "address",
+                "internalType": "address",
                 "name": "from",
-                "internalType": "address"
+                "type": "address"
             },
             {
-                "type": "address",
+                "internalType": "address",
                 "name": "to",
-                "internalType": "address"
+                "type": "address"
             },
             {
-                "type": "uint256",
+                "internalType": "uint256",
                 "name": "timestamp",
-                "internalType": "uint256"
+                "type": "uint256"
             },
             {
-                "type": "uint256",
+                "internalType": "uint256",
                 "name": "quantity",
-                "internalType": "uint256"
+                "type": "uint256"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [],
+        "name": "getAllAcceptedReport",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "productID",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "reportDesc",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "proofHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "reportBy",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "reportFor",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "reportedOn",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "enum TraceChainReport.Status",
+                        "name": "status",
+                        "type": "uint8"
+                    }
+                ],
+                "internalType": "struct TraceChainReport.Report[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "getAllAdmins",
-        "inputs": [],
         "outputs": [
             {
-                "type": "address[]",
+                "internalType": "address[]",
                 "name": "",
-                "internalType": "address[]"
+                "type": "address[]"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [],
         "name": "getAllCustoms",
-        "inputs": [],
         "outputs": [
             {
-                "type": "address[]",
+                "internalType": "address[]",
                 "name": "",
-                "internalType": "address[]"
+                "type": "address[]"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [],
+        "name": "getAllDeniedReport",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "productID",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "reportDesc",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "proofHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "reportBy",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "reportFor",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "reportedOn",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "enum TraceChainReport.Status",
+                        "name": "status",
+                        "type": "uint8"
+                    }
+                ],
+                "internalType": "struct TraceChainReport.Report[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getAllReports",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "productID",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "reportDesc",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "proofHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "reportBy",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "reportFor",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "reportedOn",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "enum TraceChainReport.Status",
+                        "name": "status",
+                        "type": "uint8"
+                    }
+                ],
+                "internalType": "struct TraceChainReport.Report[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "getApplictions",
-        "inputs": [],
         "outputs": [
             {
-                "type": "tuple[]",
-                "name": "",
                 "components": [
                     {
-                        "type": "address",
+                        "internalType": "address",
                         "name": "address_registered",
-                        "internalType": "address"
+                        "type": "address"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "name",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "locAddress",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "contractNumber",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "countryOfOrigin",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "tinNumber",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "vatRegNumber",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "ipfsDocHash",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "role",
-                        "internalType": "string"
+                        "type": "string"
                     }
                 ],
-                "internalType": "struct TraceChainRoles.RegRoles[]"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "getOthersParty",
-        "inputs": [
-            {
-                "type": "string",
-                "name": "_role",
-                "internalType": "string"
-            }
-        ],
-        "outputs": [
-            {
-                "type": "address[]",
+                "internalType": "struct RolesUtils.RegRoles[]",
                 "name": "",
-                "internalType": "address[]"
+                "type": "tuple[]"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
-        "name": "getProductHistory",
         "inputs": [
             {
-                "type": "uint256",
+                "internalType": "uint256",
                 "name": "_productId",
-                "internalType": "uint256"
+                "type": "uint256"
             }
         ],
+        "name": "getDispatchesByProduct",
         "outputs": [
             {
-                "type": "tuple[]",
-                "name": "",
                 "components": [
                     {
-                        "type": "uint256",
-                        "name": "dispatchId",
-                        "internalType": "uint256"
+                        "internalType": "uint256",
+                        "name": "productId",
+                        "type": "uint256"
                     },
                     {
-                        "type": "address",
-                        "name": "currentHolder",
-                        "internalType": "address"
-                    },
-                    {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "ipfsDocHash",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "uint256",
+                        "internalType": "address",
+                        "name": "from",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "to",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
                         "name": "timestamp",
-                        "internalType": "uint256"
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "quantity",
+                        "type": "uint256"
                     }
                 ],
-                "internalType": "struct TraceChainTrack.Track[]"
+                "internalType": "struct TraceChainDispatchAndTrack.Dispatch[]",
+                "name": "",
+                "type": "tuple[]"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
-        "name": "getSingleApplication",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "_owner",
-                "internalType": "address"
-            }
-        ],
+        "inputs": [],
+        "name": "getOthersParty",
         "outputs": [
             {
-                "type": "tuple",
+                "internalType": "address[]",
                 "name": "",
+                "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_owner",
+                "type": "address"
+            }
+        ],
+        "name": "getSingleApplication",
+        "outputs": [
+            {
                 "components": [
                     {
-                        "type": "address",
+                        "internalType": "address",
                         "name": "address_registered",
-                        "internalType": "address"
+                        "type": "address"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "name",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "locAddress",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "contractNumber",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "countryOfOrigin",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "tinNumber",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "vatRegNumber",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "ipfsDocHash",
-                        "internalType": "string"
+                        "type": "string"
                     },
                     {
-                        "type": "string",
+                        "internalType": "string",
                         "name": "role",
-                        "internalType": "string"
+                        "type": "string"
                     }
                 ],
-                "internalType": "struct TraceChainRoles.RegRoles"
+                "internalType": "struct RolesUtils.RegRoles",
+                "name": "",
+                "type": "tuple"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_reportID",
+                "type": "uint256"
+            }
+        ],
+        "name": "getSingleReport",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "productID",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "reportDesc",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "proofHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "reportBy",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "reportFor",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "reportedOn",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "enum TraceChainReport.Status",
+                        "name": "status",
+                        "type": "uint8"
+                    }
+                ],
+                "internalType": "struct TraceChainReport.Report",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_initAdmin",
+                "type": "address"
+            }
+        ],
         "name": "initialize",
-        "inputs": [],
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_account",
+                "type": "address"
+            }
+        ],
         "name": "isAdmin",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
-            }
-        ],
         "outputs": [
             {
-                "type": "bool",
+                "internalType": "bool",
                 "name": "",
-                "internalType": "bool"
+                "type": "bool"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_account",
+                "type": "address"
+            }
+        ],
         "name": "isCustoms",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
-            }
-        ],
         "outputs": [
             {
-                "type": "bool",
+                "internalType": "bool",
                 "name": "",
-                "internalType": "bool"
+                "type": "bool"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_account",
+                "type": "address"
+            }
+        ],
         "name": "isDistributor",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
-            }
-        ],
         "outputs": [
             {
-                "type": "bool",
+                "internalType": "bool",
                 "name": "",
-                "internalType": "bool"
+                "type": "bool"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_account",
+                "type": "address"
+            }
+        ],
         "name": "isImporter",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
-            }
-        ],
         "outputs": [
             {
-                "type": "bool",
+                "internalType": "bool",
                 "name": "",
-                "internalType": "bool"
+                "type": "bool"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_account",
+                "type": "address"
+            }
+        ],
         "name": "isRetailer",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "_account",
-                "internalType": "address"
-            }
-        ],
         "outputs": [
             {
-                "type": "bool",
+                "internalType": "bool",
                 "name": "",
-                "internalType": "bool"
+                "type": "bool"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
         "name": "others",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "",
-                "internalType": "uint256"
-            }
-        ],
         "outputs": [
             {
-                "type": "address",
+                "internalType": "address",
                 "name": "",
-                "internalType": "address"
+                "type": "address"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [],
         "name": "productCounter",
-        "inputs": [],
         "outputs": [
             {
-                "type": "uint256",
+                "internalType": "uint256",
                 "name": "",
-                "internalType": "uint256"
+                "type": "uint256"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "productToDispatch",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
         "name": "products",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "",
-                "internalType": "uint256"
-            }
-        ],
         "outputs": [
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "name",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "description",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "category",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "countryOfOrigin",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "manufacturer",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "uint256",
+                "internalType": "uint256",
                 "name": "price",
-                "internalType": "uint256"
+                "type": "uint256"
             },
             {
-                "type": "uint256",
+                "internalType": "uint256",
                 "name": "quantity",
-                "internalType": "uint256"
+                "type": "uint256"
             },
             {
-                "type": "uint256",
+                "internalType": "uint256",
                 "name": "importedDate",
-                "internalType": "uint256"
+                "type": "uint256"
             },
             {
-                "type": "address",
+                "internalType": "address",
                 "name": "importerAddr",
-                "internalType": "address"
+                "type": "address"
             },
             {
-                "type": "address",
+                "internalType": "address",
                 "name": "customsAddr",
-                "internalType": "address"
+                "type": "address"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
-        "name": "regForRole",
         "inputs": [
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "_name",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "_locAddress",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "_contractNumber",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "_countryOfOrigin",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "_tinNumber",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "_vatRegNumber",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "_ipfsDocHash",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "_role",
-                "internalType": "string"
+                "type": "string"
             }
         ],
+        "name": "regForRole",
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
-        "name": "revokeRole",
         "inputs": [
             {
-                "type": "address",
+                "internalType": "uint256",
+                "name": "_productId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "_reportDesc",
+                "type": "string"
+            },
+            {
+                "internalType": "address",
+                "name": "_reportFor",
+                "type": "address"
+            },
+            {
+                "internalType": "string",
+                "name": "_proofHash",
+                "type": "string"
+            }
+        ],
+        "name": "reportProduct",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "reports",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "productID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "reportDesc",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "proofHash",
+                "type": "string"
+            },
+            {
+                "internalType": "address",
+                "name": "reportBy",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "reportFor",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "reportedOn",
+                "type": "uint256"
+            },
+            {
+                "internalType": "enum TraceChainReport.Status",
+                "name": "status",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
                 "name": "_account",
-                "internalType": "address"
+                "type": "address"
             }
         ],
+        "name": "revokeRole",
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
         "name": "roles",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "",
-                "internalType": "address"
-            }
-        ],
         "outputs": [
             {
-                "type": "address",
+                "internalType": "address",
                 "name": "account",
-                "internalType": "address"
+                "type": "address"
             },
             {
-                "type": "address",
+                "internalType": "address",
                 "name": "approvedBy",
-                "internalType": "address"
+                "type": "address"
             },
             {
-                "type": "uint8",
+                "internalType": "enum RolesUtils.Roles",
                 "name": "role",
-                "internalType": "enum TraceChainRoles.Roles"
+                "type": "uint8"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
         "name": "rolesData",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "",
-                "internalType": "address"
-            }
-        ],
         "outputs": [
             {
-                "type": "address",
+                "internalType": "address",
                 "name": "address_registered",
-                "internalType": "address"
+                "type": "address"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "name",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "locAddress",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "contractNumber",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "countryOfOrigin",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "tinNumber",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "vatRegNumber",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "ipfsDocHash",
-                "internalType": "string"
+                "type": "string"
             },
             {
-                "type": "string",
+                "internalType": "string",
                 "name": "role",
-                "internalType": "string"
+                "type": "string"
             }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
     },
     {
-        "type": "function",
-        "name": "trackCounter",
-        "inputs": [],
-        "outputs": [
-            {
-                "type": "uint256",
-                "name": "",
-                "internalType": "uint256"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "trackProduct",
         "inputs": [
             {
-                "type": "uint256",
-                "name": "_dispatchId",
-                "internalType": "uint256"
+                "internalType": "uint256",
+                "name": "_start",
+                "type": "uint256"
             },
             {
-                "type": "string",
-                "name": "_ipfsDocHash",
-                "internalType": "string"
-            }
-        ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
-    },
-    {
-        "type": "function",
-        "name": "tracks",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "",
-                "internalType": "uint256"
-            }
-        ],
-        "outputs": [
-            {
-                "type": "uint256",
-                "name": "dispatchId",
-                "internalType": "uint256"
+                "internalType": "uint256",
+                "name": "_end",
+                "type": "uint256"
             },
             {
-                "type": "address",
-                "name": "currentHolder",
-                "internalType": "address"
-            },
-            {
-                "type": "string",
-                "name": "ipfsDocHash",
-                "internalType": "string"
-            },
-            {
-                "type": "uint256",
-                "name": "timestamp",
-                "internalType": "uint256"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "updateProduct",
-        "inputs": [
-            {
-                "type": "uint256",
-                "name": "_id",
-                "internalType": "uint256"
-            },
-            {
-                "type": "string",
-                "name": "_name",
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "_description",
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "_category",
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "_countryOfOrigin",
-                "internalType": "string"
-            },
-            {
-                "type": "string",
-                "name": "_manufacturer",
-                "internalType": "string"
-            },
-            {
-                "type": "uint256",
+                "internalType": "uint256",
                 "name": "_price",
-                "internalType": "uint256"
-            },
-            {
-                "type": "uint256",
-                "name": "_quantity",
-                "internalType": "uint256"
-            },
-            {
-                "type": "uint256",
-                "name": "_importedDate",
-                "internalType": "uint256"
-            },
-            {
-                "type": "address",
-                "name": "_importerAddr",
-                "internalType": "address"
-            },
-            {
-                "type": "address",
-                "name": "_customsAddr",
-                "internalType": "address"
+                "type": "uint256"
             }
         ],
+        "name": "updateMultipleProductPriceByImporter",
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "_name",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_description",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_category",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_countryOfOrigin",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_manufacturer",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_price",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_quantity",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_importerAddr",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_customsAddr",
+                "type": "address"
+            }
+        ],
+        "name": "updateProduct",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_productId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_price",
+                "type": "uint256"
+            }
+        ],
+        "name": "updateProductPriceByImporter",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
     }
 ]

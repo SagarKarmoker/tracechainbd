@@ -1,6 +1,6 @@
-import {useEffect} from "react";
-import { ConnectButton } from "thirdweb/react";
-import { createWallet, walletConnect } from "thirdweb/wallets";
+import { useEffect } from "react";
+import { ConnectButton, ConnectEmbed } from "thirdweb/react";
+import { createWallet, walletConnect, } from "thirdweb/wallets";
 import { client, wallets, AAFactory, adminAddr } from "../contants";
 import { polygonAmoy } from "thirdweb/chains";
 import { useLocation } from "react-router-dom";
@@ -35,8 +35,8 @@ function Wallet() {
           theme={"dark"}
           accountAbstraction={{
             chain: polygonAmoy,
-            factoryAddress: AAFactory,
-            gasless: true,
+            sponsorGas: true,
+            factoryAddress: AAFactory
           }}
           connectModal={{
             size: "wide",
