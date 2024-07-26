@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { prepareContractCall, sendTransaction } from "thirdweb";
+import { prepareContractCall } from "thirdweb"
+import { useSendTransaction } from "thirdweb/react";
 import { useToast } from '@chakra-ui/react';
-import { TraceChainContract } from '../../contants';
+import { contract } from '../../chain'
 
 function SingleProductEntry({ customsAddr }) {
   const [id, setId] = useState('');
@@ -12,11 +13,10 @@ function SingleProductEntry({ customsAddr }) {
   const [manufacturer, setManufacturer] = useState('');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
-  // const [importedDate, setImportedDate] = useState('')
   const [importerAddr, setImporterAddr] = useState('');
-  // const [customsAddr, setCustomsAddr] = useState('');
 
   const toast = useToast();
+  const { mutate: sendTransaction } = useSendTransaction();
 
   const singleProductEntry = async () => {
     if (name === '' || description === '' || category === '' || countryOfOrigin === '' || manufacturer === '' || price === '' || quantity === '' || importerAddr === '' || customsAddr === '') {
@@ -29,26 +29,32 @@ function SingleProductEntry({ customsAddr }) {
       });
     }
     else {
-      const transaction = await prepareContractCall({
-        contract: TraceChainContract,
+      const transaction = prepareContractCall({
+        contract,
         method: "function addProduct(string _name, string _description, string _category, string _countryOfOrigin, string _manufacturer, uint256 _price, uint256 _quantity, address _importerAddr, address _customsAddr)",
         params: [name, description, category, countryOfOrigin, manufacturer, price, quantity, importerAddr, customsAddr]
       });
+      sendTransaction(transaction);
 
-      const { transactionHash } = await sendTransaction({
-        transaction,
-        account
-      });
+      // if(transactionHash){
+      //   toast({
+      //     title: "Product Added",
+      //     description: "Product added successfully",
+      //     status: "success",
+      //     duration: 9000,
+      //     isClosable: true,
+      //   });
+      // }
 
-      if(transactionHash){
-        toast({
-          title: "Product Added",
-          description: "Product added successfully",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
-      }
+      setId('');
+      setName('');
+      setDescription('');
+      setCategory('');
+      setCountryOfOrigin('');
+      setManufacturer('');
+      setPrice('');
+      setQuantity('');
+      setImporterAddr('');
     }
   }
 

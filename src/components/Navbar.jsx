@@ -12,10 +12,19 @@ import RetailerPanel from "../pages/retailer/RetailerPanel";
 import Importer from "../pages/importer/Importer";
 import RegApplication from "../pages/RegApplication";
 import ImporterPanel from "../pages/importer/ImporterPanel";
-
+import { getUserEmail } from "thirdweb/wallets/in-app";
+import { client } from "../contants";
 
 function Navbar({ visible }) {
   const activeAccount = useActiveAccount();
+  console.log("Account: ", activeAccount?.address);
+
+  const getEmail = async () => {
+    const email = await getUserEmail({ client });
+    console.log(email);
+  }
+
+  getEmail();
 
   return (
     <BrowserRouter>

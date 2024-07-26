@@ -20,6 +20,8 @@ function AdminPanel() {
         return <AddAndShowAdmin isAdmin={true} />;
       case 'customs-management':
         return <AddAndShowAdmin isAdmin={false} />;
+      case 'others-management':
+        return <AcceptedApplications />
       case 'applications':
         return <AdminApplications />
       case 'accepted-applications':
