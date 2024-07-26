@@ -30,6 +30,7 @@ function AdminApplications() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [applications, setApplications] = useState([]);
   const [selectedApplication, setSelectedApplication] = useState(null);
+  const [alreadyRole, setAlreadyRole] = useState([])
 
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
@@ -50,6 +51,8 @@ function AdminApplications() {
   useEffect(() => {
     const getAllApplications = async () => {
       try {
+        const otherRoles = await contract.getOthersParty();
+        setAlreadyRole(otherRoles);
         const data = await contract.getApplictions();
         setApplications(data);
       } catch (error) {
@@ -93,7 +96,9 @@ function AdminApplications() {
                 </Tr>
               </Thead>
               <Tbody>
-                {applications.map((application, index) => (
+                {applications
+                .filter(application => !alreadyRole.includes(application.address_registered))
+                .map((application, index) => (
                   <Tr key={index}>
                     <Td>{index + 1}</Td>
                     <Td>{application.address_registered}</Td>
