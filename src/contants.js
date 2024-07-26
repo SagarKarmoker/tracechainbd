@@ -9,6 +9,8 @@
 import { inAppWallet } from "thirdweb/wallets";
 import { createThirdwebClient } from "thirdweb";
 import { polygonAmoy } from "thirdweb/chains";
+import { ABI } from "./contractABI";
+import { ethers } from "ethers";
 
 // we need to use env variables to store the client id
 const client = createThirdwebClient({
@@ -31,4 +33,8 @@ const wallets = [
   }),
 ];
 
-export { client, wallets, AAFactory, adminAddr, TraceChainContract };
+
+const provider = new ethers.providers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
+const etherContract = new ethers.Contract(TraceChainContract, ABI, provider);
+
+export { client, wallets, AAFactory, adminAddr, TraceChainContract, etherContract };

@@ -1,120 +1,197 @@
-import React, { useState } from 'react'
-import { useToast } from '@chakra-ui/react'
+import React, { useState } from 'react';
+import { useToast, Box, Button, Input, Heading, Table, Thead, Tbody, Tr, Th, Td, Spinner } from '@chakra-ui/react';
+import { prepareContractCall } from "thirdweb";
+import { useSendTransaction } from "thirdweb/react";
+import { etherContract } from '../../contants';
+import { contract } from '../../chain';
 
-// customs -> importer dispatch feature
 function DispatchToImporter() {
   const toast = useToast();
-  const [productId, setProductId] = useState("")
-  const [isHidden, setIsHidden] = useState(true)
-  const [hideGetBtn, setHideGetBtn] = useState(false)
+  const [productId, setProductId] = useState("");
+  const [isHidden, setIsHidden] = useState(true);
+  const [hideGetBtn, setHideGetBtn] = useState(false);
+  const [productDetails, setProductDetails] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [importerAddr, setImporterAddr] = useState('');
+  const [_ipfsDocHash, setIpfsDocHash] = useState('');
 
-  const handleDetails = () => {
-    if (productId != '') {
-      console.log("get from blockchain")
-      setIsHidden(false)
-      setHideGetBtn(true)
-      setProductId('')
+  const { mutate: sendTransaction } = useSendTransaction();
+
+  const handleDetails = async () => {
+    if (productId !== '') {
+      try {
+        setLoading(true);
+        // Get product details from blockchain
+        const product = await etherContract.products(productId);
+
+        // Convert BigNumber and other types to strings or numbers
+        const formattedProduct = {
+          name: product.name,
+          description: product.description,
+          category: product.category,
+          countryOfOrigin: product.countryOfOrigin,
+          manufacturer: product.manufacturer,
+          price: Number(product.price.toString()),
+          quantity: Number(product.quantity.toString()), // Convert BigNumber to number
+          importedDate: Number(product.importedDate.toString()), // Convert BigNumber to number
+          importerAddr: product.importerAddr,
+          customsAddr: product.customsAddr
+        };
+
+        setImporterAddr(product.importerAddr);
+        setProductDetails(formattedProduct);
+        setIsHidden(false);
+        setHideGetBtn(true);
+        setProductId('');
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch product details",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      } finally {
+        setLoading(false);
+      }
     } else {
-      // show waring toast
+      // Show warning toast
       toast({
-
-      })
+        title: "Warning",
+        description: "Product ID is required",
+        status: "warning",
+        duration: 9000,
+        isClosable: true,
+      });
     }
-  }
+  };
 
-  const handleDispatch = () =>{
-    console.log("dispatch product")
-  }
+  const handleDispatch = async () => {
+
+    if (_ipfsDocHash === '' || importerAddr === '' || productId === '') {
+      toast({
+        title: "Error",
+        description: "All fields are required",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+
+    try {
+      const transaction = prepareContractCall({
+        contract,
+        method: "function dispatchProductToImporter(uint256 _productId, address _to, string _ipfsDocHash)",
+        params: [productId, importerAddr, _ipfsDocHash]
+      });
+      await sendTransaction(transaction);
+      toast({
+        title: "Success",
+        description: "Product dispatched successfully",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to dispatch product",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
-    <>
-      <div>
-        <h1 className='text-center font-bold text-4xl'>Customs Dispatch Dashbord</h1>
-        <div className='flex justify-center mt-10'>
-          <div className='flex flex-col gap-4 w-96'>
-            <input type="number" className='p-3 border rounded-lg' placeholder='Enter product ID to get details' value={productId} onChange={(e) => setProductId(e.target.value)} required />
-
-            {
-              !hideGetBtn && <button onClick={handleDetails} className='bg-blue-600 p-3 text-white font-bold rounded-xl'>Get Details</button>
-            }
-          </div>
-        </div>
-        {/* hidden util get details */}
-        <div className='flex justify-center mt-5'>
-          {/* details of product got from blockchain */}
-          {!isHidden ?
-            <div className='flex flex-col'>
-              <table className='border text-center p-2'>
-                <thead>
-                  <th>Product</th>
-                  <th>Details</th>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>ID</td>
-                    <td>1</td>
-                  </tr>
-                  <tr>
-                    <td>Name</td>
-                    <td>Dove</td>
-                  </tr>
-                  <tr>
-                    <td>Desc</td>
-                    <td>Body Soap</td>
-                  </tr>
-                  <tr>
-                    <td>Category</td>
-                    <td>Toilaties</td>
-                  </tr>
-                  <tr>
-                    <td>Country of Origin</td>
-                    <td>INDIA (IN)</td>
-                  </tr>
-                  <tr>
-                    <td>Manufacturer</td>
-                    <td>Uniliver</td>
-                  </tr>
-                  <tr>
-                    <td>Price</td>
-                    <td>100</td>
-                  </tr>
-                  <tr>
-                    <td>Quantity</td>
-                    <td>100</td>
-                  </tr>
-                  <tr>
-                    <td>Imported Date</td>
-                    <td>20/07/2024</td>
-                  </tr>
-                  <tr>
-                    <td>Imported Date</td>
-                    <td>20/07/2024</td>
-                  </tr>
-                  <tr>
-                    <td>Imported Address</td>
-                    <td>0x.......24</td>
-                  </tr>
-                  <tr>
-                    <td>Customs Address</td>
-                    <td>0x.......51</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div className='mt-5'>
-                <button onClick={handleDispatch} className='bg-blue-600 p-3 text-white font-bold rounded-xl'>Dispatch Product to Importer</button>
-              </div>
-            </div>
-            :
-            <p>
-              
-            </p>
+    <Box p={10}>
+      <Heading mb={4} textAlign="center">Customs Dispatch Dashboard</Heading>
+      <Box display="flex" justifyContent="center" mb={10}>
+        <Box width="96" display="flex" flexDirection="column" gap={4}>
+          <Input
+            type="number"
+            placeholder="Enter product ID to get details"
+            value={productId}
+            onChange={(e) => setProductId(e.target.value)}
+            isRequired
+          />
+          {!hideGetBtn &&
+            <Button onClick={handleDetails} colorScheme="blue">Get Details</Button>
           }
+        </Box>
+      </Box>
 
-        </div>
-      </div >
-    </>
-  )
+      {/* Hidden until product details are fetched */}
+      {!isHidden && (
+        <Box display="flex" flexDirection="column" alignItems="center">
+          {loading ? (
+            <Spinner size="xl" />
+          ) : (
+            <Box>
+              <Table variant="simple" mb={5}>
+                <Thead>
+                  <Tr>
+                    <Th>Product</Th>
+                    <Th>Details</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  <Tr>
+                    <Td>Name</Td>
+                    <Td>{productDetails.name}</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Description</Td>
+                    <Td>{productDetails.description}</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Category</Td>
+                    <Td>{productDetails.category}</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Country of Origin</Td>
+                    <Td>{productDetails.countryOfOrigin}</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Manufacturer</Td>
+                    <Td>{productDetails.manufacturer}</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Price</Td>
+                    <Td>{productDetails.price}</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Quantity</Td>
+                    <Td>{productDetails.quantity}</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Imported Date</Td>
+                    <Td>{new Date(productDetails.importedDate * 1000).toLocaleDateString()}</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Importer Address</Td>
+                    <Td>{productDetails.importerAddr}</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Customs Address</Td>
+                    <Td>{productDetails.customsAddr}</Td>
+                  </Tr>
+                </Tbody>
+              </Table>
+              <Input
+                type="text"
+                placeholder="Enter IPFS Document Hash"
+                value={_ipfsDocHash}
+                onChange={(e) => setIpfsDocHash(e.target.value)}
+                isRequired
+              />
+              <Button className='mt-4 w-full text-center' onClick={handleDispatch} colorScheme="blue">Dispatch Product to Importer</Button>
+            </Box>
+          )}
+        </Box>
+      )}
+    </Box>
+  );
 }
 
-export default DispatchToImporter
+export default DispatchToImporter;
