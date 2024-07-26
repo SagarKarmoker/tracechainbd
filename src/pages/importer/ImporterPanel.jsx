@@ -1,11 +1,6 @@
 import { useState } from 'react'
-import AddProduct from '../../components/customs/AddProduct'
-import DispatchToImporter from '../../components/customs/DispatchToImporter'
-import CustomsDispatchHistory from '../../components/customs/CustomsDispatchHistory'
-import TrackProduct from '../../components/customs/TrackProduct'
-import AllImporterList from '../../components/customs/AllImporterList'
 import { useActiveAccount } from 'thirdweb/react'
-import CustomsDashboard from '../../components/customs/CustomsDashboard'
+import ImporterDashboard from '../../components/importers/ImporterDashboard'
 
 function ImporterPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -14,19 +9,19 @@ function ImporterPanel() {
     const renderComponent = () => {
         switch (activeComponent) {
             case 'dashboard':
-                return <CustomsDashboard setActiveComponent={setActiveComponent} />;
-            case 'add-product':
-                return <AddProduct />;
-            case 'importer-list':
-                return <AllImporterList />;
-            case 'dispatch-to-importer':
-                return <DispatchToImporter />;
-            case 'dispatch-history':
-                return <CustomsDispatchHistory />;
-            case 'track-product':
-                return <TrackProduct />;
+                return <ImporterDashboard setActiveComponent={setActiveComponent} />;
+            // case 'add-product':
+            //     return <AddProduct />;
+            // case 'importer-list':
+            //     return <AllImporterList />;
+            // case 'dispatch-to-importer':
+            //     return <DispatchToImporter />;
+            // case 'dispatch-history':
+            //     return <CustomsDispatchHistory />;
+            // case 'track-product':
+            //     return <TrackProduct />;
             default:
-                return <CustomsDashboard />;
+                return <ImporterDashboard />;
         }
     };
 

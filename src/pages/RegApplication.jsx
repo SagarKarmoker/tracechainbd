@@ -1,8 +1,16 @@
 import React, { useState } from 'react'
+import { create } from 'ipfs-http-client'
+import { useActiveAccount } from 'thirdweb/react';
+import { useToast } from '@chakra-ui/react';
+import { prepareContractCall } from "thirdweb"
+import { useSendAndConfirmTransaction  } from "thirdweb/react";
+import { TraceChainContract } from '../contants';
 
+const ipfs = create({ url: "http://127.0.0.1:5001" }); 
 
 // single component for reg
 function RegApplication() {
+    const toast = useToast();
     const [compName, setCompName] = useState('');
     const [locAddress, setLocAddress] = useState('');
     const [contractNumber, setContractNumber] = useState('')
@@ -12,11 +20,131 @@ function RegApplication() {
     const [ipfsDocHash, setIpfsDocHash] = useState('') // upload files as folder structer
     // detect the role using url param 
     const [role, setRole] = useState('')
+    const activeAccount = useActiveAccount();
+    const { mutate: sendAndConfirmTx, data: transactionReceipt } = useSendAndConfirmTransaction ();
 
-    const handleSubmit = () => {
-        console.log(role)
+    // ipfs
+    const [tin, setTin] = useState(null);
+    const [tradeLic, setTradeLic] = useState(null);
+    const [vat, setVat] = useState(null);
+
+    const handleFileChange = (e, setFile) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFile(URL.createObjectURL(file));
+        }
+    };
+
+    async function uploadFilesAsDirectory(files) {
+        try {
+            if (activeAccount?.address === '') {
+                console.log("No active account found");
+                return;
+            }
+
+            const directoryName = `doc-${activeAccount?.address}`;
+            const filesToAdd = files.map((file, index) => {
+                return {
+                    path: `${directoryName}/doc${index + 1}.jpg`,
+                    content: file,
+                };
+            });
+
+            const addedFiles = [];
+            for await (const result of ipfs.addAll(filesToAdd, {
+                wrapWithDirectory: true,
+            })) {
+                addedFiles.push(result);
+            }
+
+            const directory = addedFiles[addedFiles.length - 1];
+            if (directory.cid) {
+                setIpfsDocHash(directory.cid.toString());
+                toast({
+                    title: "Success",
+                    description: "Images uploaded to IPFS successfully.",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                })
+                console.log(directory.cid.toString());
+                console.log(`http://127.0.0.1:8080/ipfs/${directory.cid}`);
+            }
+            else {
+                toast({
+                    title: "Error",
+                    description: "Error uploading images to IPFS.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                })
+            }
+        } catch (error) {
+            console.error("Error uploading directory to IPFS:", error);
+            return null;
+        }
     }
- 
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        if (!tin || !tradeLic || !vat) {
+            toast({
+                title: "Error",
+                description: "Please upload all required documents.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            })
+            return;
+        }
+
+        const tinDoc = await fetch(tin).then((r) => r.blob());
+        const tradeDoc = await fetch(tradeLic).then((r) => r.blob());
+        const vatDoc = await fetch(vat).then((r) => r.blob());
+
+        await uploadFilesAsDirectory([tinDoc, tradeDoc, vatDoc]);
+
+        // smart contract interaction
+        if (compName === '' || locAddress === '' || contractNumber === '' || countryOfOrigin === '' || tinNumber === '' || vatRegNumber === '' || ipfsDocHash === '' || role === '') {
+            toast({
+                title: "Error",
+                description: "Please fill all fields.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            })
+            return;
+        }
+        console.log(role)
+
+        const transaction = prepareContractCall({
+            contract: TraceChainContract,
+            method: "function regForRole(string _name, string _locAddress, string _contractNumber, string _countryOfOrigin, string _tinNumber, string _vatRegNumber, string _ipfsDocHash, string _role)",
+            params: [compName, locAddress, contractNumber, countryOfOrigin, tinNumber, vatRegNumber, ipfsDocHash, role]
+        });
+
+        sendAndConfirmTx(transaction);
+
+        if (transactionReceipt) {
+            toast({
+                title: "Success",
+                description: "Registration application submitted successfully.",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+            })
+        } else {
+            toast({
+                title: "Error",
+                description: "Error submitting registration application.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            })
+        }
+    }
+
     return (
         <>
             <div className='px-10 pt-5'>
@@ -50,22 +178,25 @@ function RegApplication() {
 
                         {/* upload files */}
                         <label htmlFor="tin">
-                            <input type="file" className='border p-3 rounded-lg w-full' />
+                            <input type="file" className='border p-3 rounded-lg w-full' onChange={(e) => handleFileChange(e, setTin)} />
                         </label>
                         <label htmlFor="vat">
-                            <input type="file" className='border p-3 rounded-lg w-full' />
+                            <input type="file" className='border p-3 rounded-lg w-full' onChange={(e) => handleFileChange(e, setTradeLic)} />
                         </label>
                         <label htmlFor="tradelic">
-                            <input type="file" className='border p-3 rounded-lg w-full' />
+                            <input type="file" className='border p-3 rounded-lg w-full' onChange={(e) => handleFileChange(e, setVat)} />
                         </label>
 
                         {/* role selection */}
-                        <select name="role" id="role" className='border p-3 rounded-lg w-[400px]'>
-                            <option value="Importer">Importer</option>
-                            <option value="Distributor">Distributor</option>
-                            <option value="Retailer">Retailer</option>
+                        <select name="role" id="role" className='border p-3 rounded-lg w-[400px]'
+                            value={role} onChange={(e) => setRole(e.target.value)}
+                        >
+                            <option value="">Select a role</option>
+                            <option value="IMPORTER">Importer</option>
+                            <option value="DISTRIBUTOR">Distributor</option>
+                            <option value="RETAILER">Retailer</option>
                         </select>
- 
+
                         <div className='flex justify-center'>
                             <button className='bg-blue-600 text-white w-[200px] p-4 rounded-xl font-bold' onClick={handleSubmit}>Submit Application</button>
                         </div>
