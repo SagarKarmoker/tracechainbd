@@ -7,6 +7,7 @@ import AllProduct from '../../components/importers/AllProduct';
 import ImporterDispatchHistory from '../../components/importers/ImporterDispatchHistory';
 import TrackProduct from '../../components/importers/TrackProduct';
 import DispatchToDistributor from '../../components/importers/DispatchToDistributor';
+import AllDistributorList from '../../components/importers/AllDistributorList';
 
 function ImporterPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -22,6 +23,8 @@ function ImporterPanel() {
                 return <AcceptProduct />;
             case 'all-product':
                 return <AllProduct />;
+            case 'distributor-list':
+                return <AllDistributorList />;
             case 'dispatch-to-distributor':
                 return <DispatchToDistributor />;
             case 'dispatch-history':

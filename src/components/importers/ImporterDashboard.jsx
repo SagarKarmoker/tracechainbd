@@ -70,7 +70,7 @@ function ImporterDashboard({ setActiveComponent }) {
                 </div>
 
                 <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
-                    onClick={() => { setActiveComponent('retailer-list') }}>
+                    onClick={() => { setActiveComponent('distributor-list') }}>
                     <h1 className='text-2xl font-bold'>Manager Distributors</h1>
                     <p>Manage distributors and their details</p>
                 </div>
