@@ -10,10 +10,21 @@ import CustomsPanel from "../pages/customs/CustomsPanel";
 import DistributorPanel from "../pages/distributor/DistributorPanel";
 import RetailerPanel from "../pages/retailer/RetailerPanel";
 import Importer from "../pages/importer/Importer";
-
+import RegApplication from "../pages/RegApplication";
+import ImporterPanel from "../pages/importer/ImporterPanel";
+import { getUserEmail } from "thirdweb/wallets/in-app";
+import { client } from "../contants";
 
 function Navbar({ visible }) {
   const activeAccount = useActiveAccount();
+  console.log("Account: ", activeAccount?.address);
+
+  const getEmail = async () => {
+    const email = await getUserEmail({ client });
+    console.log(email);
+  }
+
+  getEmail();
 
   return (
     <BrowserRouter>
@@ -25,11 +36,18 @@ function Navbar({ visible }) {
           <div>
             <ul className="flex items-baseline gap-x-4 font-semibold">
               {
-                activeAccount?.address && <li>
-                  <Link to="/dashboard" className="text-black font-semibold">
-                    Dashboard
-                  </Link>
-                </li>
+                activeAccount?.address && <>
+                  <li>
+                    <Link to="/dashboard" className="text-black font-semibold">
+                      Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/apply" className="text-black font-semibold">
+                      Apply for Registration
+                    </Link>
+                  </li>
+                </>
               }
               {/* <li>
                 <Link to="/admin" className="text-black font-semibold">
@@ -82,7 +100,8 @@ function Navbar({ visible }) {
         <Route path="/customs" element={<CustomsPanel />} />
 
         {/* importer routes */}
-        <Route path="/importer" element={<Importer />} />
+        {/* <Route path="/importer" element={<Importer />} /> */}
+        <Route path="/importer" element={<ImporterPanel />} />
 
         {/* distributor routes */}
         <Route path="/distributor" element={<DistributorPanel />} />
@@ -91,6 +110,7 @@ function Navbar({ visible }) {
         <Route path="/retailer" element={<RetailerPanel />} />
 
         {/* common routes */}
+        <Route path="/apply" element={<RegApplication />} />
         <Route path="/*" element={<Error404 />} />
         <Route path="*" element={<Error404 />} />
       </Routes>

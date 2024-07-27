@@ -17,11 +17,12 @@
     "apexcharts": "^3.49.2",
     "ethers": "^5.7.2",
     "framer-motion": "^11.3.6",
+    "ipfs-http-client": "^60.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",
     "react-router-dom": "^6.23.1",
-    "thirdweb": "^5.40.0"
+    "thirdweb": "^5.38.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
