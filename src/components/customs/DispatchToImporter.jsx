@@ -42,7 +42,6 @@ function DispatchToImporter() {
         setProductDetails(formattedProduct);
         setIsHidden(false);
         setHideGetBtn(true);
-        setProductId('');
       } catch (error) {
         toast({
           title: "Error",
@@ -77,30 +76,36 @@ function DispatchToImporter() {
         isClosable: true,
       });
     }
+    else{
+      try {
+        const transaction = prepareContractCall({
+          contract,
+          method: "function dispatchProductToImporter(uint256 _productId, address _to, string _ipfsDocHash)",
+          params: [productId, importerAddr, _ipfsDocHash]
+        });
+        await sendTransaction(transaction);
+        toast({
+          title: "Success",
+          description: "Product dispatched successfully",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to dispatch product",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
 
-    try {
-      const transaction = prepareContractCall({
-        contract,
-        method: "function dispatchProductToImporter(uint256 _productId, address _to, string _ipfsDocHash)",
-        params: [productId, importerAddr, _ipfsDocHash]
-      });
-      await sendTransaction(transaction);
-      toast({
-        title: "Success",
-        description: "Product dispatched successfully",
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to dispatch product",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
+      // Reset form fields
+      setProductId('');
+      setIpfsDocHash('');
     }
+    
   };
 
   return (
