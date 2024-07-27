@@ -6,3 +6,12 @@ Team:
 1. Sagar Karmoker (Team Lead)
 2. Adib Khan
 3. Navid Zaman
+
+
+#Project
+
+`npm install`
+
+`npm i thirdweb --force`
+
+`npm run dev`

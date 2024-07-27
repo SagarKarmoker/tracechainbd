@@ -4,6 +4,7 @@ import { etherContract } from '../../contants';
 import { useActiveAccount } from 'thirdweb/react';
 
 function PendingProduct() {
+    const [dispatches, setDispatches] = useState([]);
     const [dispatchCount, setDispatchCount] = useState(0);
     const [dispatchList, setDispatchList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,6 +19,27 @@ function PendingProduct() {
         }
     };
 
+    useEffect(() => {
+        const fetchHistoryData = async () => {
+            const events = await etherContract.queryFilter('ProductDelivered');
+            // Process events
+            const dispatchesList = events.map(event => {
+                const { id, receiver, timestamp } = event.args; // id = dispatch id
+                return {
+                    id: id.toString(),
+                    receiver,
+                    timestamp: timestamp.toNumber()
+                };
+            });
+
+            setDispatches(dispatchesList);
+        };
+
+        fetchHistoryData();
+    }, []);
+
+    console.log(dispatches)
+
     const getDispatch = async () => {
         try {
             if (dispatchCount === 0) {
@@ -28,7 +50,10 @@ function PendingProduct() {
             const list = [];
             for (let i = 1; i <= dispatchCount; i++) {
                 const dispatch = await etherContract.dispatches(i);
-                if (dispatch.to.toLowerCase() === activeAccount?.address.toLowerCase()) {
+                if (dispatch.to.toLowerCase() === activeAccount?.address.toLowerCase()
+                    && dispatches.find(d => d.id === i.toString()) === '' 
+                    && dispatches.find(d => d.receiver.to.toLowerCase() === activeAccount?.address.toLowerCase()) == null
+                ) {
                     list.push({ index: i, ...dispatch });
                 }
             }
