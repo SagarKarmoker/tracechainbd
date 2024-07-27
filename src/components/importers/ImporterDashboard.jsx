@@ -76,15 +76,15 @@ function ImporterDashboard({ setActiveComponent }) {
                 </div>
 
                 <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
-                    onClick={() => { setActiveComponent('dispatch-to-retailer') }}>
+                    onClick={() => { setActiveComponent('dispatch-to-distributor') }}>
                     <h1 className='text-2xl font-bold'>Dispatch Product</h1>
-                    <p>Dispatch accepted product to Retailer</p>
+                    <p>Dispatch accepted product to distributor</p>
                 </div>
 
                 <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
                     onClick={() => { setActiveComponent('dispatch-history') }}>
                     <h1 className='text-2xl font-bold'>Dispatch History</h1>
-                    <p>Dispatch history of product to retailer</p>
+                    <p>Dispatch history of product to distributor</p>
                 </div>
 
                 <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'

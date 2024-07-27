@@ -4,6 +4,9 @@ import ImporterDashboard from '../../components/importers/ImporterDashboard'
 import PendingProduct from '../../components/importers/PendingProduct';
 import AcceptProduct from '../../components/importers/AcceptProduct';
 import AllProduct from '../../components/importers/AllProduct';
+import ImporterDispatchHistory from '../../components/importers/ImporterDispatchHistory';
+import TrackProduct from '../../components/importers/TrackProduct';
+import DispatchToDistributor from '../../components/importers/DispatchToDistributor';
 
 function ImporterPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -19,12 +22,12 @@ function ImporterPanel() {
                 return <AcceptProduct />;
             case 'all-product':
                 return <AllProduct />;
-            // case 'dispatch-to-importer':
-            //     return <DispatchToImporter />;
-            // case 'dispatch-history':
-            //     return <CustomsDispatchHistory />;
-            // case 'track-product':
-            //     return <TrackProduct />;
+            case 'dispatch-to-distributor':
+                return <DispatchToDistributor />;
+            case 'dispatch-history':
+                return <ImporterDispatchHistory />;
+            case 'track-product':
+                return <TrackProduct />;
             default:
                 return <ImporterDashboard />;
         }
@@ -40,13 +43,6 @@ function ImporterPanel() {
 
     return (
         <div className='px-10 pt-5'>
-            {/* customs dashboard */}
-            {/* <AddProduct /> */}
-            {/* <DispatchToImporter /> */}
-            {/* <CustomsDispatchHistory /> */}
-            {/* <TrackProduct /> */}
-            {/* <AllImporterList /> */}
-
             <div>
                 {renderComponent()}
             </div>

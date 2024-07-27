@@ -3,11 +3,13 @@ import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button } from '@ch
 import { etherContract } from '../../contants';
 import { useActiveAccount } from 'thirdweb/react';
 import ProductDetails from './ProductDetails'; // Import the ProductDetails component
+import DispatchToDistributor from './DispatchToDistributor'; // Import DispatchToDistributor component
 
 function AllProduct() {
     const [deliveredProducts, setDeliveredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selectedProductId, setSelectedProductId] = useState(null); 
+    const [selectedProductId, setSelectedProductId] = useState(null);
+    const [dispatchProductId, setDispatchProductId] = useState(null); // State for dispatch component
     const [isHidden, setIsHidden] = useState(true);
     const activeAccount = useActiveAccount();
 
@@ -58,7 +60,7 @@ function AllProduct() {
         return () => {
             etherContract.off('ProductDelivered', handleProductDelivered);
         };
-    }, []);
+    }, [activeAccount?.address]);
 
     if (loading) {
         return <Text>Loading...</Text>;
@@ -81,6 +83,7 @@ function AllProduct() {
                             <Th>IPFS Doc Hash</Th>
                             <Th>Product ID</Th>
                             <Th>Quantity</Th>
+                            <Th>Dispatch</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -99,6 +102,14 @@ function AllProduct() {
                                     </Button>
                                 </Td>
                                 <Td>{product.details.quantity.toString()}</Td>
+                                <Td>
+                                    <Button
+                                        colorScheme='blue'
+                                        onClick={() => setDispatchProductId(product.details.productId.toString())}
+                                    >
+                                        Dispatch
+                                    </Button>
+                                </Td>
                             </Tr>
                         ))}
                     </Tbody>
@@ -108,6 +119,9 @@ function AllProduct() {
             )}
 
             {selectedProductId && isHidden && <ProductDetails productID={selectedProductId} />}
+            {dispatchProductId && (
+                <DispatchToDistributor pid={dispatchProductId} />
+            )}
         </Box>
     );
 }
