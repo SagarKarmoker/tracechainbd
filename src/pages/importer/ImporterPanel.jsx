@@ -3,6 +3,7 @@ import { useActiveAccount } from 'thirdweb/react'
 import ImporterDashboard from '../../components/importers/ImporterDashboard'
 import PendingProduct from '../../components/importers/PendingProduct';
 import AcceptProduct from '../../components/importers/AcceptProduct';
+import AllProduct from '../../components/importers/AllProduct';
 
 function ImporterPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -16,6 +17,8 @@ function ImporterPanel() {
                 return <PendingProduct />;
             case 'accept-product':
                 return <AcceptProduct />;
+            case 'all-product':
+                return <AllProduct />;
             // case 'dispatch-to-importer':
             //     return <DispatchToImporter />;
             // case 'dispatch-history':

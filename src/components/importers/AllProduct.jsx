@@ -1,0 +1,92 @@
+import React, { useEffect, useState } from 'react';
+import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text } from '@chakra-ui/react';
+import { etherContract } from '../../contants';
+import { useActiveAccount } from 'thirdweb/react';
+
+function AllProduct() {
+    const [deliveredProducts, setDeliveredProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const activeAccount = useActiveAccount();
+
+    const fetchDeliveredProducts = async () => {
+        try {
+            const filter = etherContract.filters.ProductDelivered();
+            const events = await etherContract.queryFilter(filter);
+            console.log(events);
+
+            // Filter and map the events to the desired format
+            const parsedEvents = events
+                .filter(event => event.args.receiver === activeAccount?.address)
+                .map(event => ({
+                    dispatchId: event.args.id.toString(),
+                    recipient: event.args.receiver,
+                    timestamp: event.args.timestamp.toNumber()
+                }));
+
+            setDeliveredProducts(parsedEvents);
+        } catch (error) {
+            console.error('Error fetching delivered products:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    useEffect(() => {
+        fetchDeliveredProducts();
+
+        // Listen for new ProductDelivered events
+        const handleProductDelivered = (dispatchId, recipient, timestamp) => {
+            setDeliveredProducts(prev => [
+                ...prev,
+                { dispatchId: dispatchId.toString(), recipient, timestamp: timestamp.toNumber() }
+            ]);
+        };
+
+        etherContract.on('ProductDelivered', handleProductDelivered);
+
+        // Cleanup listener on component unmount
+        return () => {
+            etherContract.off('ProductDelivered', handleProductDelivered);
+        };
+    }, []);
+
+    if (loading) {
+        return <Text>Loading...</Text>;
+    }
+
+
+    return (
+        <Box p={4}>
+            <Box textAlign='center' mb={4}>
+                <Text fontSize='4xl' fontWeight='bold' mb={2}>Accepted Products</Text>
+                <Text>List of products confirmed as delivered (Dispatch ID)</Text>
+            </Box>
+            <Divider mb={4} />
+            {deliveredProducts.length > 0 ? (
+                <Table variant='simple'>
+                    <Thead>
+                        <Tr>
+                            <Th>Dispatch ID</Th>
+                            <Th>Recipient</Th>
+                            <Th>Timestamp</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {deliveredProducts.map((product, index) => (
+                            <Tr key={index}>
+                                <Td>{product.dispatchId}</Td>
+                                <Td>{product.recipient}</Td>
+                                <Td>{new Date(product.timestamp * 1000).toLocaleString()}</Td>
+                            </Tr>
+                        ))}
+                    </Tbody>
+                </Table>
+            ) : (
+                <Text>No products delivered yet.</Text>
+            )}
+        </Box>
+    )
+}
+
+export default AllProduct

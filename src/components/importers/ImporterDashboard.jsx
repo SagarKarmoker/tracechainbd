@@ -52,6 +52,12 @@ function ImporterDashboard({ setActiveComponent }) {
             <br />
             <div className='grid grid-cols-4 gap-4'>
                 <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
+                    onClick={() => { setActiveComponent('all-product') }}>
+                    <h1 className='text-2xl font-bold'>All Products</h1>
+                    <p>Manage all of accpeted products</p>
+                </div>
+
+                <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
                     onClick={() => { setActiveComponent('pending-product') }}>
                     <h1 className='text-2xl font-bold'>Pending Product</h1>
                     <p>Manage all of pending products to accept</p>
