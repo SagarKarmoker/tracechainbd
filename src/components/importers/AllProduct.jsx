@@ -1,28 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text } from '@chakra-ui/react';
+import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
 import { useActiveAccount } from 'thirdweb/react';
+import ProductDetails from './ProductDetails'; // Import the ProductDetails component
 
 function AllProduct() {
     const [deliveredProducts, setDeliveredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedProductId, setSelectedProductId] = useState(null); 
+    const [isHidden, setIsHidden] = useState(true);
     const activeAccount = useActiveAccount();
 
     const fetchDeliveredProducts = async () => {
         try {
             const filter = etherContract.filters.ProductDelivered();
             const events = await etherContract.queryFilter(filter);
-            console.log(events);
 
-            // Filter and map the events to the desired format
-            const parsedEvents = events
-                .filter(event => event.args.receiver === activeAccount?.address)
-                .map(event => ({
-                    dispatchId: event.args.id.toString(),
-                    recipient: event.args.receiver,
-                    timestamp: event.args.timestamp.toNumber()
-                }));
+            // Fetch details and update state
+            const parsedEvents = await Promise.all(
+                events
+                    .filter(event => event.args.receiver === activeAccount?.address)
+                    .map(async event => {
+                        const details = await etherContract.dispatches(event.args.id.toString());
+                        return {
+                            dispatchId: event.args.id.toString(),
+                            recipient: event.args.receiver,
+                            timestamp: event.args.timestamp.toNumber(),
+                            details
+                        };
+                    })
+            );
 
+            console.log(parsedEvents);
             setDeliveredProducts(parsedEvents);
         } catch (error) {
             console.error('Error fetching delivered products:', error);
@@ -31,15 +40,15 @@ function AllProduct() {
         }
     };
 
-
     useEffect(() => {
         fetchDeliveredProducts();
 
         // Listen for new ProductDelivered events
-        const handleProductDelivered = (dispatchId, recipient, timestamp) => {
+        const handleProductDelivered = async (dispatchId, recipient, timestamp) => {
+            const details = await etherContract.dispatches(dispatchId.toString());
             setDeliveredProducts(prev => [
                 ...prev,
-                { dispatchId: dispatchId.toString(), recipient, timestamp: timestamp.toNumber() }
+                { dispatchId: dispatchId.toString(), recipient, timestamp: timestamp.toNumber(), details }
             ]);
         };
 
@@ -55,7 +64,6 @@ function AllProduct() {
         return <Text>Loading...</Text>;
     }
 
-
     return (
         <Box p={4}>
             <Box textAlign='center' mb={4}>
@@ -70,6 +78,9 @@ function AllProduct() {
                             <Th>Dispatch ID</Th>
                             <Th>Recipient</Th>
                             <Th>Timestamp</Th>
+                            <Th>IPFS Doc Hash</Th>
+                            <Th>Product ID</Th>
+                            <Th>Quantity</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -78,6 +89,16 @@ function AllProduct() {
                                 <Td>{product.dispatchId}</Td>
                                 <Td>{product.recipient}</Td>
                                 <Td>{new Date(product.timestamp * 1000).toLocaleString()}</Td>
+                                <Td>{product.details.ipfsDocHash}</Td>
+                                <Td>
+                                    <Button onClick={() => {
+                                        setSelectedProductId(product.details.productId.toString());
+                                        setIsHidden(!isHidden);
+                                    }}>
+                                        {product.details.productId.toString()}
+                                    </Button>
+                                </Td>
+                                <Td>{product.details.quantity.toString()}</Td>
                             </Tr>
                         ))}
                     </Tbody>
@@ -85,8 +106,10 @@ function AllProduct() {
             ) : (
                 <Text>No products delivered yet.</Text>
             )}
+
+            {selectedProductId && isHidden && <ProductDetails productID={selectedProductId} />}
         </Box>
-    )
+    );
 }
 
-export default AllProduct
+export default AllProduct;
