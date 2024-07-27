@@ -26,7 +26,7 @@ function CustomsDispatchHistory() {
 
       setDispatches(dispatchesList);
     };
-
+    
     fetchHistoryData();
   }, []);
 
