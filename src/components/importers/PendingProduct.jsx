@@ -18,8 +18,6 @@ function PendingProduct() {
         }
     };
 
-    console.log(dispatchCount)
-
     const getDispatch = async () => {
         try {
             if (dispatchCount === 0) {
@@ -30,8 +28,8 @@ function PendingProduct() {
             const list = [];
             for (let i = 1; i <= dispatchCount; i++) {
                 const dispatch = await etherContract.dispatches(i);
-                if(dispatch.to == activeAccount?.address){
-                    list.push(dispatch);
+                if (dispatch.to.toLowerCase() === activeAccount?.address.toLowerCase()) {
+                    list.push({ index: i, ...dispatch });
                 }
             }
             setDispatchList(list);
@@ -45,13 +43,14 @@ function PendingProduct() {
     useEffect(() => {
         const fetchData = async () => {
             await getDispatchCounter();
-            await getDispatch();
+            // Wait for the dispatchCount to update before calling getDispatch
+            if (dispatchCount > 0) {
+                await getDispatch();
+            }
         };
 
         fetchData();
-    }, []);
-
-    console.log(dispatchList)
+    }, [dispatchCount]); // You should monitor dispatchCount, but fetchData needs to be called when dispatchCount is set
 
     if (loading) {
         return <Text>Loading...</Text>;
@@ -71,16 +70,16 @@ function PendingProduct() {
                             <Th>ID</Th>
                             <Th>Product ID</Th>
                             <Th>IPFS Hash</Th>
-                            <Th>Customs</Th>
-                            <Th>To (your company)</Th>
+                            <Th>From</Th>
+                            <Th>To</Th>
                             <Th>Timestamp</Th>
                             <Th>Quantity</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {dispatchList.map((dispatch, index) => (
-                            <Tr key={index+1}>
-                                <Td>{index}</Td>
+                        {dispatchList.map((dispatch) => (
+                            <Tr key={dispatch.index}>
+                                <Td>{dispatch.index}</Td>
                                 <Td>{dispatch.productId.toString()}</Td>
                                 <Td>{dispatch.ipfsDocHash}</Td>
                                 <Td>{dispatch.from}</Td>

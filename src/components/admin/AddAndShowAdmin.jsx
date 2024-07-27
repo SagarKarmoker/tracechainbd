@@ -40,27 +40,6 @@ function AddAndShowAdmin({ isAdmin }) {
             });
             console.log(transaction)
             sendTransaction(transaction)
-                .then(() => {
-                    setLoading(false);
-                    // Show toast success message
-                    toast({
-                        title: "Admin added successfully",
-                        status: "success",
-                        duration: 9000,
-                        isClosable: true,
-                    });
-                })
-                .catch((error) => {
-                    setLoading(false);
-                    // Show toast error message
-                    toast({
-                        title: "Failed to add admin",
-                        description: error.message,
-                        status: "error",
-                        duration: 9000,
-                        isClosable: true,
-                    });
-                });
         } else if (adminAddr !== '' && !isAdmin) {
             const _account = adminAddr;
             const transaction = prepareContractCall({
