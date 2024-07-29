@@ -11,7 +11,6 @@ function DispatchToDistributor({ pid }) {
   const [hideGetBtn, setHideGetBtn] = useState(false);
   const [productDetails, setProductDetails] = useState({});
   const [loading, setLoading] = useState(false);
-  const [importerAddr, setImporterAddr] = useState('');
   const [_ipfsDocHash, setIpfsDocHash] = useState('');
 
   // dispatch
@@ -43,7 +42,6 @@ function DispatchToDistributor({ pid }) {
           customsAddr: product.customsAddr
         };
 
-        setImporterAddr(product.importerAddr);
         setProductDetails(formattedProduct);
         setIsHidden(false);
         setHideGetBtn(true);
