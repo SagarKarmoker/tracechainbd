@@ -15,6 +15,7 @@ import { getUserEmail } from 'thirdweb/wallets/in-app';
 import { client } from '../contants';
 import { isAdmin, isCustoms, isImporter, isDistributor, isRetailer } from './utils/RoleCheck';
 import Profile from '../pages/Profile';
+import AdminDashboard from './admin/AdminDashboard';
 
 function Navbar() {
   const [role, setRole] = useState('');
@@ -60,25 +61,23 @@ function Navbar() {
   console.log(activeAccount?.address);
   console.log(role);
 
-  const navigateRole = () => {
-    if (role === 'admin') {
-      navigate('/admin');
-    }
-    else if (role === 'customs') {
-      navigate('/customs');
-    }
-    else if (role === 'importer') {
-      navigate('/importer');
-    }
-    else if (role === 'distributor') {
-      navigate('/distributor');
-    }
-    else if (role === 'retailer') {
-      navigate('/retailer');
-    }
-
-    navigate(-1);
-  };
+  // const navigateRole = () => {
+  //   if (role === 'admin') {
+  //     navigate('/admin');
+  //   }
+  //   else if (role === 'customs') {
+  //     navigate('/customs');
+  //   }
+  //   else if (role === 'importer') {
+  //     navigate('/importer');
+  //   }
+  //   else if (role === 'distributor') {
+  //     navigate('/distributor');
+  //   }
+  //   else if (role === 'retailer') {
+  //     navigate('/retailer');
+  //   }
+  // };
 
   return (
     <>
@@ -87,7 +86,7 @@ function Navbar() {
           <h1 className="text-2xl font-bold text-red-500">
             {
               role !== '' ? (
-                <img src="logo.png" alt="Logo" className='hover:cursor-pointer' onClick={navigateRole} />
+                <img src="logo.png" alt="Logo" className='hover:cursor-pointer' />
               ) : (
                 <Link to='/'><img src="logo.png" alt="Logo" /></Link>
               )
@@ -97,11 +96,18 @@ function Navbar() {
             <ul className="flex items-baseline gap-x-4 font-semibold">
               {
                 role !== '' ? (
-                  <li>
-                    <button className="text-black font-semibold" onClick={navigateRole}>
-                      Dashboard
-                    </button>
-                  </li>
+                  <>
+                    <li>
+                      <Link to="/home" className="text-black font-semibold">
+                        Home
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/dashboard" className="text-black font-semibold">
+                        Dashboard
+                      </Link>
+                    </li>
+                  </>
                 ) : (
                   activeAccount?.address !== adminAddr && role !== 'customs' && (
                     <li>
@@ -148,6 +154,23 @@ function Navbar() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/*" element={<Error404 />} />
         <Route path="*" element={<Error404 />} />
+
+        {
+          role === 'admin' && <Route path="/dashboard" element={<AdminDashboard setActiveComponent={'dashboard'} />} />
+        }
+        {
+          role === 'customs' && <Route path="/dashboard" element={<CustomsPanel />} />
+        }
+        {
+          role === 'importer' && <Route path="/dashboard" element={<ImporterPanel />} />
+        }
+        {
+          role === 'distributor' && <Route path="/dashboard" element={<DistributorPanel />} />
+        }
+        {
+          role === 'retailer' && <Route path="/dashboard" element={<RetailerPanel />} />
+        }
+
 
       </Routes>
     </>
