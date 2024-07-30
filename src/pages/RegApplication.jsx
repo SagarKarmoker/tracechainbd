@@ -157,6 +157,14 @@ function RegApplication() {
         // }
     }
 
+    if(activeAccount?.address === undefined) {
+        return (
+            <div className='flex justify-center items-center h-screen'>
+                <h1 className='text-4xl font-semibold'>Please connect your wallet to continue</h1>
+            </div>
+        )
+    }
+
     return (
         <>
             <div className='px-10 pt-5'>
