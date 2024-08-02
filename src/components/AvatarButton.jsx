@@ -22,6 +22,7 @@ function AvatarButton({setRole}) {
   const smartAccount = useActiveAccount();
   const wallet = useActiveWallet();
   const { disconnect } = useDisconnect();
+  const navigate = useNavigate()
 
   const navigate = useNavigate();
 
@@ -34,6 +35,10 @@ function AvatarButton({setRole}) {
       console.log("Account: ", smartAccount.address);
     }
   }, []);
+
+  const handleProfile = () => {
+    navigate("/profile")
+  }
 
   return (
     <Menu>

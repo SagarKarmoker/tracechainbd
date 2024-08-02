@@ -132,7 +132,6 @@ function Navbar() {
         {activeAccount?.address === adminAddr &&
           (<Route path="/admin" element={<AdminPanel />} />)
         }
-
         {/* admin routes */}
         <Route path="/admin" element={<AdminPanel />} />
 
@@ -150,6 +149,7 @@ function Navbar() {
         <Route path="/retailer" element={<RetailerPanel />} />
 
         {/* common routes */}
+        <Route path="/profile" element={<Profile />} />
         <Route path="/apply" element={<RegApplication />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/*" element={<Error404 />} />
