@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { TraceChainContract } from '../../contants';
 import { ABI } from '../../contractABI';
 import { ethers } from "ethers";
+import { useActiveAccount } from 'thirdweb/react';
 
 const provider = new ethers.providers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
 const trContract = new ethers.Contract(TraceChainContract, ABI, provider);
@@ -11,6 +12,7 @@ function AllProductsList() {
     const [totalProducts, setTotalProducts] = useState(0);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const activeAccount = useActiveAccount()
 
     useEffect(() => {
         const productCounter = async () => {
@@ -36,6 +38,7 @@ function AllProductsList() {
                         const product = await trContract.products(i);
                         if (product) {
                             const formattedProduct = {
+                                proId: i,
                                 name: product.name,
                                 description: product.description,
                                 category: product.category,
@@ -77,10 +80,12 @@ function AllProductsList() {
             ) : (
                 products.length > 0 ? (
                     <List spacing={4}>
-                        {products.map((product, index) => (
+                            {products
+                                .filter(product => product.customsAddr === activeAccount?.address)
+                                .map((product, index) => (
                             <ListItem key={index} p={4} borderWidth={1} borderRadius="md" boxShadow="sm">
                                 <Stack spacing={2}>
-                                    <Heading as="h3" size="md">{product.name}</Heading>
+                                    <Heading as="h3" size="md">{product.name} (ID: {product.proId})</Heading>
                                     <Text fontSize="sm">{product.description}</Text>
                                     <Text>Category: {product.category}</Text>
                                     <Text>Country of Origin: {product.countryOfOrigin}</Text>

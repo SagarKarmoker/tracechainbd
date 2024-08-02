@@ -75,7 +75,8 @@ function AllImporterList() {
                 <Box mt={4} p={4} borderWidth={1} borderRadius="md" boxShadow="md">
                     <Heading as='h2' size='md' mb={2}>Importer Details</Heading>
                     <Text><strong>Name:</strong> {selectedImporter.name}</Text>
-                    <Text><strong>Address:</strong> {selectedImporter.locAddress}</Text>
+                    <Text><strong>Address:</strong> {selectedImporter.address_registered}</Text>
+                    <Text><strong>Location:</strong> {selectedImporter.locAddress}</Text>
                     <Text><strong>Contract Number:</strong> {selectedImporter.contractNumber}</Text>
                     <Text><strong>Country of Origin:</strong> {selectedImporter.countryOfOrigin}</Text>
                     <Text><strong>TIN Number:</strong> {selectedImporter.tinNumber}</Text>
