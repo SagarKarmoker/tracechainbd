@@ -39,7 +39,7 @@ function AdminPanel() {
       case 'denied-report-applications':
         return <DeniedApplications />
       default:
-        return <AdminDashboard />;
+        return <AdminDashboard setActiveComponent={setActiveComponent} />;
     }
   };
 
