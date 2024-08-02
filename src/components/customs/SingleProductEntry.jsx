@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { prepareContractCall } from "thirdweb"
-import { useSendTransaction } from "thirdweb/react";
+import { useSendTransaction, useSendAndConfirmTransaction } from "thirdweb/react";
 import { useToast } from '@chakra-ui/react';
 import { contract } from '../../chain'
 
@@ -15,7 +15,7 @@ function SingleProductEntry({ customsAddr }) {
   const [importerAddr, setImporterAddr] = useState('');
 
   const toast = useToast();
-  const { mutate: sendTransaction } = useSendTransaction();
+  const { mutate: sendTx, data: transactionResult } = useSendTransaction(); // use it
 
   const singleProductEntry = async () => {
     if (name === '' || description === '' || category === '' || countryOfOrigin === '' || manufacturer === '' || price === '' || quantity === '' || importerAddr === '' || customsAddr === '') {
@@ -33,17 +33,19 @@ function SingleProductEntry({ customsAddr }) {
         method: "function boxWiseEntry(string _name, string _description, string _category, string _countryOfOrigin, string _manufacturer, uint256 _price, uint256 _quantity, address _importerAddr, address _customsAddr)",
         params: [name, description, category, countryOfOrigin, manufacturer, price, quantity, importerAddr, customsAddr]
       });
-      sendTransaction(transaction);
-
-      // if(transactionHash){
-      //   toast({
-      //     title: "Product Added",
-      //     description: "Product added successfully",
-      //     status: "success",
-      //     duration: 9000,
-      //     isClosable: true,
-      //   });
-      // }
+      // sendTransaction(transaction);
+      const res = await sendTx(transaction);
+      console.log(res)
+      
+      if(transactionResult){
+        toast({
+          title: "Product Added",
+          description: "Product added successfully",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
       setName('');
       setDescription('');
       setCategory('');
