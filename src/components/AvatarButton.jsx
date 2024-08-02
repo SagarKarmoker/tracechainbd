@@ -16,17 +16,23 @@ import {
 } from "@chakra-ui/react";
 import { CgProfile } from "react-icons/cg";
 import { RiLogoutBoxRFill } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 function AvatarButton() {
   const smartAccount = useActiveAccount();
   const wallet = useActiveWallet();
   const { disconnect } = useDisconnect();
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (smartAccount) {
       console.log("Account: ", smartAccount.address);
     }
   }, []);
+
+  const handleProfile = () => {
+    navigate("/profile")
+  }
 
   return (
     <Menu>
@@ -47,7 +53,9 @@ function AvatarButton() {
       )}
 
       <MenuList>
-        <MenuItem icon={<CgProfile />}>Profile</MenuItem>
+        <MenuItem icon={<CgProfile />}
+          onClick={handleProfile}
+        >Profile</MenuItem>
         <MenuDivider />
         <MenuItem
           icon={<RiLogoutBoxRFill />}

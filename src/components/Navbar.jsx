@@ -14,6 +14,7 @@ import RegApplication from "../pages/RegApplication";
 import ImporterPanel from "../pages/importer/ImporterPanel";
 import { getUserEmail } from "thirdweb/wallets/in-app";
 import { client } from "../contants";
+import Profile from '../pages/Profile'
 
 function Navbar({ visible }) {
   const activeAccount = useActiveAccount();
@@ -49,31 +50,6 @@ function Navbar({ visible }) {
                   </li>
                 </>
               }
-              {/* <li>
-                <Link to="/admin" className="text-black font-semibold">
-                  Retailer
-                </Link>
-              </li>
-              <li>
-                <Link to="/customs" className="text-black font-semibold">
-                  Retailer
-                </Link>
-              </li>
-              <li>
-                <Link to="/importer" className="text-black font-semibold">
-                  Importar
-                </Link>
-              </li>
-              <li>
-                <Link to="/distributor" className="text-black font-semibold">
-                  Distributor
-                </Link>
-              </li>
-              <li>
-                <Link to="/retailer" className="text-black font-semibold">
-                  Retailer
-                </Link>
-              </li> */}
               <li>
                 <AvatarButton />
               </li>
@@ -87,12 +63,7 @@ function Navbar({ visible }) {
         {activeAccount?.address === adminAddr &&
           (<Route path="/admin" element={<AdminPanel />} />)
         }
-
-        {/* <Route path="/importer" element={<Importer />} />
-        <Route path="/distributor" element={<Distributor />} />
-        <Route path="/importerdashboard" element={<ImporterDashboard />} />
-        <Route path="/Importerproductchain " element={<ImporterProductChain />} /> */}
-
+        
         {/* admin routes */}
         <Route path="/admin" element={<AdminPanel />} />
 
@@ -110,6 +81,7 @@ function Navbar({ visible }) {
         <Route path="/retailer" element={<RetailerPanel />} />
 
         {/* common routes */}
+        <Route path="/profile" element={<Profile />} />
         <Route path="/apply" element={<RegApplication />} />
         <Route path="/*" element={<Error404 />} />
         <Route path="*" element={<Error404 />} />
