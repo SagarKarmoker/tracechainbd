@@ -7,8 +7,7 @@
 6. Admin
 */
 import { inAppWallet } from "thirdweb/wallets";
-import { createThirdwebClient } from "thirdweb";
-import { polygonAmoy } from "thirdweb/chains";
+import { createThirdwebClient, defineChain } from "thirdweb";
 import { ABI } from "./contractABI";
 import { ethers } from "ethers";
 
@@ -27,14 +26,22 @@ const wallets = [
       options: ["email", "phone", "google"],
     },
     smartAccount: {
-      chain: polygonAmoy,
-      sponsorGas: true
+      chain: defineChain({
+        id: 148460,
+        rpc: "https://vercel-blockchain-proxy.vercel.app",
+        nativeCurrency: {
+          name: "Ether",
+          symbol: "ETH",
+          decimals: 18,
+        },
+      }),
+      // sponsorGas: true
     }
   }),
 ];
 
 
-const provider = new ethers.providers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
+const provider = new ethers.providers.JsonRpcProvider("https://vercel-blockchain-proxy.vercel.app");
 const etherContract = new ethers.Contract(TraceChainContract, ABI, provider);
 
 export { client, wallets, AAFactory, adminAddr, TraceChainContract, etherContract };
