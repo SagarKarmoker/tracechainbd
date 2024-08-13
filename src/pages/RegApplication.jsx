@@ -3,7 +3,7 @@ import { create } from 'ipfs-http-client'
 import { useActiveAccount } from 'thirdweb/react';
 import { useToast } from '@chakra-ui/react';
 import { prepareContractCall } from "thirdweb"
-import { useSendAndConfirmTransaction, useSendTransaction  } from "thirdweb/react";
+import { useSendTransaction  } from "thirdweb/react";
 import { contract } from '../chain';
 
 // ipfs desktop: http://127.0.0.1:5001/api/v0/add
@@ -24,7 +24,7 @@ function RegApplication() {
     const activeAccount = useActiveAccount();
 
     // const { mutate: sendAndConfirmTx, data: transactionReceipt } = useSendAndConfirmTransaction ();
-    const { mutate: sendTransaction } = useSendTransaction();
+    const { mutate: sendTx, data: transactionResult } = useSendTransaction();
 
     // ipfs
     const [tin, setTin] = useState(null);
@@ -121,41 +121,44 @@ function RegApplication() {
         }
         console.log(role)
 
-        const transaction = prepareContractCall({
-            contract,
-            method: "function regForRole(string _name, string _locAddress, string _contractNumber, string _countryOfOrigin, string _tinNumber, string _vatRegNumber, string _ipfsDocHash, string _role)",
-            params: [compName, locAddress, contractNumber, countryOfOrigin, tinNumber, vatRegNumber, ipfsDocHash, role]
-        });
-
-        sendTransaction(transaction);
-
-        setCompName('');
-        setLocAddress('');
-        setContractNumber('');
-        setCountryOfOrigin('');
-        setTinNumber('');
-        setVatRegNumber('');
-        setIpfsDocHash('');
-        setRole('');
-        
-
-        // if (transactionReceipt) {
-        //     toast({
-        //         title: "Success",
-        //         description: "Registration application submitted successfully.",
-        //         status: "success",
-        //         duration: 5000,
-        //         isClosable: true,
-        //     })
-        // } else {
-        //     toast({
-        //         title: "Error",
-        //         description: "Error submitting registration application.",
-        //         status: "error",
-        //         duration: 5000,
-        //         isClosable: true,
-        //     })
-        // }
+        try {
+            const transaction = await prepareContractCall({
+                contract,
+                method: "function regForRole(string _name, string _locAddress, string _contractNumber, string _countryOfOrigin, string _tinNumber, string _vatRegNumber, string _ipfsDocHash, string _role)",
+                params: [compName, locAddress, contractNumber, countryOfOrigin, tinNumber, vatRegNumber, ipfsDocHash, role]
+            });
+    
+            await sendTx(transaction);
+    
+            setCompName('');
+            setLocAddress('');
+            setContractNumber('');
+            setCountryOfOrigin('');
+            setTinNumber('');
+            setVatRegNumber('');
+            setIpfsDocHash('');
+            setRole('');
+            
+            // if (transactionResult != undefined) {
+            //     toast({
+            //         title: "Success",
+            //         description: "Registration application submitted successfully.",
+            //         status: "success",
+            //         duration: 5000,
+            //         isClosable: true,
+            //     })
+            // } else {
+            //     toast({
+            //         title: "Error",
+            //         description: "Error submitting registration application.",
+            //         status: "error",
+            //         duration: 5000,
+            //         isClosable: true,
+            //     })
+            // }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     if(activeAccount?.address === undefined) {

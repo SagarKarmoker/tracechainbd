@@ -1,24 +1,37 @@
-import { useState } from 'react'
-import { prepareContractCall } from "thirdweb"
+import { useState } from "react";
+import { prepareContractCall  } from "thirdweb";
 import { useSendTransaction, useSendAndConfirmTransaction } from "thirdweb/react";
-import { useToast } from '@chakra-ui/react';
-import { contract } from '../../chain'
+import { useToast } from "@chakra-ui/react";
+import { contract } from "../../chain";
+import { useActiveAccount } from "thirdweb/react";
 
 function SingleProductEntry({ customsAddr }) {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
-  const [countryOfOrigin, setCountryOfOrigin] = useState('');
-  const [manufacturer, setManufacturer] = useState('');
-  const [price, setPrice] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [importerAddr, setImporterAddr] = useState('');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [countryOfOrigin, setCountryOfOrigin] = useState("");
+  const [manufacturer, setManufacturer] = useState("");
+  const [price, setPrice] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [importerAddr, setImporterAddr] = useState("");
 
   const toast = useToast();
-  const { mutate: sendTx, data: transactionResult } = useSendTransaction(); // use it
+  // const { mutate: sendTx, data: transactionResult } = useSendTransaction();
+  const { mutate: sendAndConfirmTx, data: transactionReceipt } =
+  useSendAndConfirmTransaction();
 
   const singleProductEntry = async () => {
-    if (name === '' || description === '' || category === '' || countryOfOrigin === '' || manufacturer === '' || price === '' || quantity === '' || importerAddr === '' || customsAddr === '') {
+    if (
+      name === "" ||
+      description === "" ||
+      category === "" ||
+      countryOfOrigin === "" ||
+      manufacturer === "" ||
+      price === "" ||
+      quantity === "" ||
+      importerAddr === "" ||
+      customsAddr === ""
+    ) {
       toast({
         title: "Error",
         description: "All fields are required",
@@ -26,18 +39,26 @@ function SingleProductEntry({ customsAddr }) {
         duration: 9000,
         isClosable: true,
       });
-    }
-    else {
+    } else {
       const transaction = prepareContractCall({
         contract,
-        method: "function boxWiseEntry(string _name, string _description, string _category, string _countryOfOrigin, string _manufacturer, uint256 _price, uint256 _quantity, address _importerAddr, address _customsAddr)",
-        params: [name, description, category, countryOfOrigin, manufacturer, price, quantity, importerAddr, customsAddr]
+        method:
+          "function boxWiseEntry(string _name, string _description, string _category, string _countryOfOrigin, string _manufacturer, uint256 _price, uint256 _quantity, address _importerAddr, address _customsAddr)",
+        params: [
+          name,
+          description,
+          category,
+          countryOfOrigin,
+          manufacturer,
+          price,
+          quantity,
+          importerAddr,
+          customsAddr,
+        ],
       });
-      // sendTransaction(transaction);
-      const res = await sendTx(transaction);
-      console.log(res)
-      
-      if(transactionResult){
+      await sendAndConfirmTx(transaction);
+
+      if (transactionReceipt !== undefined) {
         toast({
           title: "Product Added",
           description: "Product added successfully",
@@ -45,38 +66,108 @@ function SingleProductEntry({ customsAddr }) {
           duration: 9000,
           isClosable: true,
         });
+
+        setName("");
+        setDescription("");
+        setCategory("");
+        setCountryOfOrigin("");
+        setManufacturer("");
+        setPrice("");
+        setQuantity("");
+        setImporterAddr("");
+      } else {
+        toast({
+          title: "Error",
+          description: "Product not added",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
       }
-      setName('');
-      setDescription('');
-      setCategory('');
-      setCountryOfOrigin('');
-      setManufacturer('');
-      setPrice('');
-      setQuantity('');
-      setImporterAddr('');
     }
-  }
+  };
 
   return (
-    <div className='flex justify-center mt-4'>
-      <div className='flex flex-col gap-4'>
-        <h1 className='text-4xl font-bold mb-5 text-center'>Product Entry and Accept</h1>
-        <input type="text" className='p-2 border rounded-lg w-[500px]' placeholder='Enter Product Name' value={name} onChange={(e) => setName(e.target.value)} />
-        <input type="text" className='p-2 border rounded-lg w-[500px]' placeholder='Enter Product Details' value={description} onChange={(e) => setDescription(e.target.value)} />
-        <input type="text" className='p-2 border rounded-lg w-[500px]' placeholder='Enter Product Category' value={category} onChange={(e) => setCategory(e.target.value)} />
-        <input type="text" className='p-2 border rounded-lg w-[500px]' placeholder='Enter Product Country of Origin' value={countryOfOrigin} onChange={(e) => setCountryOfOrigin(e.target.value)} />
-        <input type="text" className='p-2 border rounded-lg w-[500px]' placeholder='Enter Product Manufacturer' value={manufacturer} onChange={(e) => setManufacturer(e.target.value)} />
-        <input type="number" className='p-2 border rounded-lg w-[500px]' placeholder='Enter Product Price' value={price} onChange={(e) => setPrice(e.target.value)} />
-        <input type="number" className='p-2 border rounded-lg w-[500px]' placeholder='Enter Product Quantity' value={quantity} onChange={(e) => setQuantity(e.target.value)} />
-        <input type="text" className='p-2 border rounded-lg w-[500px]' placeholder='Enter Importer Address' value={importerAddr} onChange={(e) => setImporterAddr(e.target.value)} />
-        <input type="text" className='p-2 border rounded-lg w-[500px]' placeholder='Enter Customs Address' value={customsAddr} readOnly />
+    <div className="flex justify-center mt-4">
+      <div className="flex flex-col gap-4">
+        <h1 className="text-4xl font-bold mb-5 text-center">
+          Product Entry and Accept
+        </h1>
+        <input
+          type="text"
+          className="p-2 border rounded-lg w-[500px]"
+          placeholder="Enter Product Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="text"
+          className="p-2 border rounded-lg w-[500px]"
+          placeholder="Enter Product Details"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <input
+          type="text"
+          className="p-2 border rounded-lg w-[500px]"
+          placeholder="Enter Product Category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        />
+        <input
+          type="text"
+          className="p-2 border rounded-lg w-[500px]"
+          placeholder="Enter Product Country of Origin"
+          value={countryOfOrigin}
+          onChange={(e) => setCountryOfOrigin(e.target.value)}
+        />
+        <input
+          type="text"
+          className="p-2 border rounded-lg w-[500px]"
+          placeholder="Enter Product Manufacturer"
+          value={manufacturer}
+          onChange={(e) => setManufacturer(e.target.value)}
+        />
+        <input
+          type="number"
+          className="p-2 border rounded-lg w-[500px]"
+          placeholder="Enter Product Price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+        <input
+          type="number"
+          className="p-2 border rounded-lg w-[500px]"
+          placeholder="Enter Product Quantity"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+        />
+        <input
+          type="text"
+          className="p-2 border rounded-lg w-[500px]"
+          placeholder="Enter Importer Address"
+          value={importerAddr}
+          onChange={(e) => setImporterAddr(e.target.value)}
+        />
+        <input
+          type="text"
+          className="p-2 border rounded-lg w-[500px]"
+          placeholder="Enter Customs Address"
+          value={customsAddr}
+          readOnly
+        />
 
-        <div className='flex justify-center'>
-          <button onClick={singleProductEntry} className='bg-blue-600 p-4 text-white rounded-xl w-[300px] font-bold'>Add Product to Ledger</button>
+        <div className="flex justify-center">
+          <button
+            onClick={singleProductEntry}
+            className="bg-blue-600 p-4 text-white rounded-xl w-[300px] font-bold"
+          >
+            Add Product to Ledger
+          </button>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default SingleProductEntry
+export default SingleProductEntry;
