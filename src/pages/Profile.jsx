@@ -2,10 +2,11 @@ import React from 'react';
 import { useActiveAccount } from 'thirdweb/react';
 import { Box, Button, Icon, Text, useClipboard } from '@chakra-ui/react';
 import { CopyIcon } from '@chakra-ui/icons';
+import userAuth from '../hooks/userAuth';
 
 function Profile() {
-    const activeAccount = useActiveAccount();
-    const { onCopy } = useClipboard(activeAccount?.address || '');
+    const { isConnected, account} = userAuth();
+    const { onCopy } = useClipboard( account || '');
 
     return (
         <div className='flex justify-center mt-4'>
@@ -29,7 +30,7 @@ function Profile() {
                     fontSize="md"
                     color="gray.600"
                 >
-                    {activeAccount?.address}
+                    {account}
                 </Text>
                 <Button
                     onClick={onCopy}

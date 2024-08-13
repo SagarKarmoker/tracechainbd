@@ -1,10 +1,5 @@
 import { useEffect } from "react";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
-import {
-  useActiveAccount,
-  useDisconnect,
-  useActiveWallet,
-} from "thirdweb/react";
 import Wallet from "./Wallet";
 import {
   Menu,
@@ -17,18 +12,13 @@ import {
 import { CgProfile } from "react-icons/cg";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { magic } from "../utils/Magic";
+import useAuth from "../hooks/userAuth";
 
 function AvatarButton({ setRole }) {
-  const smartAccount = useActiveAccount();
-  const wallet = useActiveWallet();
-  const { disconnect } = useDisconnect();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (smartAccount) {
-      console.log("Account: ", smartAccount.address);
-    }
-  }, []);
+  const { isConnected, account } = useAuth();
+  console.log(isConnected + " " + account);
 
   const handleProfile = () => {
     navigate("/profile");
@@ -36,16 +26,16 @@ function AvatarButton({ setRole }) {
 
   return (
     <Menu>
-      {smartAccount && smartAccount.address ? (
+      {isConnected && account != null ? (
         <>
           <MenuButton
             as={Button}
             colorScheme="blue"
             rightIcon={<IoIosArrowDropdownCircle />}
           >
-            {smartAccount.address.substring(0, 5) +
+            {account.substring(0, 5) +
               "..." +
-              smartAccount.address.substring(37, 42)}
+              account.substring(37, 42)}
           </MenuButton>
         </>
       ) : (
@@ -59,9 +49,10 @@ function AvatarButton({ setRole }) {
         <MenuDivider />
         <MenuItem
           icon={<RiLogoutBoxRFill />}
-          onClick={() => {
-            disconnect(wallet);
+          onClick={async () => {
+            await magic.user.logout();
             setRole("");
+            window.location.reload();
           }}
         >
           Logout
