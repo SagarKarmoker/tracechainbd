@@ -12,7 +12,7 @@ const useAuth = () => {
       setIsConnected(isLoggedIn);
 
       if (isLoggedIn) {
-        const accounts = await magic.wallet.getInfo();
+        const accounts = await magic.user.getInfo();
         setAccount(accounts.publicAddress);
       }
     };
