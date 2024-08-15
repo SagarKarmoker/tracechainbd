@@ -1,26 +1,37 @@
-import { useState, useEffect } from 'react';
-import { magic } from '../utils/Magic';
-import userAuth from './userAuth';
+import { useState, useEffect } from "react";
+import { magic } from "../utils/Magic";
+import userAuth from "./userAuth";
+import { ethers } from "ethers";
+import { TraceChainContract } from "../contants";
+import { ABI } from "../contractABI";
 
 const useWallet = () => {
-    const { isConnected, account } = userAuth();
-    const [provider, setProvider] = useState(null);
-    const [signer, setSigner] = useState(null);
+  const { isConnected, account } = userAuth();
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [traceChainBDContract, setTraceChainBDContract] = useState(null);
 
-    useEffect(() => {
-        const checkWalletProvider = async () => {
-            if (isConnected && account !== null) {
-                const provider = new ethers.providers.Web3Provider(magic.rpcProvider);
-                setProvider(provider);
-                const signer = provider.getSigner();
-                setSigner(signer);
-            }
-        }
+  useEffect(() => {
+    const checkWalletProvider = async () => {
+      if (isConnected && account !== null) {
+        // Initialize provider and signer
+        const provider = new ethers.providers.Web3Provider(magic.rpcProvider);
+        const signer = provider.getSigner();
 
-        checkWalletProvider();
-    }, [provider, signer]);
+        // Update state
+        setProvider(provider);
+        setSigner(signer);
 
-    return { provider, signer };
-}
+        // Initialize contract
+        const contract = new ethers.Contract(TraceChainContract, ABI, signer);
+        setTraceChainBDContract(contract);
+      }
+    };
+
+    checkWalletProvider();
+  }, [isConnected, account]); // Only re-run when `isConnected` or `account` changes
+
+  return { provider, signer, traceChainBDContract };
+};
 
 export default useWallet;

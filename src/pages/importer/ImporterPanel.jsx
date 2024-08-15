@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useActiveAccount } from 'thirdweb/react'
 import ImporterDashboard from '../../components/importers/ImporterDashboard'
 import PendingProduct from '../../components/importers/PendingProduct';
 import AcceptProduct from '../../components/importers/AcceptProduct';
@@ -8,10 +7,11 @@ import ImporterDispatchHistory from '../../components/importers/ImporterDispatch
 import TrackProduct from '../../components/importers/TrackProduct';
 import DispatchToDistributor from '../../components/importers/DispatchToDistributor';
 import AllDistributorList from '../../components/importers/AllDistributorList';
+import userAuth from '../../hooks/userAuth';
 
 function ImporterPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
-    const activeAccount = useActiveAccount();
+    const { account, isConnected } = userAuth();
 
     const renderComponent = () => {
         switch (activeComponent) {
@@ -36,10 +36,18 @@ function ImporterPanel() {
         }
     };
 
-    if (activeAccount?.address == '') {
+    if (account == '' && !isConnected) {
         return (
             <div>
                 <p>Please login first</p>
+            </div>
+        )
+    }
+
+    if (account != '' && isConnected) {
+        return (
+            <div className="text-red-500 text-center mt-10">
+                <p>Please Register for Importer Role</p>
             </div>
         )
     }

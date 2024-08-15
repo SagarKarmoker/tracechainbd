@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import { create } from 'ipfs-http-client'
-import { useActiveAccount } from 'thirdweb/react';
 import { useToast } from '@chakra-ui/react';
-import { prepareContractCall } from "thirdweb"
-import { useSendTransaction  } from "thirdweb/react";
-import { contract } from '../chain';
+import useWallet from '../hooks/userWallet';
+import useAuth from '../hooks/userAuth';
+import { ethers } from 'ethers';
 
 // ipfs desktop: http://127.0.0.1:5001/api/v0/add
 const ipfs = create({ url: "http://127.0.0.1:5001/api/v0/add" }); //http://127.0.0.1:5001
@@ -21,10 +20,8 @@ function RegApplication() {
     const [ipfsDocHash, setIpfsDocHash] = useState('') // upload files as folder structer
     // detect the role using url param 
     const [role, setRole] = useState('')
-    const activeAccount = useActiveAccount();
-
-    // const { mutate: sendAndConfirmTx, data: transactionReceipt } = useSendAndConfirmTransaction ();
-    const { mutate: sendTx, data: transactionResult } = useSendTransaction();
+    const { account } = useAuth();
+    const { traceChainBDContract, signer } = useWallet();
 
     // ipfs
     const [tin, setTin] = useState(null);
@@ -40,12 +37,12 @@ function RegApplication() {
 
     async function uploadFilesAsDirectory(files) {
         try {
-            if (activeAccount?.address === '') {
+            if (account === '') {
                 console.log("No active account found");
                 return;
             }
 
-            const directoryName = `doc-${activeAccount?.address}`;
+            const directoryName = `doc-${account}`;
             const filesToAdd = files.map((file, index) => {
                 return {
                     path: `${directoryName}/doc${index + 1}.jpg`,
@@ -122,14 +119,14 @@ function RegApplication() {
         console.log(role)
 
         try {
-            const transaction = await prepareContractCall({
-                contract,
-                method: "function regForRole(string _name, string _locAddress, string _contractNumber, string _countryOfOrigin, string _tinNumber, string _vatRegNumber, string _ipfsDocHash, string _role)",
-                params: [compName, locAddress, contractNumber, countryOfOrigin, tinNumber, vatRegNumber, ipfsDocHash, role]
-            });
-    
-            await sendTx(transaction);
-    
+            const txParams = {
+                gasPrice: ethers.BigNumber.from(0),
+            };
+
+            const tx = await traceChainBDContract.regForRole(compName, locAddress, contractNumber, countryOfOrigin, tinNumber, vatRegNumber, ipfsDocHash, role, txParams);
+
+            const transactionResult = await tx.wait();
+
             setCompName('');
             setLocAddress('');
             setContractNumber('');
@@ -138,30 +135,30 @@ function RegApplication() {
             setVatRegNumber('');
             setIpfsDocHash('');
             setRole('');
-            
-            // if (transactionResult != undefined) {
-            //     toast({
-            //         title: "Success",
-            //         description: "Registration application submitted successfully.",
-            //         status: "success",
-            //         duration: 5000,
-            //         isClosable: true,
-            //     })
-            // } else {
-            //     toast({
-            //         title: "Error",
-            //         description: "Error submitting registration application.",
-            //         status: "error",
-            //         duration: 5000,
-            //         isClosable: true,
-            //     })
-            // }
+
+            if (transactionResult != undefined) {
+                toast({
+                    title: "Success",
+                    description: "Registration application submitted successfully.",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                })
+            } else {
+                toast({
+                    title: "Error",
+                    description: "Error submitting registration application.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                })
+            }
         } catch (error) {
             console.log(error)
         }
     }
 
-    if(activeAccount?.address === undefined) {
+    if (account === undefined) {
         return (
             <div className='flex justify-center items-center h-screen'>
                 <h1 className='text-4xl font-semibold'>Please connect your wallet to continue</h1>
