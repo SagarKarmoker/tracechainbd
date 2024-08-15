@@ -18,7 +18,7 @@ const client = createThirdwebClient({
 
 const AAFactory = "0x7607132B9d67414E7DCdC411aAD9A78bB87Eb337" // PC
 const adminAddr = "0x776f5b481881DF6A0d32930118Bbcc52D313485B"
-const TraceChainContract = "0x0EBEe52ECfB700299b611e716dDc297ec62F0017"
+const TraceChainContract = "0xE8Bf26509fe767f5F55Bc4490015473a562842A7"
 
 const wallets = [
   inAppWallet({

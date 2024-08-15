@@ -15,45 +15,55 @@ import {
     Divider, Center, useToast
 } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
-import { prepareContractCall } from "thirdweb";
-import { useReadContract, useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { contract } from "../../chain";
+import { adminProvider, adminSigner } from '../utils/adminWallet';
+import { etherContract } from '../../contants';
 
 function AddAndShowAdmin({ isAdmin }) {
     const toast = useToast()
     const [loading, setLoading] = useState(false);
     const [adminAddr, setAdminAddr] = useState('');
-    const { mutate: sendTransaction } = useSendTransaction();
-    const activeAccount = useActiveAccount();
     const [adminList, setAdminList] = useState([]);
     const [customsList, setCustomsList] = useState([]);
 
     // use to add admins and customs role
-    const addRole = () => {
+    const addRole = async () => {
         setLoading(true);
         if (adminAddr !== '' && isAdmin) {
             const _account = adminAddr;
-            const transaction = prepareContractCall({
-                contract,
-                method: "function addAdmins(address _account)",
-                params: [_account]
+            // send tx to add admin
+            const connectedWallet = etherContract.connect(adminSigner);
+            const tx = await connectedWallet.addAdmins(_account);
+            await tx.wait();
+            setLoading(false);
+            setAdminAddr('');
+            // Show toast success message
+            toast({
+                title: "Admin added successfully",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
             });
-            console.log(transaction)
-            sendTransaction(transaction)
         } else if (adminAddr !== '' && !isAdmin) {
             const _account = adminAddr;
-            const transaction = prepareContractCall({
-                contract,
-                method: "function addCustoms(address _account)",
-                params: [_account]
+            // send tx to add customs
+            const connectedWallet = etherContract.connect(adminSigner);
+            const tx = await connectedWallet.addCustoms(_account);
+            await tx.wait();
+            setLoading(false);
+            setAdminAddr('');
+            // Show toast success message
+            toast({
+                title: "Customs added successfully",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
             });
-            console.log(transaction)
-            sendTransaction(transaction)
         } else {
             setLoading(false);
             // Show toast error message
             toast({
-                title: "Admin address is required",
+                title: "Address is required",
                 status: "error",
                 duration: 9000,
                 isClosable: true,
@@ -61,46 +71,46 @@ function AddAndShowAdmin({ isAdmin }) {
         }
     }
 
-    const handleDelete = (_account) => {
+    const handleDelete = async (_account) => {
         if (isAdmin) {
-            const transaction = prepareContractCall({
-                contract,
-                method: "function deleteAdmins(address _account)",
-                params: [_account]
+            // send tx to delete admin
+            const connectedWallet = etherContract.connect(adminSigner);
+            const tx = await connectedWallet.deleteAdmins(_account);
+            await tx.wait();
+            setLoading(false);
+            // Show toast success message
+            toast({
+                title: "Admin deleted successfully",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
             });
-            sendTransaction(transaction);
         } else {
-            const transaction = prepareContractCall({
-                contract,
-                method: "function deleteCustoms(address _account)",
-                params: [_account]
+            // send tx to delete customs
+            const connectedWallet = etherContract.connect(adminSigner);
+            const tx = await connectedWallet.deleteCustoms(_account);
+            await tx.wait();
+            setLoading(false);
+            // Show toast success message
+            toast({
+                title: "Customs deleted successfully",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
             });
-            sendTransaction(transaction);
         }
     }
 
-    const { data: admins, isLoading: adminsLoding } = useReadContract({
-        contract,
-        method: "function getAllAdmins() view returns (address[])",
-        params: []
-    });
-
-    const { data: customs, isLoading: customsLoading } = useReadContract({
-        contract,
-        method: "function getAllCustoms() view returns (address[])",
-        params: []
-    });
-
     useEffect(() => {
-        console.log(admins)
-        if (admins) {
+        // fetch all admins and customs from the ledger
+        const fetchAdminsNCustoms = async () => {
+            const admins = await etherContract.getAllAdmins();
+            const customs = await etherContract.getAllCustoms();
             setAdminList(admins);
+            setCustomsList(customs);
         }
-
-        if (customs) {
-            setCustomsList(customs)
-        }
-    }, [admins, customs]);
+        fetchAdminsNCustoms();
+    }, [loading]);
 
     return (
         <div className='px-20'>
