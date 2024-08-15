@@ -10,23 +10,24 @@ import AllProductsList from '../../components/customs/AllProductsList';
 import { ethers } from 'ethers';
 import { TraceChainContract } from '../../contants';
 import { ABI } from '../../contractABI';
+import userAuth from '../../hooks/userAuth';
 
 function CustomsPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
     const [isCustoms, setIsCustoms] = useState(false);
-    const activeAccount = useActiveAccount();
+    const { account, isConnected } = userAuth();
     const status = useActiveWalletConnectionStatus();
     const [contract, setContract] = useState(null);
 
     useEffect(() => {
-        const provider = new ethers.providers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
+        const provider = new ethers.providers.JsonRpcProvider("https://vercel-blockchain-proxy.vercel.app");
         const _contract = new ethers.Contract(TraceChainContract, ABI, provider);
         setContract(_contract);
     }, []);
 
     const checkCustoms = async () => {
-        if (contract && activeAccount?.address) {
-            const data = await contract.isCustoms(activeAccount.address);
+        if (contract && account) {
+            const data = await contract.isCustoms(account);
             setIsCustoms(data);
         }
     }
@@ -34,7 +35,7 @@ function CustomsPanel() {
     useEffect(() => {
         checkCustoms();
         console.log(isCustoms)
-    }, [activeAccount, contract]);
+    }, [account, contract]);
 
     const renderComponent = () => {
         switch (activeComponent) {
@@ -57,7 +58,7 @@ function CustomsPanel() {
         }
     };
 
-    if (status === 'disconnected') {
+    if (!isConnected) {
         return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
@@ -70,7 +71,7 @@ function CustomsPanel() {
         );
     }
     
-    if (status === 'connected' && !isCustoms) {
+    if (isConnected && !isCustoms) {
         return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
