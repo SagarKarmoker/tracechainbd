@@ -64,7 +64,7 @@ function AllProductsList() {
     return (
         <Box p={10}>
             <Box mb={4} textAlign="center">
-                <Heading as="h1" size="2xl">All Products List</Heading>
+                <Heading as="h1" size="xl">All Products List</Heading>
                 <Text fontSize="lg" fontWeight="semibold">Accepted by Customs</Text>
             </Box>
 
