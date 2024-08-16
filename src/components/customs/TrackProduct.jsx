@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useActiveAccount } from 'thirdweb/react';
+import useAuth from '../../hooks/userAuth';
 import { etherContract } from '../../contants';
 
 function TrackProduct() {
     const [pId, setPid] = useState("");
     const [trackingInfo, setTrackingInfo] = useState([]);
     const [loading, setLoading] = useState(false);
-    const activeAccount = useActiveAccount();
+    const { account } = useAuth();
 
     const handleTrackBtn = async () => {
         if (!pId) {
@@ -21,15 +21,14 @@ function TrackProduct() {
             // Process events
             const trackingList = events
                 .map(event => {
-                    const { id, productId, ipfsDocHash, from, to, timestamp, quantity } = event.args || {};
-                    if (from === activeAccount?.address && productId.toString() === pId && quantity > 0) {
+                    const { dispatchId, productId, from, to, dispatchedOn, quantity } = event.args || {};
+                    if (from === account && productId.toString() === pId && quantity > 0) {
                         return {
-                            id: id.toString(),
+                            dispatchId: dispatchId.toString(),
                             productId: productId.toString(),
-                            ipfsDocHash,
                             from,
                             to,
-                            timestamp: timestamp.toNumber(),
+                            timestamp: dispatchedOn.toNumber(),
                             quantity: quantity.toString()
                         };
                     }
@@ -75,8 +74,8 @@ function TrackProduct() {
                             <ul>
                                 {trackingInfo.map((info) => (
                                     <li key={info.id} className='border p-3 rounded mb-2'>
+                                        <strong>Dispatch ID:</strong> {info.dispatchId}<br />
                                         <strong>Product ID:</strong> {info.productId}<br />
-                                        <strong>IPFS Doc Hash:</strong> {info.ipfsDocHash}<br />
                                         <strong>From:</strong> {info.from}<br />
                                         <strong>To:</strong> {info.to}<br />
                                         <strong>Timestamp:</strong> {new Date(info.timestamp * 1000).toLocaleString()}<br />
