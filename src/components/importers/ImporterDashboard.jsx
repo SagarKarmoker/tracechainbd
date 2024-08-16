@@ -1,25 +1,24 @@
 import { useEffect, useState } from 'react';
-import { useActiveAccount, useActiveWalletConnectionStatus } from 'thirdweb/react';
+import useAuth from '../../hooks/userAuth';
 import { isImporter } from '../utils/RoleCheck';
 
 function ImporterDashboard({ setActiveComponent }) {
-    const activeAccount = useActiveAccount();
+    const { account, isConnected } = useAuth();
     const [checkImporter, setCheckImporter] = useState(false);
-    const status = useActiveWalletConnectionStatus();
 
     useEffect(() => {
         const checkIfImporter = async () => {
-            if (activeAccount?.address) {
-                const result = await isImporter(activeAccount.address);
+            if (account) {
+                const result = await isImporter(account);
                 console.log(result);
                 setCheckImporter(result);
             }
         };
 
         checkIfImporter();
-    }, [activeAccount]);
+    }, [account]);
 
-    if (status === 'disconnected') {
+    if (!isConnected) {
         return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
@@ -32,7 +31,7 @@ function ImporterDashboard({ setActiveComponent }) {
         );
     }
 
-    if (status === 'connected' && !checkImporter) {
+    if (isConnected && !checkImporter) {
         return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>

@@ -8,6 +8,7 @@ import TrackProduct from '../../components/importers/TrackProduct';
 import DispatchToDistributor from '../../components/importers/DispatchToDistributor';
 import AllDistributorList from '../../components/importers/AllDistributorList';
 import userAuth from '../../hooks/userAuth';
+import { isImporter } from '../../components/utils/RoleCheck';
 
 function ImporterPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -36,7 +37,7 @@ function ImporterPanel() {
         }
     };
 
-    if (account == '' && !isConnected) {
+    if (account == null && !isConnected) {
         return (
             <div>
                 <p>Please login first</p>
@@ -44,7 +45,7 @@ function ImporterPanel() {
         )
     }
 
-    if (account != '' && isConnected) {
+    if (account != '' && isConnected && !isImporter(account)) {
         return (
             <div className="text-red-500 text-center mt-10">
                 <p>Please Register for Importer Role</p>
