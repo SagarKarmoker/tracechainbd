@@ -135,7 +135,7 @@ export const ABI = [
         type: "uint8",
       },
     ],
-    name: "MutiProductDispatched",
+    name: "MultiProductDispatched",
     type: "event",
   },
   {
@@ -840,6 +840,11 @@ export const ABI = [
         name: "_to",
         type: "address",
       },
+      {
+        internalType: "string",
+        name: "_memo",
+        type: "string",
+      },
     ],
     name: "dispatch",
     outputs: [],
@@ -848,6 +853,11 @@ export const ABI = [
   },
   {
     inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
       {
         internalType: "uint256",
         name: "",
@@ -875,6 +885,11 @@ export const ABI = [
         internalType: "uint256",
         name: "quantity",
         type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "memo",
+        type: "string",
       },
       {
         internalType: "uint256",

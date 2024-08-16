@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useToast, Box, Button, Input, Heading, Table, Thead, Tbody, Tr, Th, Td, Spinner } from '@chakra-ui/react';
-import { prepareContractCall } from "thirdweb";
-import { useSendTransaction } from "thirdweb/react";
 import { etherContract } from '../../contants';
 import { contract } from '../../chain';
+import useWallet from '../../hooks/userWallet';
 
 function DispatchToImporter() {
   const toast = useToast();
@@ -15,7 +14,7 @@ function DispatchToImporter() {
   const [importerAddr, setImporterAddr] = useState('');
   const [_ipfsDocHash, setIpfsDocHash] = useState('');
 
-  const { mutate: sendTransaction } = useSendTransaction();
+  const { traceChainBDContract, zeroGas } = useWallet();
 
   const handleDetails = async () => {
     if (productId !== '') {
@@ -78,12 +77,7 @@ function DispatchToImporter() {
     }
     else{
       try {
-        const transaction = prepareContractCall({
-          contract,
-          method: "function dispatchProductToImporter(uint256 _productId, address _to, string _ipfsDocHash)",
-          params: [productId, importerAddr, _ipfsDocHash]
-        });
-        await sendTransaction(transaction);
+        const tx = await traceChainBDContract.dispatch()
         toast({
           title: "Success",
           description: "Product dispatched successfully",

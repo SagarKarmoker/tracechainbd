@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
-import { useActiveAccount } from 'thirdweb/react';
 import ProductDetails from './ProductDetails'; // Import the ProductDetails component
 import DispatchToDistributor from './DispatchToDistributor'; // Import DispatchToDistributor component
+import useAuth from '../../hooks/userAuth';
 
 function AllProduct() {
     const [deliveredProducts, setDeliveredProducts] = useState([]);
@@ -11,7 +11,7 @@ function AllProduct() {
     const [selectedProductId, setSelectedProductId] = useState(null);
     const [dispatchProductId, setDispatchProductId] = useState(null); // State for dispatch component
     const [isHidden, setIsHidden] = useState(true);
-    const activeAccount = useActiveAccount();
+    const {account} = useAuth();
 
     const fetchDeliveredProducts = async () => {
         try {
@@ -21,7 +21,7 @@ function AllProduct() {
             // Fetch details and update state
             const parsedEvents = await Promise.all(
                 events
-                    .filter(event => event.args.receiver === activeAccount?.address)
+                    .filter(event => event.args.receiver === account)
                     .map(async event => {
                         const details = await etherContract.dispatches(event.args.id.toString());
                         return {
@@ -60,7 +60,7 @@ function AllProduct() {
         return () => {
             etherContract.off('ProductDelivered', handleProductDelivered);
         };
-    }, [activeAccount?.address]);
+    }, [account]);
 
     if (loading) {
         return <Text>Loading...</Text>;
