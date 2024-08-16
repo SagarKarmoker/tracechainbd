@@ -1,23 +1,18 @@
 import { Divider, Box, Heading, Text, Stack, List, ListItem, Spinner } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { TraceChainContract } from '../../contants';
-import { ABI } from '../../contractABI';
-import { ethers } from "ethers";
-import { useActiveAccount } from 'thirdweb/react';
-
-const provider = new ethers.providers.JsonRpcProvider("https://rpc-amoy.polygon.technology/");
-const trContract = new ethers.Contract(TraceChainContract, ABI, provider);
+import { etherContract } from '../../contants';
+import useAuth from '../../hooks/userAuth';
 
 function AllProductsList() {
     const [totalProducts, setTotalProducts] = useState(0);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const activeAccount = useActiveAccount()
+    const { account } = useAuth();
 
     useEffect(() => {
         const productCounter = async () => {
             try {
-                const total = await trContract.productCounter();
+                const total = await etherContract.productCounter();
                 if (total) {
                     setTotalProducts(Number(total.toString())); // Convert BigNumber to number
                 }
@@ -35,7 +30,7 @@ function AllProductsList() {
                     setLoading(true);
                     const fetchedProducts = [];
                     for (let i = 1; i < totalProducts; i++) {
-                        const product = await trContract.products(i);
+                        const product = await etherContract.products(i);
                         if (product) {
                             const formattedProduct = {
                                 proId: i,
@@ -64,6 +59,8 @@ function AllProductsList() {
         }
     }, [totalProducts]);
 
+    console.log(products)
+
     return (
         <Box p={10}>
             <Box mb={4} textAlign="center">
@@ -81,7 +78,7 @@ function AllProductsList() {
                 products.length > 0 ? (
                     <List spacing={4}>
                             {products
-                                .filter(product => product.customsAddr === activeAccount?.address)
+                                .filter(product => product.customsAddr === account)
                                 .map((product, index) => (
                             <ListItem key={index} p={4} borderWidth={1} borderRadius="md" boxShadow="sm">
                                 <Stack spacing={2}>
