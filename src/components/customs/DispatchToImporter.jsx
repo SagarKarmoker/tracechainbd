@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useToast, Box, Button, Input, Heading, Table, Thead, Tbody, Tr, Th, Td, Spinner } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
-import { contract } from '../../chain';
 import useWallet from '../../hooks/userWallet';
+import useAuth from '../../hooks/userAuth';
 
 function DispatchToImporter() {
   const toast = useToast();
@@ -15,6 +15,7 @@ function DispatchToImporter() {
   const [_ipfsDocHash, setIpfsDocHash] = useState('');
 
   const { traceChainBDContract, zeroGas } = useWallet();
+  const { account } = useAuth();
 
   const handleDetails = async () => {
     if (boxId !== '') {
@@ -40,10 +41,34 @@ function DispatchToImporter() {
           customsAddr: product.customsAddr
         };
 
-        setImporterAddr(product.importerAddr);
-        setProductDetails(formattedProduct);
-        setIsHidden(false);
-        setHideGetBtn(true);
+        if (formattedProduct.customsAddr !== account) {
+          toast({
+            title: "Error",
+            description: "You are not authorized to view this product",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+          return;
+        }
+
+        const isDispatched = await etherContract.productLifeCycles(formattedProduct.startId);
+
+        if (isDispatched.owner == account) {
+          setImporterAddr(product.importerAddr);
+          setProductDetails(formattedProduct);
+          setIsHidden(false);
+          setHideGetBtn(true);
+        } else{
+          toast({
+            title: "Already Dispatched",
+            description: "You are not authorized to view this product",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+            position: "top-right",
+          });
+        }
       } catch (error) {
         toast({
           title: "Error",
