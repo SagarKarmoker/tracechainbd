@@ -86,9 +86,9 @@ function SingleProductEntry({ customsAddr }) {
   return (
     <div className="flex justify-center mt-4">
       <div className="flex flex-col gap-4">
-        <h1 className="text-4xl font-bold mb-5 text-center">
+        {/* <h1 className="text-4xl font-bold mb-5 text-center">
           Product Entry and Accept
-        </h1>
+        </h1> */}
         <input
           type="text"
           className="p-2 border rounded-lg w-[500px]"
