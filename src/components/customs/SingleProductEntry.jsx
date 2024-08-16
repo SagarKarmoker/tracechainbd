@@ -36,7 +36,7 @@ function SingleProductEntry({ customsAddr }) {
         isClosable: true,
       });
     } else {
-      const tx = await traceChainBDContract.boxWiseEntry(
+      const tx = await traceChainBDContract.bulkProudctEntry(
         name, description, category, countryOfOrigin, manufacturer, price, quantity, importerAddr, customsAddr, {
           gasPrice: 0,
           gasLimit: 3000000
