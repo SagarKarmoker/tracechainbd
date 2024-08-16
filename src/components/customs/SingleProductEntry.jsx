@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { prepareContractCall  } from "thirdweb";
-import { useSendTransaction, useSendAndConfirmTransaction } from "thirdweb/react";
 import { useToast } from "@chakra-ui/react";
 import { contract } from "../../chain";
-import { useActiveAccount } from "thirdweb/react";
+import useWallet from '../../hooks/userWallet'
 
 function SingleProductEntry({ customsAddr }) {
   const [name, setName] = useState("");
@@ -16,9 +14,7 @@ function SingleProductEntry({ customsAddr }) {
   const [importerAddr, setImporterAddr] = useState("");
 
   const toast = useToast();
-  // const { mutate: sendTx, data: transactionResult } = useSendTransaction();
-  const { mutate: sendAndConfirmTx, data: transactionReceipt } =
-  useSendAndConfirmTransaction();
+  const { signer, traceChainBDContract, zeroGas } = useWallet();
 
   const singleProductEntry = async () => {
     if (
@@ -40,23 +36,23 @@ function SingleProductEntry({ customsAddr }) {
         isClosable: true,
       });
     } else {
-      const transaction = prepareContractCall({
-        contract,
-        method:
-          "function boxWiseEntry(string _name, string _description, string _category, string _countryOfOrigin, string _manufacturer, uint256 _price, uint256 _quantity, address _importerAddr, address _customsAddr)",
-        params: [
-          name,
-          description,
-          category,
-          countryOfOrigin,
-          manufacturer,
-          price,
-          quantity,
-          importerAddr,
-          customsAddr,
-        ],
+      const tx = await traceChainBDContract.boxWiseEntry(
+        name, description, category, countryOfOrigin, manufacturer, price, quantity, importerAddr, customsAddr, {
+          gasPrice: 0,
+          gasLimit: 3000000
+        }
+      )
+
+      toast({
+        title: "Processing",
+        description: "Adding product to ledger",
+        status: "info",
+        duration: 9000,
+        isClosable: true,
+        position: "top-right",
       });
-      await sendAndConfirmTx(transaction);
+
+      const transactionReceipt = await tx.wait();
 
       if (transactionReceipt !== undefined) {
         toast({

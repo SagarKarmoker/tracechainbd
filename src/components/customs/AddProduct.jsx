@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { useActiveAccount } from 'thirdweb/react';
 import SingleProductEntry from './SingleProductEntry';
 import BoxWiseEntry from './BoxWiseEntry';
+import useAuth from '../../hooks/userAuth';
 
 function AddProduct() {
-    const activeAccount = useActiveAccount();
-    console.log(activeAccount?.address)
+    const { account } = useAuth();
+    console.log(account)
     // product entry option
     const [option, setOption] = useState('')
     const [selected, setSelected] = useState('')
@@ -13,9 +13,9 @@ function AddProduct() {
     const renderComponent = () => {
         switch (option) {
             case 'single':
-                return <SingleProductEntry customsAddr={activeAccount?.address} />
+                return <SingleProductEntry customsAddr={account} />
             case 'box':
-                return <BoxWiseEntry customsAddr={activeAccount?.address} />
+                return <BoxWiseEntry customsAddr={account} />
         }
     }
 

@@ -10,6 +10,9 @@ const useWallet = () => {
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
   const [traceChainBDContract, setTraceChainBDContract] = useState(null);
+  const zeroGas = {
+    gasPrice: ethers.BigNumber.from(0),
+  };
 
   useEffect(() => {
     const checkWalletProvider = async () => {
@@ -31,7 +34,7 @@ const useWallet = () => {
     checkWalletProvider();
   }, [isConnected, account]); // Only re-run when `isConnected` or `account` changes
 
-  return { provider, signer, traceChainBDContract };
+  return { provider, signer, traceChainBDContract, zeroGas };
 };
 
 export default useWallet;

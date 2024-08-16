@@ -21,7 +21,8 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
 
 const gatewayBaseUrl = 'http://127.0.0.1:8080/ipfs/';
@@ -31,6 +32,7 @@ function AdminApplications() {
   const [applications, setApplications] = useState([]);
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [alreadyRole, setAlreadyRole] = useState([])
+  const toast = useToast();
 
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
@@ -43,6 +45,13 @@ function AdminApplications() {
       // Optionally, refresh the applications list
       const data = await contract.getApplictions();
       setApplications(data);
+      toast({
+        title: 'Applications accepted successfully',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+        position: 'top'
+      });
     } catch (error) {
       console.error("Error approving role:", error);
     }
