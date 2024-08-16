@@ -6,7 +6,7 @@ import useWallet from '../../hooks/userWallet';
 
 function DispatchToImporter() {
   const toast = useToast();
-  const [productId, setProductId] = useState("");
+  const [boxId, setBoxId] = useState("");
   const [isHidden, setIsHidden] = useState(true);
   const [hideGetBtn, setHideGetBtn] = useState(false);
   const [productDetails, setProductDetails] = useState({});
@@ -17,14 +17,17 @@ function DispatchToImporter() {
   const { traceChainBDContract, zeroGas } = useWallet();
 
   const handleDetails = async () => {
-    if (productId !== '') {
+    if (boxId !== '') {
       try {
         setLoading(true);
         // Get product details from blockchain
-        const product = await etherContract.products(productId);
+        const product = await etherContract.boxes(boxId);
 
         // Convert BigNumber and other types to strings or numbers
         const formattedProduct = {
+          boxid: Number(product.boxId.toString()),
+          startId: Number(product.start_productId.toString()),
+          endId: Number(product.end_productId.toString()),
           name: product.name,
           description: product.description,
           category: product.category,
@@ -65,8 +68,7 @@ function DispatchToImporter() {
   };
 
   const handleDispatch = async () => {
-
-    if (_ipfsDocHash === '' || importerAddr === '' || productId === '') {
+    if (_ipfsDocHash === '' || importerAddr === '' || boxId === '') {
       toast({
         title: "Error",
         description: "All fields are required",
@@ -75,9 +77,14 @@ function DispatchToImporter() {
         isClosable: true,
       });
     }
-    else{
+    else {
       try {
-        const tx = await traceChainBDContract.dispatch()
+        const tx = await traceChainBDContract.dispatch(
+          productDetails.startId, productDetails.endId, importerAddr, _ipfsDocHash, zeroGas
+        )
+
+        await tx.wait();
+
         toast({
           title: "Success",
           description: "Product dispatched successfully",
@@ -96,10 +103,9 @@ function DispatchToImporter() {
       }
 
       // Reset form fields
-      setProductId('');
       setIpfsDocHash('');
     }
-    
+
   };
 
   return (
@@ -109,14 +115,12 @@ function DispatchToImporter() {
         <Box width="96" display="flex" flexDirection="column" gap={4}>
           <Input
             type="number"
-            placeholder="Enter product ID to get details"
-            value={productId}
-            onChange={(e) => setProductId(e.target.value)}
+            placeholder="Enter Box ID to get details"
+            value={boxId}
+            onChange={(e) => setBoxId(e.target.value)}
             isRequired
           />
-          {!hideGetBtn &&
-            <Button onClick={handleDetails} colorScheme="blue">Get Details</Button>
-          }
+          <Button onClick={handleDetails} colorScheme="blue">Get Details</Button>
         </Box>
       </Box>
 
@@ -126,66 +130,80 @@ function DispatchToImporter() {
           {loading ? (
             <Spinner size="xl" />
           ) : (
-            <Box>
-              <Table variant="simple" mb={5}>
-                <Thead>
-                  <Tr>
-                    <Th>Product</Th>
-                    <Th>Details</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  <Tr>
-                    <Td>Name</Td>
-                    <Td>{productDetails.name}</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Description</Td>
-                    <Td>{productDetails.description}</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Category</Td>
-                    <Td>{productDetails.category}</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Country of Origin</Td>
-                    <Td>{productDetails.countryOfOrigin}</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Manufacturer</Td>
-                    <Td>{productDetails.manufacturer}</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Price</Td>
-                    <Td>{productDetails.price}</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Quantity</Td>
-                    <Td>{productDetails.quantity}</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Imported Date</Td>
-                    <Td>{new Date(productDetails.importedDate * 1000).toLocaleDateString()}</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Importer Address</Td>
-                    <Td>{productDetails.importerAddr}</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Customs Address</Td>
-                    <Td>{productDetails.customsAddr}</Td>
-                  </Tr>
-                </Tbody>
-              </Table>
-              <Input
-                type="text"
-                placeholder="Enter IPFS Document Hash"
-                value={_ipfsDocHash}
-                onChange={(e) => setIpfsDocHash(e.target.value)}
-                isRequired
-              />
-              <Button className='mt-4 w-full text-center' onClick={handleDispatch} colorScheme="blue">Dispatch Product to Importer</Button>
-            </Box>
+            productDetails && productDetails.boxid !== 0 ? (
+              <Box>
+                <Table variant="simple" mb={5}>
+                  <Thead>
+                    <Tr>
+                      <Th>Box</Th>
+                      <Th>Details</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    <Tr>
+                      <Td>Box ID</Td>
+                      <Td>{productDetails.boxid} [Product ID Range: {productDetails.startId} to {productDetails.endId}]</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Name</Td>
+                      <Td>{productDetails.name}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Description</Td>
+                      <Td>{productDetails.description}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Category</Td>
+                      <Td>{productDetails.category}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Country of Origin</Td>
+                      <Td>{productDetails.countryOfOrigin}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Manufacturer</Td>
+                      <Td>{productDetails.manufacturer}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Price</Td>
+                      <Td>{productDetails.price}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Quantity</Td>
+                      <Td>{productDetails.quantity}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Imported Date</Td>
+                      <Td>{new Date(productDetails.importedDate * 1000).toLocaleDateString()}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Importer Address</Td>
+                      <Td>{productDetails.importerAddr}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Customs Address</Td>
+                      <Td>{productDetails.customsAddr}</Td>
+                    </Tr>
+                  </Tbody>
+                </Table>
+
+                <Heading as="h1" size="lg" textAlign="center" mb={4}>Enter Dispatch Details</Heading>
+                <Input
+                  type="text"
+                  placeholder="Enter IPFS Document Hash"
+                  value={_ipfsDocHash}
+                  onChange={(e) => setIpfsDocHash(e.target.value)}
+                  isRequired
+                />
+                <div className='flex justify-center'>
+                    <Button mt={4} colorScheme="blue" onClick={handleDispatch}>
+                      Dispatch Product to Importer
+                    </Button>
+                </div>
+              </Box>
+            ) : (
+              <Box>No product details available.</Box>
+            )
           )}
         </Box>
       )}
