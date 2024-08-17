@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Divider, Table, Thead, Tbody, Tr, Th, Td, Box, Text } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
-import { useActiveAccount } from 'thirdweb/react';
+import useAuth from '../../hooks/userAuth';
+import { ethers } from 'ethers';
 
 function PendingProduct() {
     const [dispatches, setDispatches] = useState([]);
-    const [dispatchCount, setDispatchCount] = useState(0);
-    const [dispatchList, setDispatchList] = useState([]);
     const [loading, setLoading] = useState(true);
-    const activeAccount = useActiveAccount();
+    const { account } = useAuth();
 
     const getDispatchCounter = async () => {
         try {
             const dispatchCounter = await etherContract.dispatchCounter();
-            setDispatchCount(Number(dispatchCounter.toString()));
+            // Handle dispatchCounter if necessary
         } catch (error) {
             console.error('Error fetching dispatch counter:', error);
         }
@@ -21,61 +20,58 @@ function PendingProduct() {
 
     useEffect(() => {
         const fetchHistoryData = async () => {
-            const events = await etherContract.queryFilter('ProductDelivered');
-            // Process events
-            const dispatchesList = events.map(event => {
-                const { id, receiver, timestamp } = event.args; // id = dispatch id
-                return {
-                    id: id.toString(),
-                    receiver,
-                    timestamp: timestamp.toNumber()
-                };
-            });
+            try {
+                // Fetch events
+                const events = await etherContract.queryFilter('MultiProductDispatched');
 
-            setDispatches(dispatchesList);
+                // Process events into dispatchesList
+                const dispatchesList = events.map(event => {
+                    const { dispatchId, startId, endId, to, dispatchedOn, quantity } = event.args;
+                    return {
+                        dispatchId: Number(dispatchId.toString()),
+                        startId: Number(startId.toString()),
+                        endId: Number(endId.toString()),
+                        receiver: to,
+                        quantity: Number(quantity.toString()),
+                        timestamp: dispatchedOn.toNumber()
+                    };
+                });
+
+                // console.log(dispatchesList);
+
+                // Process each dispatch in dispatchesList
+                const validDispatches = [];
+
+                for (const dispatch of dispatchesList) {
+                    const confirmed1st = await etherContract.productLifeCycles(ethers.BigNumber.from(dispatch.startId));
+                    const confirmedLast = await etherContract.productLifeCycles(ethers.BigNumber.from(dispatch.endId));
+
+                    if (Number(confirmed1st.importerDispatchId.toString()) === 0 && Number(confirmedLast.importerDispatchId.toString()) === 0 && confirmed1st.owner == account) {
+                        validDispatches.push(dispatch);
+                    }
+                }
+
+                // Set state with valid dispatches
+                setDispatches(validDispatches);
+                setLoading(false); // Update loading state once data is fetched
+            } catch (error) {
+                console.error('Error fetching history data:', error);
+                setLoading(false); // Ensure loading state is updated even if there's an error
+            }
         };
 
         fetchHistoryData();
-    }, []);
+    }, [account]);
 
-    console.log(dispatches)
+    console.log(dispatches);
 
-    const getDispatch = async () => {
+    const handleAccept = async () => {
         try {
-            if (dispatchCount === 0) {
-                setLoading(false);
-                return;
-            }
-
-            const list = [];
-            for (let i = 1; i <= dispatchCount; i++) {
-                const dispatch = await etherContract.dispatches(i);
-                if (dispatch.to.toLowerCase() === activeAccount?.address.toLowerCase()
-                    && dispatches.find(d => d.id === i.toString()) === '' 
-                    && dispatches.find(d => d.receiver.to.toLowerCase() === activeAccount?.address.toLowerCase()) == null
-                ) {
-                    list.push({ index: i, ...dispatch });
-                }
-            }
-            setDispatchList(list);
+            
         } catch (error) {
-            console.error('Error fetching dispatches:', error);
-        } finally {
-            setLoading(false);
+            console.error('Error accepting dispatch:', error);
         }
-    };
-
-    useEffect(() => {
-        const fetchData = async () => {
-            await getDispatchCounter();
-            // Wait for the dispatchCount to update before calling getDispatch
-            if (dispatchCount > 0) {
-                await getDispatch();
-            }
-        };
-
-        fetchData();
-    }, [dispatchCount]); // You should monitor dispatchCount, but fetchData needs to be called when dispatchCount is set
+    }
 
     if (loading) {
         return <Text>Loading...</Text>;
@@ -88,29 +84,34 @@ function PendingProduct() {
                 <Text>List of all pending products to accept</Text>
             </Box>
             <Divider mb={4} />
-            {dispatchList.length > 0 ? (
+            {dispatches.length > 0 ? (
                 <Table variant='simple'>
                     <Thead>
                         <Tr>
-                            <Th>ID</Th>
-                            <Th>Product ID</Th>
-                            <Th>IPFS Hash</Th>
-                            <Th>From</Th>
-                            <Th>To</Th>
+                            <Th>Dispatch ID</Th>
+                            <Th>Start ID</Th>
+                            <Th>End ID</Th>
+                            <Th>Receiver</Th>
                             <Th>Timestamp</Th>
                             <Th>Quantity</Th>
+                            <Th>Action</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {dispatchList.map((dispatch) => (
-                            <Tr key={dispatch.index}>
-                                <Td>{dispatch.index}</Td>
-                                <Td>{dispatch.productId.toString()}</Td>
-                                <Td>{dispatch.ipfsDocHash}</Td>
-                                <Td>{dispatch.from}</Td>
-                                <Td>{dispatch.to}</Td>
-                                <Td>{new Date(Number(dispatch.timestamp.toString()) * 1000).toLocaleString()}</Td>
-                                <Td>{dispatch.quantity.toString()}</Td>
+                        {dispatches.map((dispatch) => (
+                            <Tr key={dispatch.dispatchId}>
+                                <Td>{dispatch.dispatchId}</Td>
+                                <Td>{dispatch.startId}</Td>
+                                <Td>{dispatch.endId}</Td>
+                                {/* <Td>{dispatch.receiver}</Td> */}
+                                <Td>Self</Td>
+                                <Td>{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
+                                <Td>{dispatch.quantity}</Td>
+                                <Td>
+                                    <button className='bg-lime-600 font-bold p-3 rounded-lg text-white' onClick={handleAccept}>
+                                        Accept
+                                    </button>
+                                </Td>
                             </Tr>
                         ))}
                     </Tbody>
