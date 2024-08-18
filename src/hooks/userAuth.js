@@ -25,6 +25,9 @@ const useAuth = () => {
       const accounts = await magic.wallet.connectWithUI();
       setIsConnected(true);
       setAccount(accounts[0]);
+      setInterval(() => {
+        window.location.reload();
+      }, 5000);
     } catch (error) {
       console.error("Failed to connect wallet:", error);
     }

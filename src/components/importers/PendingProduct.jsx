@@ -1,30 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Divider, Table, Thead, Tbody, Tr, Th, Td, Box, Text } from '@chakra-ui/react';
+import { Divider, Table, Thead, Tbody, Tr, Th, Td, Box, Text, useToast, Button } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
 import { ethers } from 'ethers';
+import useWallet from '../../hooks/userWallet';
 
 function PendingProduct() {
     const [dispatches, setDispatches] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingStates, setLoadingStates] = useState({});
     const { account } = useAuth();
-
-    const getDispatchCounter = async () => {
-        try {
-            const dispatchCounter = await etherContract.dispatchCounter();
-            // Handle dispatchCounter if necessary
-        } catch (error) {
-            console.error('Error fetching dispatch counter:', error);
-        }
-    };
+    const { signer, traceChainBDContract, zeroGas } = useWallet();
+    const toast = useToast();
 
     useEffect(() => {
         const fetchHistoryData = async () => {
             try {
-                // Fetch events
                 const events = await etherContract.queryFilter('MultiProductDispatched');
-
-                // Process events into dispatchesList
                 const dispatchesList = events.map(event => {
                     const { dispatchId, startId, endId, to, dispatchedOn, quantity } = event.args;
                     return {
@@ -37,41 +29,59 @@ function PendingProduct() {
                     };
                 });
 
-                // console.log(dispatchesList);
-
-                // Process each dispatch in dispatchesList
                 const validDispatches = [];
 
                 for (const dispatch of dispatchesList) {
                     const confirmed1st = await etherContract.productLifeCycles(ethers.BigNumber.from(dispatch.startId));
                     const confirmedLast = await etherContract.productLifeCycles(ethers.BigNumber.from(dispatch.endId));
 
-                    if (Number(confirmed1st.importerDispatchId.toString()) === 0 && Number(confirmedLast.importerDispatchId.toString()) === 0 && confirmed1st.owner == account) {
+                    if (Number(confirmed1st.importerDispatchId.toString()) === 0 && Number(confirmedLast.importerDispatchId.toString()) === 0 && confirmed1st.owner === account) {
                         validDispatches.push(dispatch);
                     }
                 }
 
-                // Set state with valid dispatches
                 setDispatches(validDispatches);
-                setLoading(false); // Update loading state once data is fetched
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching history data:', error);
-                setLoading(false); // Ensure loading state is updated even if there's an error
+                setLoading(false);
             }
         };
 
         fetchHistoryData();
     }, [account]);
 
-    console.log(dispatches);
+    const handleAccept = async (_dispatchId) => {
+        setLoadingStates(prev => ({ ...prev, [_dispatchId]: true }));
 
-    const handleAccept = async () => {
         try {
-            
+            console.log(_dispatchId)
+            const tx = await traceChainBDContract.confirmDelivery(_dispatchId, zeroGas);
+            const response = await tx.wait();
+
+            if (response) {
+                toast({
+                    title: "Dispatch accepted successfully",
+                    description: `Dispatch ${_dispatchId} accepted successfully`,
+                    status: "success",
+                    duration: 9000,
+                    isClosable: true,
+                });
+            } else {
+                toast({
+                    title: "Not Accepted",
+                    description: `Something went wrong`,
+                    status: "error",
+                    duration: 9000,
+                    isClosable: true,
+                });
+            }
         } catch (error) {
             console.error('Error accepting dispatch:', error);
+        } finally {
+            setLoadingStates(prev => ({ ...prev, [_dispatchId]: false }));
         }
-    }
+    };
 
     if (loading) {
         return <Text>Loading...</Text>;
@@ -103,14 +113,17 @@ function PendingProduct() {
                                 <Td>{dispatch.dispatchId}</Td>
                                 <Td>{dispatch.startId}</Td>
                                 <Td>{dispatch.endId}</Td>
-                                {/* <Td>{dispatch.receiver}</Td> */}
                                 <Td>Self</Td>
                                 <Td>{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
                                 <Td>{dispatch.quantity}</Td>
                                 <Td>
-                                    <button className='bg-lime-600 font-bold p-3 rounded-lg text-white' onClick={handleAccept}>
+                                    <Button 
+                                        colorScheme='green'
+                                        isLoading={loadingStates[dispatch.dispatchId]}
+                                        onClick={() => handleAccept(dispatch.dispatchId)}
+                                    >
                                         Accept
-                                    </button>
+                                    </Button>
                                 </Td>
                             </Tr>
                         ))}
