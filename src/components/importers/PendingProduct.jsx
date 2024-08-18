@@ -71,13 +71,20 @@ function PendingProduct() {
                 toast({
                     title: "Not Accepted",
                     description: `Something went wrong`,
-                    status: "error",
+                    status: "warning",
                     duration: 9000,
                     isClosable: true,
                 });
             }
         } catch (error) {
             console.error('Error accepting dispatch:', error);
+            toast({
+                title: "Error accepting dispatch",
+                description: `Something went wrong`,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            })
         } finally {
             setLoadingStates(prev => ({ ...prev, [_dispatchId]: false }));
         }
@@ -117,7 +124,7 @@ function PendingProduct() {
                                 <Td>{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
                                 <Td>{dispatch.quantity}</Td>
                                 <Td>
-                                    <Button 
+                                    <Button
                                         colorScheme='green'
                                         isLoading={loadingStates[dispatch.dispatchId]}
                                         onClick={() => handleAccept(dispatch.dispatchId)}
