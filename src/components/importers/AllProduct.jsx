@@ -16,24 +16,48 @@ function AllProduct() {
     const fetchDeliveredProducts = async () => {
         try {
             // Fetch ProductAccepted events filtered by the current user's account
-            const filter = etherContract.filters.ProductAccepted(null, account);
+            const filter = etherContract.filters.ProductAccepted(null, null, account);
             const events = await etherContract.queryFilter(filter);
 
-            // Parse the events and retrieve dispatch details
+            // Parse the events and retrieve dispatch details along with product details
             const parsedEvents = await Promise.all(
                 events.map(async event => {
-                    const details = await etherContract.dispatches(event.args.dispatchId.toString());
-                    return {
-                        dispatchId: event.args.dispatchId.toString(),
-                        productId: details.productId.toString(),
-                        acceptedBy: event.args.acceptedBy,
-                        acceptedOn: event.args.acceptedOn.toNumber(),
-                        receiveStatus: event.args.status.toNumber(),
-                        ipfsDocHash: details.ipfsDocHash,
-                        quantity: details.quantity.toString(),
-                    };
+                    const dispatchId = event.args.dispatchId.toString();
+                    const productId = event.args.productId.toString();
+                    const acceptedBy = event.args.acceptedBy;
+                    const acceptedOn = event.args.acceptedOn.toNumber();
+                    const status = event.args.status;
+
+                    const _dispatchLen = await etherContract.getDispatchLength(dispatchId);
+                    
+                    for (let i = 0; i < _dispatchLen; i++) {
+                        const details = await etherContract.dispatches(dispatchId, i);
+                        const product = await etherContract.products(productId);
+                        
+                        return {
+                            dispatchId,
+                            productId,
+                            acceptedBy,
+                            acceptedOn,
+                            status,
+                            ipfsDocHash: details.ipfsDocHash,
+                            quantity: details.quantity.toString(),
+                            boxId: product.boxId.toString(),
+                            name: product.name,
+                            description: product.description,
+                            category: product.category,
+                            countryOfOrigin: product.countryOfOrigin,
+                            manufacturer: product.manufacturer,
+                            price: product.price.toString(),
+                            importedDate: product.importedDate.toNumber(),
+                            importerAddr: product.importerAddr,
+                            customsAddr: product.customsAddr,
+                        };
+                    }
                 })
             );
+
+            console.log(parsedEvents);
 
             // Update state with the fetched data
             setDeliveredProducts(parsedEvents);
@@ -46,33 +70,54 @@ function AllProduct() {
 
     useEffect(() => {
         fetchDeliveredProducts();
-
+    
         // Listen for new ProductAccepted events and update state
         const handleProductAccepted = async (dispatchId, productId, acceptedBy, acceptedOn, status) => {
             if (acceptedBy === account) {
-                const details = await etherContract.dispatches(dispatchId.toString());
-                setDeliveredProducts(prev => [
-                    ...prev,
-                    {
-                        dispatchId: dispatchId.toString(),
-                        productId: details.productId.toString(),
-                        acceptedBy,
-                        acceptedOn: acceptedOn.toNumber(),
-                        receiveStatus: status.toNumber(),
-                        ipfsDocHash: details.ipfsDocHash,
-                        quantity: details.quantity.toString(),
+                try {
+                    const _dispatchLen = await etherContract.getDispatchLength(dispatchId.toString());
+    
+                    for (let i = 0; i < _dispatchLen; i++) {
+                        const details = await etherContract.dispatches(dispatchId.toString(), i);
+                        const product = await etherContract.products(productId);
+                        
+                        setDeliveredProducts(prev => [
+                            ...prev,
+                            {
+                                dispatchId: dispatchId.toString(),
+                                productId: productId.toString(),
+                                acceptedBy,
+                                acceptedOn: acceptedOn.toNumber(),
+                                status: status.toNumber(),
+                                ipfsDocHash: details.ipfsDocHash,
+                                quantity: details.quantity.toString(),
+                                boxId: product.boxId.toString(),
+                                name: product.name,
+                                description: product.description,
+                                category: product.category,
+                                countryOfOrigin: product.countryOfOrigin,
+                                manufacturer: product.manufacturer,
+                                price: product.price.toString(),
+                                importedDate: product.importedDate.toNumber(),
+                                importerAddr: product.importerAddr,
+                                customsAddr: product.customsAddr,
+                            }
+                        ]);
                     }
-                ]);
+                } catch (error) {
+                    console.error('Error handling ProductAccepted event:', error);
+                }
             }
         };
-
+    
         etherContract.on('ProductAccepted', handleProductAccepted);
-
+    
         // Cleanup event listener on component unmount
         return () => {
             etherContract.off('ProductAccepted', handleProductAccepted);
         };
     }, [account]);
+    
 
     if (loading) {
         return <Text>Loading...</Text>;
@@ -90,10 +135,14 @@ function AllProduct() {
                     <Thead>
                         <Tr>
                             <Th>Dispatch ID</Th>
+                            <Th>Product ID</Th>
+                            <Th>Product Name</Th>
+                            <Th>Category</Th>
+                            <Th>Country of Origin</Th>
+                            <Th>Manufacturer</Th>
+                            <Th>Price</Th>
                             <Th>Recipient</Th>
                             <Th>Timestamp</Th>
-                            <Th>IPFS Doc Hash</Th>
-                            <Th>Product ID</Th>
                             <Th>Quantity</Th>
                             <Th>Dispatch</Th>
                         </Tr>
@@ -102,17 +151,14 @@ function AllProduct() {
                         {deliveredProducts.map((product, index) => (
                             <Tr key={index}>
                                 <Td>{product.dispatchId}</Td>
-                                <Td>{product.acceptedBy}</Td>
+                                <Td>{product.productId}</Td>
+                                <Td>{product.name}</Td>
+                                <Td>{product.category}</Td>
+                                <Td>{product.countryOfOrigin}</Td>
+                                <Td>{product.manufacturer}</Td>
+                                <Td>{product.price}</Td>
+                                <Td>Self</Td>
                                 <Td>{new Date(product.acceptedOn * 1000).toLocaleString()}</Td>
-                                <Td>{product.ipfsDocHash}</Td>
-                                <Td>
-                                    <Button onClick={() => {
-                                        setSelectedProductId(product.productId);
-                                        setIsHidden(!isHidden);
-                                    }}>
-                                        {product.productId}
-                                    </Button>
-                                </Td>
                                 <Td>{product.quantity}</Td>
                                 <Td>
                                     <Button
