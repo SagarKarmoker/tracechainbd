@@ -4,6 +4,7 @@ import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
 import { ethers } from 'ethers';
 import useWallet from '../../hooks/userWallet';
+import { ProductStatus } from '../../utils/ProductStatus';
 
 function PendingProduct() {
     const [dispatches, setDispatches] = useState([]);
@@ -35,7 +36,7 @@ function PendingProduct() {
                     const confirmed1st = await etherContract.productLifeCycles(ethers.BigNumber.from(dispatch.startId));
                     const confirmedLast = await etherContract.productLifeCycles(ethers.BigNumber.from(dispatch.endId));
 
-                    if (Number(confirmed1st.importerDispatchId.toString()) === 0 && Number(confirmedLast.importerDispatchId.toString()) === 0 && confirmed1st.owner === account) {
+                    if (Number(confirmed1st.importerDispatchId.toString()) === 0 && Number(confirmedLast.importerDispatchId.toString()) === 0 && confirmed1st.owner === account && confirmed1st.status != ProductStatus.AcceptedByImporter) {
                         validDispatches.push(dispatch);
                     }
                 }
@@ -56,8 +57,13 @@ function PendingProduct() {
 
         try {
             console.log(_dispatchId)
-            const tx = await traceChainBDContract.confirmDelivery(_dispatchId, zeroGas);
+            const tx = await traceChainBDContract.confirmDelivery(_dispatchId, {
+                gasLimit: 3000000,
+                ...zeroGas
+            });
             const response = await tx.wait();
+
+            console.log(response)
 
             if (response) {
                 toast({
