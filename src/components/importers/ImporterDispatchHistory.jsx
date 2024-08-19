@@ -1,34 +1,66 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Box, Heading } from '@chakra-ui/react';
-import { useActiveAccount } from 'thirdweb/react';
 import { etherContract } from '../../contants';
+import useAuth from '../../hooks/userAuth';
 
 function ImporterDispatchHistory() {
   const [dispatches, setDispatches] = useState([]);
-  const activeAccount = useActiveAccount();
+  const { account } = useAuth();
 
   useEffect(() => {
     const fetchHistoryData = async () => {
-      const events = await etherContract.queryFilter('ProductDispatched');
-      // Process events
-      const dispatchesList = events.map(event => {
-        const { id, productId, ipfsDocHash, from, to, timestamp, quantity } = event.args;
-        return {
-          id: id.toString(),
-          productId: productId.toString(),
-          ipfsDocHash,
-          from: from,
-          to: to,
-          timestamp: timestamp.toNumber(),
-          quantity: quantity.toString()
-        };
-      });
+      try {
+        const multiProductEvents = await etherContract.queryFilter('MultiProductDispatched');
+        const singleProductEvents = await etherContract.queryFilter('ProductDispatched');
 
-      setDispatches(dispatchesList);
+        const multiProductDispatches = multiProductEvents.map(event => {
+          const { dispatchId, dispatchedOn, endId, quantity, from, startId, to } = event.args;
+
+          return {
+            dispatchId: dispatchId.toString(),
+            startId: Number(startId.toString()),
+            endId: Number(endId.toString()),
+            from: from,
+            to: to,
+            timestamp: Number(dispatchedOn.toString()),
+            quantity: quantity.toString(),
+            type: 'Multi' 
+          };
+        });
+
+        const singleProductDispatches = singleProductEvents.map(event => {
+          const { dispatchId, dispatchedOn, productId, quantity, from, to } = event.args;
+
+          return {
+            dispatchId: dispatchId.toString(),
+            startId: Number(productId.toString()),
+            endId: Number(productId.toString()),
+            from: from,
+            to: to,
+            timestamp: Number(dispatchedOn.toString()),
+            quantity: quantity.toString(),
+            type: 'Single' 
+          };
+        });
+
+        const allDispatches = [...multiProductDispatches, ...singleProductDispatches];
+
+        allDispatches.sort((a, b) => b.timestamp - a.timestamp);
+
+        setDispatches(allDispatches);
+      } catch (error) {
+        console.error('Error fetching history data:', error);
+      }
     };
-    
-    fetchHistoryData();
-  }, []);
+
+    if (etherContract) {
+      fetchHistoryData();
+    }
+  }, [etherContract, account]);
+
+  const formatAddress = (address) => {
+    return `${address.slice(0, 5)}...${address.slice(-7)}`;
+  };
 
   return (
     <Box p={5}>
@@ -39,30 +71,31 @@ function ImporterDispatchHistory() {
         <Table variant='simple'>
           <Thead>
             <Tr>
-              <Th>ID</Th>
-              <Th>Product ID</Th>
-              <Th>IPFS Doc Hash</Th>
+              <Th>Dispatch ID</Th>
+              <Th>Start PID</Th>
+              <Th>End PID</Th>
               <Th>From</Th>
-              <Th>To</Th>
+              <Th>Distributor</Th>
               <Th>Timestamp</Th>
               <Th>Quantity</Th>
+              <Th>Type</Th>
             </Tr>
           </Thead>
           <Tbody>
             {dispatches
-            .filter(dispatch => dispatch.quantity > 0 && dispatch.from === activeAccount?.address)
-            .map(dispatch => (
-              <Tr key={dispatch.id}>
-                <Td>{dispatch.id}</Td>
-                <Td>{dispatch.productId}</Td>
-                <Td>{dispatch.ipfsDocHash}</Td>
-                {/* {dispatch.from} */}
-                <Td>Self</Td> 
-                <Td>{dispatch.to}</Td>
-                <Td>{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
-                <Td>{dispatch.quantity}</Td>
-              </Tr>
-            ))}
+              .filter(dispatch => dispatch.quantity > 0 && dispatch.from === account)
+              .map(dispatch => (
+                <Tr key={dispatch.dispatchId}>
+                  <Td className='text-center'>{dispatch.dispatchId}</Td>
+                  <Td className='text-center'>{dispatch.startId}</Td>
+                  <Td className='text-center'>{dispatch.endId}</Td>
+                  <Td className='text-center'>Self</Td> 
+                  <Td className='text-center'>{formatAddress(dispatch.to)}</Td>
+                  <Td className='text-center'>{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
+                  <Td className='text-center'>{dispatch.quantity}</Td>
+                  <Td className='text-center'>{dispatch.type}</Td>
+                </Tr>
+              ))}
           </Tbody>
         </Table>
       </TableContainer>
