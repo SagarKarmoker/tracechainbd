@@ -73,7 +73,7 @@ function AllDistributorList() {
 
             {selectedImporter && isHidden && (
                 <Box mt={4} p={4} borderWidth={1} borderRadius="md" boxShadow="md">
-                    <Heading as='h2' size='md' mb={2}>Importer Details</Heading>
+                    <Heading as='h2' size='md' mb={2}>Distributor Details</Heading>
                     <Text><strong>Name:</strong> {selectedImporter.name}</Text>
                     <Text><strong>Address:</strong> {selectedImporter.address_registered}</Text>
                     <Text><strong>Location:</strong> {selectedImporter.locAddress}</Text>

@@ -62,11 +62,11 @@ function ImporterDashboard({ setActiveComponent }) {
                     <p>Manage all of pending products to accept</p>
                 </div>
 
-                <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
+                {/* <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
                     onClick={() => { setActiveComponent('accept-product') }}>
                     <h1 className='text-2xl font-bold'>Accept Product</h1>
                     <p>Manage all of importer accept products </p>
-                </div>
+                </div> */}
 
                 <div className='bg-blue-500 hover:bg-blue-600 text-white p-5 rounded-lg hover:cursor-pointer'
                     onClick={() => { setActiveComponent('distributor-list') }}>

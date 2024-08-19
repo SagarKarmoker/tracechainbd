@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
-import ProductDetails from './ProductDetails';
-import DispatchToDistributor from './DispatchToDistributor';
 import useAuth from '../../hooks/userAuth';
 
 function AllProduct() {
     const [deliveredProducts, setDeliveredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selectedProductId, setSelectedProductId] = useState(null);
-    const [dispatchProductId, setDispatchProductId] = useState(null);
-    const [isHidden, setIsHidden] = useState(true);
     const { account } = useAuth();
 
     const fetchDeliveredProducts = async () => {
@@ -29,11 +24,12 @@ function AllProduct() {
                     const status = event.args.status;
 
                     const _dispatchLen = await etherContract.getDispatchLength(dispatchId);
-                    
+
                     for (let i = 0; i < _dispatchLen; i++) {
                         const details = await etherContract.dispatches(dispatchId, i);
                         const product = await etherContract.products(productId);
-                        
+                        const owner = await etherContract.productLifeCycles(productId);
+
                         return {
                             dispatchId,
                             productId,
@@ -52,6 +48,7 @@ function AllProduct() {
                             importedDate: product.importedDate.toNumber(),
                             importerAddr: product.importerAddr,
                             customsAddr: product.customsAddr,
+                            owner: owner.owner,
                         };
                     }
                 })
@@ -70,17 +67,18 @@ function AllProduct() {
 
     useEffect(() => {
         fetchDeliveredProducts();
-    
+
         // Listen for new ProductAccepted events and update state
         const handleProductAccepted = async (dispatchId, productId, acceptedBy, acceptedOn, status) => {
             if (acceptedBy === account) {
                 try {
                     const _dispatchLen = await etherContract.getDispatchLength(dispatchId.toString());
-    
+
                     for (let i = 0; i < _dispatchLen; i++) {
                         const details = await etherContract.dispatches(dispatchId.toString(), i);
                         const product = await etherContract.products(productId);
-                        
+                        const owner = await etherContract.productLifeCycles(productId);
+
                         setDeliveredProducts(prev => [
                             ...prev,
                             {
@@ -101,6 +99,7 @@ function AllProduct() {
                                 importedDate: product.importedDate.toNumber(),
                                 importerAddr: product.importerAddr,
                                 customsAddr: product.customsAddr,
+                                owner: owner.owner
                             }
                         ]);
                     }
@@ -109,15 +108,15 @@ function AllProduct() {
                 }
             }
         };
-    
+
         etherContract.on('ProductAccepted', handleProductAccepted);
-    
+
         // Cleanup event listener on component unmount
         return () => {
             etherContract.off('ProductAccepted', handleProductAccepted);
         };
     }, [account]);
-    
+
 
     if (loading) {
         return <Text>Loading...</Text>;
@@ -144,7 +143,7 @@ function AllProduct() {
                             <Th>Recipient</Th>
                             <Th>Timestamp</Th>
                             <Th>Quantity</Th>
-                            <Th>Dispatch</Th>
+                            <Th>Distribution Status</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -160,25 +159,23 @@ function AllProduct() {
                                 <Td>Self</Td>
                                 <Td>{new Date(product.acceptedOn * 1000).toLocaleString()}</Td>
                                 <Td>{product.quantity}</Td>
-                                <Td>
-                                    <Button
-                                        colorScheme='blue'
-                                        onClick={() => setDispatchProductId(product.productId)}
-                                    >
-                                        Dispatch
-                                    </Button>
-                                </Td>
+                                {
+                                    product.owner !== account ? (
+                                        <Td>
+                                            <Button colorScheme='green'>Done</Button>
+                                        </Td>
+                                    ) :
+                                        (<Td>
+
+                                            <Button colorScheme='blue'>In House</Button>
+                                        </Td>)
+                                }
                             </Tr>
                         ))}
                     </Tbody>
                 </Table>
             ) : (
                 <Text>No products delivered yet.</Text>
-            )}
-
-            {selectedProductId && isHidden && <ProductDetails productID={selectedProductId} />}
-            {dispatchProductId && (
-                <DispatchToDistributor pid={dispatchProductId} />
             )}
         </Box>
     );
