@@ -3,6 +3,8 @@ import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Box, Heading } from '@
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
 
+// TODO: old smart contract events error is showing new code is fixed 
+
 function ImporterDispatchHistory() {
   const [dispatches, setDispatches] = useState([]);
   const { account } = useAuth();
