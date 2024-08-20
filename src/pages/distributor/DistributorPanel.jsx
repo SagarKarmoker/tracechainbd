@@ -5,10 +5,10 @@ import DistributorDashboard from '../../components/distributors/DistributorDashb
 import AllRetailerList from '../../components/distributors/AllRetailerList'
 import DispatchToRetailer from '../../components/distributors/DispatchToRetailer'
 import PendingProduct from '../../components/distributors/PendingProduct'
-import AcceptProduct from '../../components/distributors/AcceptProduct'
 import DistributorDispatchHistory from '../../components/distributors/DistributorDispatchHistory'
 import ReportProduct from '../../components/ReportProduct'
 import { isDistributor } from '../../components/utils/RoleCheck';
+import AllProduct from '../../components/distributors/AllProduct'
 
 function DistributorPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -18,8 +18,8 @@ function DistributorPanel() {
         switch (activeComponent) {
             case 'dashboard':
                 return <DistributorDashboard setActiveComponent={setActiveComponent} />;
-            case 'accept-product':
-                return <AcceptProduct />;
+            case 'all-product':
+                return <AllProduct />;
             case 'pending-product':
                 return <PendingProduct />;
             case 'retailer-list':

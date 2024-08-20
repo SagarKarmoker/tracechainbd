@@ -1,122 +1,41 @@
-import React, { useState } from 'react'
-import { useToast } from '@chakra-ui/react'
+import React, { useState } from 'react';
+import { Box, Button, Heading, VStack, Icon } from '@chakra-ui/react';
+import { FiPackage, FiLayers } from 'react-icons/fi'; 
+import SingleProductDispatch from '../importers/SingleProductDispatch';
+import MultipleProductDispatch from '../importers/MultipleProductDispatch';
 
-// distributor -> retailer dispatch feature
 function DispatchToRetailer() {
-  const toast = useToast();
-  const [productId, setProductId] = useState("")
-  const [quantity, setQuantity] = useState('')
-  const [dispatchTo, setDispatchTo] = useState("")
-  const [isHidden, setIsHidden] = useState(true)
-  const [hideGetBtn, setHideGetBtn] = useState(false)
+    const [selectedOption, setSelectedOption] = useState(null);
 
-  const handleDetails = () => {
-    if (productId != '') {
-      console.log("get from blockchain")
-      setIsHidden(false)
-      setHideGetBtn(true)
-      setProductId('')
-    } else {
-      // show waring toast
-      toast({
+    return (
+        <Box p={4}>
+            <Heading size="lg" mb={6}>Distributor to Retailer Dispatch</Heading>
+            <Heading size="md" mb={4}>Please choose your option:</Heading>
+            <VStack spacing={4} className='flex'>
+                <Button
+                    leftIcon={<Icon as={FiPackage} />}
+                    colorScheme={selectedOption === 'single' ? 'blue' : 'gray'}
+                    variant={selectedOption === 'single' ? 'solid' : 'outline'}
+                    onClick={() => setSelectedOption('single')}
+                >
+                    Single Product Dispatch
+                </Button>
+                <Button
+                    leftIcon={<Icon as={FiLayers} />}
+                    colorScheme={selectedOption === 'multiple' ? 'green' : 'gray'}
+                    variant={selectedOption === 'multiple' ? 'solid' : 'outline'}
+                    onClick={() => setSelectedOption('multiple')}
+                >
+                    Multiple Product Dispatch
+                </Button>
+            </VStack>
 
-      })
-    }
-  }
-
-  const handleDispatch = () => {
-    console.log("dispatch product")
-  }
-
-  return (
-    <>
-      <div>
-        <h1 className='text-center font-bold text-4xl'>Distributor Dispatch Dashboard</h1>
-        <div className='flex justify-center mt-10'>
-          <div className='flex flex-col gap-4 w-96'>
-            <input type="number" className='p-3 border rounded-lg' placeholder='Enter product ID to get details' value={productId} onChange={(e) => setProductId(e.target.value)} required />
-
-            {
-              !hideGetBtn && <button onClick={handleDetails} className='bg-blue-600 p-3 text-white font-bold rounded-xl'>Get Details</button>
-            }
-          </div>
-        </div>
-        {/* hidden util get details */}
-        <div className='flex justify-center mt-5'>
-          {/* details of product got from blockchain */}
-          {!isHidden ?
-            <div className='flex flex-col'>
-              <table className='border text-center p-2'>
-                <thead>
-                  <th>Product</th>
-                  <th>Details</th>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>ID</td>
-                    <td>1</td>
-                  </tr>
-                  <tr>
-                    <td>Name</td>
-                    <td>Dove</td>
-                  </tr>
-                  <tr>
-                    <td>Desc</td>
-                    <td>Body Soap</td>
-                  </tr>
-                  <tr>
-                    <td>Category</td>
-                    <td>Toilaties</td>
-                  </tr>
-                  <tr>
-                    <td>Country of Origin</td>
-                    <td>INDIA (IN)</td>
-                  </tr>
-                  <tr>
-                    <td>Manufacturer</td>
-                    <td>Uniliver</td>
-                  </tr>
-                  <tr>
-                    <td>Price</td>
-                    <td>100</td>
-                  </tr>
-                  <tr>
-                    <td>Quantity</td>
-                    <td>100</td>
-                  </tr>
-                  <tr>
-                    <td>Imported Date</td>
-                    <td>20/07/2024</td>
-                  </tr>
-                  <tr>
-                    <td>Imported Address</td>
-                    <td>0x.......24</td>
-                  </tr>
-                  <tr>
-                    <td>Customs Address</td>
-                    <td>0x.......51</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div className='mt-5 flex flex-col gap-4'>
-                <input type="number" className='p-3 border rounded-lg w-96' placeholder='Enter address (receiver)' value={dispatchTo} onChange={(e) => setDispatchTo(e.target.value)} required />
-
-                <input type="number" className='p-3 border rounded-lg w-96' placeholder='Enter quantity to dispatch' value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
-
-                <button onClick={handleDispatch} className='bg-blue-600 p-3 text-white font-bold rounded-xl'>Dispatch Product to Retailer</button>
-              </div>
-            </div>
-            :
-            <p>
-
-            </p>
-          }
-
-        </div>
-      </div >
-    </>
-  )
+            <Box mt={8}>
+                {selectedOption === 'single' && <SingleProductDispatch />}
+                {selectedOption === 'multiple' && <MultipleProductDispatch />}
+            </Box>
+        </Box>
+    );
 }
 
-export default DispatchToRetailer
+export default DispatchToRetailer;

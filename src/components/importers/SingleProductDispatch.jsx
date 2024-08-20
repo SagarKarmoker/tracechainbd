@@ -73,10 +73,10 @@ function SingleProductDispatch() {
           value={distributorAddress}
           onChange={(e) => setDistributorAddress(e.target.value)}
         />
-        <Link href="#" color="blue.400" fontSize="sm" alignSelf="flex-start">
+        {/* <Link href="#" color="blue.400" fontSize="sm" alignSelf="flex-start">
           <Icon as={FiSearch} mr={2} />
           Find distributor addresses
-        </Link>
+        </Link> */}
         <Input
           placeholder="Memo Document Hash"
           type="text"
