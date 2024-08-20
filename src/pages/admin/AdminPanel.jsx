@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { adminAddr } from '../../contants';
 import AddAndShowAdmin from '../../components/admin/AddAndShowAdmin';
@@ -7,10 +7,12 @@ import AdminApplications from '../../components/admin/AdminApplications'
 import AcceptedApplications from '../../components/admin/AcceptedApplications';
 import DeniedApplications from '../../components/admin/DeniedApplications';
 import AllProducts from '../../components/admin/AllProducts';
+import { etherContract } from '../../contants';
 
 function AdminPanel() {
   const activeAccount = useActiveAccount();
   const [activeComponent, setActiveComponent] = useState('dashboard');
+  const [adminList, setAdminList] = useState([]);
 
   const renderComponent = () => {
     switch (activeComponent) {
@@ -43,7 +45,18 @@ function AdminPanel() {
     }
   };
 
-  if (activeAccount?.address !== adminAddr) {
+  useEffect(() => {
+    const fetchAdminList = async () => {
+      const _adminList = await etherContract.getAllAdmins();
+      setAdminList(_adminList);
+    }
+
+    fetchAdminList();
+  }, []);
+
+  console.log(adminList)
+
+  if (!adminList.includes(activeAccount?.address)) {
     return <>
       <div className='flex flex-col justify-center items-center h-[90vh]'>
         <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>

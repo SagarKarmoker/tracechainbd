@@ -1,11 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
-import { adminAddr } from '../../contants';
+import { adminAddr, etherContract } from '../../contants';
 
 function AdminDashboard({ setActiveComponent }) {
     const activeAccount = useActiveAccount();
+    const [adminList, setAdminList] = useState([]);
 
-    if (activeAccount?.address !== adminAddr) {
+    useEffect(() => {
+        const fetchAdminList = async () => {
+            const _adminList = await etherContract.getAllAdmins();
+            setAdminList(_adminList);
+        }
+
+        fetchAdminList();
+    }, []);
+
+    console.log(adminList)
+    console.log(adminList.includes(activeAccount?.address))
+
+    if (!adminList.includes(activeAccount?.address)) {
         return <>
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
