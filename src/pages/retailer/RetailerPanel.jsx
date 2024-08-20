@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import TrackProduct from '../../components/retailers/TrackProduct'
-import { useActiveAccount } from 'thirdweb/react'
+import userAuth from '../../hooks/userAuth';
+import { isRetailer } from '../../components/utils/RoleCheck';
 import PendingProduct from '../../components/retailers/PendingProduct'
 import AcceptProduct from '../../components/retailers/AcceptProduct'
 import RetailerDashboard from '../../components/retailers/RetailerDashboard'
@@ -10,7 +11,7 @@ import ReportProduct from '../../components/ReportProduct'
 
 function RetailerPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
-    const activeAccount = useActiveAccount();
+    const { account, isConnected } = userAuth();
 
     const renderComponent = () => {
         switch (activeComponent) {
@@ -33,15 +34,18 @@ function RetailerPanel() {
         }
     };
 
-    if (activeAccount?.address == '') {
+    if (account == null && !isConnected) {
         return (
-            <div className='flex flex-col justify-center items-center h-[90vh]'>
-                <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
-                <br />
-                <p className='text-red-400'>Please login to account</p>
-                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4' onClick={() => { window.history.back(); }}>
-                    Go back
-                </button>
+            <div>
+                <p>Please login first</p>
+            </div>
+        )
+    }
+
+    if (account != '' && isConnected && !isRetailer(account)) {
+        return (
+            <div className="text-red-500 text-center mt-10">
+                <p>Please Register for Retailer Role</p>
             </div>
         )
     }

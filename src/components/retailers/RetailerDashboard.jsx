@@ -1,11 +1,25 @@
-import { useState } from 'react'
-import { useActiveAccount } from 'thirdweb/react'
+import { useEffect, useState } from 'react';
+import useAuth from '../../hooks/userAuth';
+import { isRetailer } from '../utils/RoleCheck';
 
 function RetailerDashboard({ setActiveComponent }) {
-    const activeAccount = useActiveAccount();
+    const { isConnected, account } = useAuth();
+    const [checkRetailer, setCheckRetailer] = useState(false);
 
-    if (activeAccount?.address == '') {
-        return <>
+    useEffect(() => {
+        const checkIfRetailer = async () => {
+            if (account) {
+                const result = await isRetailer(account);
+                console.log(result);
+                setCheckRetailer(result);
+            }
+        };
+
+        checkIfRetailer();
+    }, [account]);
+
+    if (!isConnected) {
+        return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
                 <br />
@@ -14,7 +28,21 @@ function RetailerDashboard({ setActiveComponent }) {
                     Go back
                 </button>
             </div>
-        </>
+        );
+    }
+
+    if (isConnected && !checkRetailer) {
+        return (
+            <div className='flex flex-col justify-center items-center h-[90vh]'>
+                <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
+                <br />
+                <p className='text-red-400'>You are not an Retailer</p>
+                <p className='text-red-400'>Please apply for registation</p>
+                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4'>
+                    Go back
+                </button>
+            </div>
+        );
     }
 
     return (
