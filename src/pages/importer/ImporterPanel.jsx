@@ -9,6 +9,7 @@ import DispatchToDistributor from '../../components/importers/DispatchToDistribu
 import AllDistributorList from '../../components/importers/AllDistributorList';
 import userAuth from '../../hooks/userAuth';
 import { isImporter } from '../../components/utils/RoleCheck';
+import UpdateProductPrice from '../../components/importers/UpdateProductPrice';
 
 function ImporterPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -26,6 +27,8 @@ function ImporterPanel() {
                 return <AllProduct />;
             case 'distributor-list':
                 return <AllDistributorList />;
+            case 'update-price':
+                return <UpdateProductPrice />;
             case 'dispatch-to-distributor':
                 return <DispatchToDistributor />;
             case 'dispatch-history':
