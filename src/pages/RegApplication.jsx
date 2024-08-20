@@ -8,22 +8,20 @@ import { ethers } from 'ethers';
 // ipfs desktop: http://127.0.0.1:5001/api/v0/add
 const ipfs = create({ url: "http://127.0.0.1:5001/api/v0/add" }); //http://127.0.0.1:5001
 
-// single component for reg
 function RegApplication() {
     const toast = useToast();
     const [compName, setCompName] = useState('');
     const [locAddress, setLocAddress] = useState('');
-    const [contractNumber, setContractNumber] = useState('')
-    const [countryOfOrigin, setCountryOfOrigin] = useState('')
-    const [tinNumber, setTinNumber] = useState('')
-    const [vatRegNumber, setVatRegNumber] = useState('')
-    const [ipfsDocHash, setIpfsDocHash] = useState('') // upload files as folder structer
-    // detect the role using url param 
-    const [role, setRole] = useState('')
+    const [contractNumber, setContractNumber] = useState('');
+    const [countryOfOrigin, setCountryOfOrigin] = useState('');
+    const [tinNumber, setTinNumber] = useState('');
+    const [vatRegNumber, setVatRegNumber] = useState('');
+    const [ipfsDocHash, setIpfsDocHash] = useState(''); // upload files as folder structure
+    const [role, setRole] = useState('');
+    const [loading, setLoading] = useState(false); // Loading state for the button
     const { account } = useAuth();
-    const { traceChainBDContract, signer } = useWallet();
+    const { traceChainBDContract } = useWallet();
 
-    // ipfs
     const [tin, setTin] = useState(null);
     const [tradeLic, setTradeLic] = useState(null);
     const [vat, setVat] = useState(null);
@@ -66,18 +64,17 @@ function RegApplication() {
                     status: "success",
                     duration: 5000,
                     isClosable: true,
-                })
+                });
                 console.log(directory.cid.toString());
                 console.log(`http://127.0.0.1:8080/ipfs/${directory.cid}`);
-            }
-            else {
+            } else {
                 toast({
                     title: "Error",
                     description: "Error uploading images to IPFS.",
                     status: "error",
                     duration: 5000,
                     isClosable: true,
-                })
+                });
             }
         } catch (error) {
             console.error("Error uploading directory to IPFS:", error);
@@ -95,9 +92,11 @@ function RegApplication() {
                 status: "error",
                 duration: 5000,
                 isClosable: true,
-            })
+            });
             return;
         }
+
+        setLoading(true); // Start loading
 
         const tinDoc = await fetch(tin).then((r) => r.blob());
         const tradeDoc = await fetch(tradeLic).then((r) => r.blob());
@@ -105,7 +104,6 @@ function RegApplication() {
 
         await uploadFilesAsDirectory([tinDoc, tradeDoc, vatDoc]);
 
-        // smart contract interaction
         if (compName === '' || locAddress === '' || contractNumber === '' || countryOfOrigin === '' || tinNumber === '' || vatRegNumber === '' || ipfsDocHash === '' || role === '') {
             toast({
                 title: "Error",
@@ -113,10 +111,11 @@ function RegApplication() {
                 status: "error",
                 duration: 5000,
                 isClosable: true,
-            })
+            });
+            setLoading(false); // Stop loading
             return;
         }
-        console.log(role)
+        console.log(role);
 
         try {
             const txParams = {
@@ -136,14 +135,14 @@ function RegApplication() {
             setIpfsDocHash('');
             setRole('');
 
-            if (transactionResult != undefined) {
+            if (transactionResult !== undefined) {
                 toast({
                     title: "Success",
                     description: "Registration application submitted successfully.",
                     status: "success",
                     duration: 5000,
                     isClosable: true,
-                })
+                });
             } else {
                 toast({
                     title: "Error",
@@ -151,10 +150,19 @@ function RegApplication() {
                     status: "error",
                     duration: 5000,
                     isClosable: true,
-                })
+                });
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            toast({
+                title: "Error",
+                description: "An error occurred during the submission.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+        } finally {
+            setLoading(false); // Stop loading
         }
     }
 
@@ -163,13 +171,13 @@ function RegApplication() {
             <div className='flex justify-center items-center h-screen'>
                 <h1 className='text-4xl font-semibold'>Please connect your wallet to continue</h1>
             </div>
-        )
+        );
     }
 
     return (
         <>
             <div className='px-10 pt-5'>
-                <h1 className='font-semibold text-4xl text-center mb-4'>Registation Application</h1>
+                <h1 className='font-semibold text-4xl text-center mb-4'>Registration Application</h1>
                 <div className='flex justify-center'>
                     <div className='flex flex-col gap-4 w-fit'>
                         <label htmlFor="name">
@@ -177,11 +185,11 @@ function RegApplication() {
                                 value={compName} onChange={(e) => setCompName(e.target.value)} />
                         </label>
                         <label htmlFor="location">
-                            <input type="text" placeholder='Enter location/addreass of company' className='border p-3 rounded-lg w-full'
+                            <input type="text" placeholder='Enter location/address of company' className='border p-3 rounded-lg w-full'
                                 value={locAddress} onChange={(e) => setLocAddress(e.target.value)} />
                         </label>
                         <label htmlFor="contact">
-                            <input type="text" placeholder='Enter contact number company' className='border p-3 rounded-lg w-full'
+                            <input type="text" placeholder='Enter contact number of company' className='border p-3 rounded-lg w-full'
                                 value={contractNumber} onChange={(e) => setContractNumber(e.target.value)} />
                         </label>
                         <label htmlFor="origin">
@@ -197,7 +205,6 @@ function RegApplication() {
                                 value={vatRegNumber} onChange={(e) => setVatRegNumber(e.target.value)} />
                         </label>
 
-                        {/* upload files */}
                         <label htmlFor="tin">
                             <input type="file" className='border p-3 rounded-lg w-full' onChange={(e) => handleFileChange(e, setTin)} />
                         </label>
@@ -208,10 +215,8 @@ function RegApplication() {
                             <input type="file" className='border p-3 rounded-lg w-full' onChange={(e) => handleFileChange(e, setVat)} />
                         </label>
 
-                        {/* role selection */}
                         <select name="role" id="role" className='border p-3 rounded-lg w-[400px]'
-                            value={role} onChange={(e) => setRole(e.target.value)}
-                        >
+                            value={role} onChange={(e) => setRole(e.target.value)}>
                             <option value="">Select a role</option>
                             <option value="IMPORTER">Importer</option>
                             <option value="DISTRIBUTOR">Distributor</option>
@@ -219,14 +224,19 @@ function RegApplication() {
                         </select>
 
                         <div className='flex justify-center'>
-                            <button className='bg-blue-600 text-white w-[200px] p-4 rounded-xl font-bold' onClick={handleSubmit}>Submit Application</button>
+                            <button
+                                className='bg-blue-600 text-white w-[200px] p-4 rounded-xl font-bold'
+                                onClick={handleSubmit}
+                                disabled={loading} // Disable the button while loading
+                            >
+                                {loading ? "Submitting..." : "Submit Application"} {/* Display loading text */}
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-
         </>
     )
 }
 
-export default RegApplication
+export default RegApplication;
