@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import TrackProduct from '../../components/distributors/TrackProduct'
-import { useActiveAccount } from 'thirdweb/react'
+import useAuth from '../../hooks/userAuth'
 import DistributorDashboard from '../../components/distributors/DistributorDashboard'
 import AllRetailerList from '../../components/distributors/AllRetailerList'
 import DispatchToRetailer from '../../components/distributors/DispatchToRetailer'
@@ -8,10 +8,11 @@ import PendingProduct from '../../components/distributors/PendingProduct'
 import AcceptProduct from '../../components/distributors/AcceptProduct'
 import DistributorDispatchHistory from '../../components/distributors/DistributorDispatchHistory'
 import ReportProduct from '../../components/ReportProduct'
+import { isDistributor } from '../../components/utils/RoleCheck';
 
 function DistributorPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
-    const activeAccount = useActiveAccount();
+    const { account, isConnected } = useAuth();
 
     const renderComponent = () => {
         switch (activeComponent) {
@@ -36,28 +37,24 @@ function DistributorPanel() {
         }
     };
 
-    if (activeAccount?.address == '') {
+    if (account == null && !isConnected) {
         return (
-            <div className='flex flex-col justify-center items-center h-[90vh]'>
-                <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
-                <br />
-                <p className='text-red-400'>Please login to account</p>
-                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4' onClick={() => { window.history.back(); }}>
-                    Go back
-                </button>
+            <div>
+                <p>Please login first</p>
+            </div>
+        )
+    }
+
+    if (account != '' && isConnected && !isDistributor(account)) {
+        return (
+            <div className="text-red-500 text-center mt-10">
+                <p>Please Register for Distributor Role</p>
             </div>
         )
     }
 
     return (
         <div className='px-10 pt-5'>
-            {/* customs dashboard */}
-            {/* <AddProduct /> */}
-            {/* <DispatchToImporter /> */}
-            {/* <CustomsDispatchHistory /> */}
-            {/* <TrackProduct /> */}
-            {/* <AllImporterList /> */}
-
             <div>
                 {renderComponent()}
             </div>

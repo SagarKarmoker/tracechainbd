@@ -27,7 +27,7 @@ const useAuth = () => {
       setAccount(accounts[0]);
       setInterval(() => {
         window.location.reload();
-      }, 5000);
+      }, 2000);
     } catch (error) {
       console.error("Failed to connect wallet:", error);
     }

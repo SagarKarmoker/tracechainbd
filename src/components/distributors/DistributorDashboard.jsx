@@ -1,25 +1,24 @@
 import { useState, useEffect } from 'react'
-import { useActiveAccount, useActiveWalletConnectionStatus } from 'thirdweb/react';
+import useAuth from '../../hooks/userAuth';
 import { isDistributor } from '../utils/RoleCheck';
 
 function DistributorDashboard({ setActiveComponent }) {
-    const activeAccount = useActiveAccount();
+    const { account, isConnected } = useAuth();
     const [checkDistributor, setCheckDistributor] = useState(false);
-    const status = useActiveWalletConnectionStatus();
 
     useEffect(() => {
         const checkIfDistributor = async () => {
-            if (activeAccount?.address) {
-                const result = await isDistributor(activeAccount.address);
+            if (account) {
+                const result = await isDistributor(account);
                 console.log(result);
                 setCheckDistributor(result);
             }
         };
 
         checkIfDistributor();
-    }, [activeAccount]);
+    }, [account]);
 
-    if (status === 'disconnected') {
+    if (!isConnected) {
         return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
@@ -32,7 +31,7 @@ function DistributorDashboard({ setActiveComponent }) {
         );
     }
 
-    if (status === 'connected' && !checkDistributor) {
+    if (isConnected && !checkDistributor) {
         return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
