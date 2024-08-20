@@ -147,7 +147,9 @@ function AllProduct() {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {deliveredProducts.map((product, index) => (
+                        {deliveredProducts
+                        .filter(product => product.acceptedBy === account)
+                        .map((product, index) => (
                             <Tr key={index}>
                                 <Td>{product.dispatchId}</Td>
                                 <Td>{product.productId}</Td>

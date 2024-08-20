@@ -30,28 +30,26 @@ function AllProduct() {
                         const product = await etherContract.products(productId);
                         const owner = await etherContract.productLifeCycles(productId);
 
-                        if(owner === account){
-                            return {
-                                dispatchId,
-                                productId,
-                                acceptedBy,
-                                acceptedOn,
-                                status,
-                                ipfsDocHash: details.ipfsDocHash,
-                                quantity: details.quantity.toString(),
-                                boxId: product.boxId.toString(),
-                                name: product.name,
-                                description: product.description,
-                                category: product.category,
-                                countryOfOrigin: product.countryOfOrigin,
-                                manufacturer: product.manufacturer,
-                                price: product.price.toString(),
-                                importedDate: product.importedDate.toNumber(),
-                                importerAddr: product.importerAddr,
-                                customsAddr: product.customsAddr,
-                                owner: owner.owner,
-                            };
-                        }
+                        return {
+                            dispatchId,
+                            productId,
+                            acceptedBy,
+                            acceptedOn,
+                            status,
+                            ipfsDocHash: details.ipfsDocHash,
+                            quantity: details.quantity.toString(),
+                            boxId: product.boxId.toString(),
+                            name: product.name,
+                            description: product.description,
+                            category: product.category,
+                            countryOfOrigin: product.countryOfOrigin,
+                            manufacturer: product.manufacturer,
+                            price: product.price.toString(),
+                            importedDate: product.importedDate.toNumber(),
+                            importerAddr: product.importerAddr,
+                            customsAddr: product.customsAddr,
+                            owner: owner.owner,
+                        };
                     }
                 })
             );
@@ -149,7 +147,9 @@ function AllProduct() {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {deliveredProducts.map((product, index) => (
+                        {deliveredProducts
+                        .filter(product => product.acceptedBy === account)
+                        .map((product, index) => (
                             <Tr key={index}>
                                 <Td>{product.dispatchId}</Td>
                                 <Td>{product.productId}</Td>
