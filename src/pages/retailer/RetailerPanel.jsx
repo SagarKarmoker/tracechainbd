@@ -3,11 +3,11 @@ import TrackProduct from '../../components/retailers/TrackProduct'
 import userAuth from '../../hooks/userAuth';
 import { isRetailer } from '../../components/utils/RoleCheck';
 import PendingProduct from '../../components/retailers/PendingProduct'
-import AcceptProduct from '../../components/retailers/AcceptProduct'
 import RetailerDashboard from '../../components/retailers/RetailerDashboard'
 import SellProduct from '../../components/retailers/SellProduct'
 import RetailerSoldHistory from '../../components/retailers/RetailerSoldHistory'
 import ReportProduct from '../../components/ReportProduct'
+import AllProduct from '../../components/retailers/AllProduct';
 
 function RetailerPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -17,8 +17,8 @@ function RetailerPanel() {
         switch (activeComponent) {
             case 'dashboard':
                 return <RetailerDashboard setActiveComponent={setActiveComponent} />;
-            case 'accept-product':
-                return <AcceptProduct />;
+            case 'all-product':
+                return <AllProduct />;
             case 'pending-product':
                 return <PendingProduct />;
             case 'sell-product':
