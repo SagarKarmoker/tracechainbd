@@ -1,66 +1,111 @@
 import React, { useState } from 'react';
-import { Button, Input } from '@chakra-ui/react';
+import { Button, Input, Box, Text, VStack } from '@chakra-ui/react';
 import { Scanner } from '@yudiel/react-qr-scanner';
 
 function QRScan() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [qrResult, setQrResult] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(URL.createObjectURL(file));
-      // Close the live scanner if an image is selected
       setIsScannerOpen(false);
+      setQrResult('');
+      setErrorMessage('');
     }
   };
 
   const handleScan = (result) => {
-    if (result) {
-      console.log(result);
-      alert(`QR Code Result: ${result}`);
-      // Close the scanner after a successful scan
-      setIsScannerOpen(false);
+    if (result && result.data) {
+      console.log('QR Code Result:', result.data);
+      setQrResult(result.data);
       setSelectedFile(null);
+      setIsScannerOpen(false);
+    } else {
+      console.log('No QR code detected in the image.');
+      setErrorMessage('No QR code detected. Please try again with a different image.');
     }
   };
 
   const handleError = (error) => {
-    console.error(error);
+    console.error('Scanner Error:', error);
+    setErrorMessage('An error occurred while scanning. Please try again.');
   };
 
   return (
-    <section className="px-20 mt-10">
-      <h1 className="text-3xl font-bold text-center">QR Scan</h1>
-      <p className="text-gray-500 text-center">Scan the QR code to get the product details</p>
+    <Box px={8} py={10}>
+      <VStack spacing={6}>
+        <Text fontSize="3xl" fontWeight="bold" textAlign="center">
+          QR Code Scanner
+        </Text>
+        <Text fontSize="md" color="gray.600" textAlign="center">
+          Scan a QR code using your camera or upload an image containing a QR code.
+        </Text>
 
-      <div className="mt-10">
-        <Input type="file" accept="image/*" onChange={handleFileChange} mb={4} />
-        {selectedFile && (
-          <Scanner
-            image={selectedFile}
-            onScan={handleScan}
-            onError={handleError}
-            style={{ width: '100%' }}
+        {/* QR Code from Image */}
+        <Box w="100%" textAlign="center">
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            mb={4}
+            variant="filled"
           />
-        )}
-      </div>
+          {selectedFile && (
+            <Scanner
+              image={selectedFile}
+              onScan={handleScan}
+              onError={handleError}
+              styles={{ width: '100%' }}
+            />
+          )}
+        </Box>
 
-      <p className="text-center my-4">OR</p>
+        <Text fontSize="lg" fontWeight="bold">
+          OR
+        </Text>
 
-      <div className="text-center">
-        <Button colorScheme="green" onClick={() => setIsScannerOpen(!isScannerOpen)}>
-          {isScannerOpen ? 'Close Scanner' : 'Scan QR'}
-        </Button>
-        {isScannerOpen && (
-          <Scanner
-            onScan={handleScan}
-            onError={handleError}
-            style={{ width: '100%', marginTop: '10px' }}
-          />
+        {/* Live Camera QR Scanner */}
+        <Box textAlign="center">
+          <Button colorScheme="teal" onClick={() => {
+            setIsScannerOpen(!isScannerOpen);
+            setQrResult('');
+            setErrorMessage('');
+          }}>
+            {isScannerOpen ? 'Close Camera Scanner' : 'Open Camera Scanner'}
+          </Button>
+          {isScannerOpen && (
+            <Box mt={4}>
+              <Scanner
+                onScan={handleScan}
+                onError={handleError}
+                styles={{ width: '100%' }}
+              />
+            </Box>
+          )}
+        </Box>
+
+        {/* Display Result or Error Message */}
+        {qrResult && (
+          <Box p={4} bg="green.100" borderRadius="md" w="100%" textAlign="center">
+            <Text fontSize="lg" color="green.800">
+              <strong>Scanned QR Code:</strong> {qrResult}
+            </Text>
+          </Box>
         )}
-      </div>
-    </section>
+
+        {errorMessage && (
+          <Box p={4} bg="red.100" borderRadius="md" w="100%" textAlign="center">
+            <Text fontSize="lg" color="red.800">
+              {errorMessage}
+            </Text>
+          </Box>
+        )}
+      </VStack>
+    </Box>
   );
 }
 

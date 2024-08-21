@@ -102,7 +102,10 @@ function Navbar() {
                   </li>
                   <li>
                     <Link to="/qrscan" className="text-black font-semibold">
-                      Scan QR <IoQrCodeOutline />
+                      <div className="flex justify-center items-center border border-black rounded-lg px-4 py-1"> 
+                        <p className="mr-2">Scan QR</p>
+                        <IoQrCodeOutline />
+                        </div>
                     </Link>
                   </li>
                 </>
