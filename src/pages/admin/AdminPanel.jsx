@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
-import { adminAddr } from '../../contants';
 import AddAndShowAdmin from '../../components/admin/AddAndShowAdmin';
 import AdminDashboard from '../../components/admin/AdminDashboard';
 import AdminApplications from '../../components/admin/AdminApplications'
@@ -54,7 +53,12 @@ function AdminPanel() {
     fetchAdminList();
   }, []);
 
-  console.log(adminList)
+  console.log("activeComponent", activeComponent)
+
+  useEffect(() => {
+    // Reset to 'dashboard' whenever the component mounts (e.g., when route changes)
+    setActiveComponent('dashboard');
+  }, []);
 
   if (!adminList.includes(activeAccount?.address)) {
     return <>

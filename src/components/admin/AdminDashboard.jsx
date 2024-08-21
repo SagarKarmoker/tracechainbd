@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
-import { adminAddr, etherContract } from '../../contants';
+import { etherContract } from '../../contants';
 
 function AdminDashboard({ setActiveComponent }) {
     const activeAccount = useActiveAccount();

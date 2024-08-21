@@ -4,7 +4,6 @@ import DispatchToImporter from '../../components/customs/DispatchToImporter';
 import CustomsDispatchHistory from '../../components/customs/CustomsDispatchHistory';
 import TrackProduct from '../../components/customs/TrackProduct';
 import AllImporterList from '../../components/customs/AllImporterList';
-import { useActiveAccount, useActiveWalletConnectionStatus } from 'thirdweb/react';
 import CustomsDashboard from '../../components/customs/CustomsDashboard';
 import AllProductsList from '../../components/customs/AllProductsList';
 import { ethers } from 'ethers';
@@ -16,7 +15,6 @@ function CustomsPanel() {
     const [activeComponent, setActiveComponent] = useState('dashboard');
     const [isCustoms, setIsCustoms] = useState(false);
     const { account, isConnected } = userAuth();
-    const status = useActiveWalletConnectionStatus();
     const [contract, setContract] = useState(null);
 
     useEffect(() => {
