@@ -26,6 +26,7 @@ function Navbar() {
   const navigate = useNavigate();
   const { isConnected, account } = useAuth();
   const activeAccount = useActiveAccount();
+  const [activeComponent, setActiveComponent] = useState('dashboard');
 
   useEffect(() => {
     const checkRole = async () => {
@@ -45,6 +46,7 @@ function Navbar() {
         }
 
         setRole(userRole);
+        navigate("/dashboard");
       }
     };
 
@@ -117,23 +119,6 @@ function Navbar() {
 
       <Routes>
         <Route path="/" element={<Roles />} />
-        {account === adminAddr && (
-          <Route path="/admin" element={<AdminPanel />} />
-        )}
-        {/* admin routes */}
-        <Route path="/admin" element={<AdminPanel />} />
-
-        {/* customs routes */}
-        <Route path="/customs" element={<CustomsPanel />} />
-
-        {/* importer routes */}
-        <Route path="/importer" element={<ImporterPanel />} />
-
-        {/* distributor routes */}
-        <Route path="/distributor" element={<DistributorPanel />} />
-
-        {/* retailer routes */}
-        <Route path="/retailer" element={<RetailerPanel />} />
 
         {/* common routes */}
         <Route path="/home" element={<Roles />} />
@@ -149,7 +134,10 @@ function Navbar() {
           />
         )}
         {role === "customs" && (
-          <Route path="/dashboard" element={<CustomsPanel />} />
+          <Route path="/dashboard" element={<CustomsPanel 
+            setActiveComponent={setActiveComponent}
+            activeComponent={activeComponent}
+            />} />
         )}
         {role === "importer" && (
           <Route path="/dashboard" element={<ImporterPanel />} />
