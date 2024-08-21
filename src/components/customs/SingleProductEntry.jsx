@@ -158,9 +158,7 @@ function SingleProductEntry({ customsAddr }) {
         x += width + padding; // Update x position for next QR code
       }
       
-      const _oldNNew = oldCounter.toNumber() + quantity;
-      console.log(_oldNNew)
-      pdf.save(`product_${oldCounter}_to_${_oldNNew}-qr-codes.pdf`);
+      pdf.save(`product_${oldCounter}-qr-codes.pdf`);
     } catch (error) {
       console.error("Error generating PDF:", error);
       toast({

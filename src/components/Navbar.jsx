@@ -46,7 +46,7 @@ function Navbar() {
         }
 
         setRole(userRole);
-        navigate("/dashboard");
+        // navigate("/dashboard");
       }
     };
 
@@ -119,6 +119,23 @@ function Navbar() {
 
       <Routes>
         <Route path="/" element={<Roles />} />
+        {account === adminAddr && (
+          <Route path="/admin" element={<AdminPanel />} />
+        )}
+        {/* admin routes */}
+        <Route path="/admin" element={<AdminPanel />} />
+
+        {/* customs routes */}
+        <Route path="/customs" element={<CustomsPanel />} />
+
+        {/* importer routes */}
+        <Route path="/importer" element={<ImporterPanel />} />
+
+        {/* distributor routes */}
+        <Route path="/distributor" element={<DistributorPanel />} />
+
+        {/* retailer routes */}
+        <Route path="/retailer" element={<RetailerPanel />} />
 
         {/* common routes */}
         <Route path="/home" element={<Roles />} />
@@ -129,7 +146,7 @@ function Navbar() {
 
         {role === "admin" && (
           <Route
-            path="/dashboard"
+            path="/admin"
             element={<AdminPanel fromNav={true} />}
           />
         )}

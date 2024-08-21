@@ -41,6 +41,7 @@ function PendingProduct() {
                     }
                 }
 
+                console.log(validDispatches)
                 setDispatches(validDispatches);
                 setLoading(false);
             } catch (error) {

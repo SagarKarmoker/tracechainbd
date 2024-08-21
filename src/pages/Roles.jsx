@@ -19,8 +19,8 @@ function Roles() {
 
   // handle buttons
   const handleAdmin = () => {
-    // navigate("/admin");
-    navigate("/dashboard");
+    navigate("/admin");
+    // navigate("/dashboard");
   };
   const handleCustom = () => {
     // navigate("/customs");
