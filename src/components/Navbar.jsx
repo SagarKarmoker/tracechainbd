@@ -10,6 +10,7 @@ import DistributorPanel from "../pages/distributor/DistributorPanel";
 import RetailerPanel from "../pages/retailer/RetailerPanel";
 import RegApplication from "../pages/RegApplication";
 import ImporterPanel from "../pages/importer/ImporterPanel";
+import { IoQrCodeOutline } from "react-icons/io5";
 import {
   isAdmin,
   isCustoms,
@@ -20,6 +21,7 @@ import {
 import Profile from "../pages/Profile";
 import useAuth from "../hooks/userAuth";
 import { useActiveAccount } from "thirdweb/react";
+import QRScan from "./QRScan";
 
 function Navbar() {
   const [role, setRole] = useState("");
@@ -98,6 +100,11 @@ function Navbar() {
                       Dashboard
                     </Link>
                   </li>
+                  <li>
+                    <Link to="/qrscan" className="text-black font-semibold">
+                      Scan QR <IoQrCodeOutline />
+                    </Link>
+                  </li>
                 </>
               ) : (
                 role != "admin" &&
@@ -138,6 +145,7 @@ function Navbar() {
         <Route path="/retailer" element={<RetailerPanel />} />
 
         {/* common routes */}
+        <Route path="/qrscan" element={<QRScan />} />
         <Route path="/home" element={<Roles />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/apply" element={<RegApplication />} />
