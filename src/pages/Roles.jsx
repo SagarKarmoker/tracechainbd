@@ -19,22 +19,27 @@ function Roles() {
 
   // handle buttons
   const handleAdmin = () => {
-    navigate("/admin");
+    // navigate("/admin");
+    navigate("/dashboard");
   };
   const handleCustom = () => {
-    navigate("/customs");
+    // navigate("/customs");
+    navigate("/dashboard");
   };
 
-  const handleImportar = () => {
-    navigate("/importer");
+  const handleImporter = () => {
+    // navigate("/importer");
+    navigate("/dashboard");
   }
 
   const handleDistributor = () => {
-    navigate("/distributor");
+    // navigate("/distributor");
+    navigate("/dashboard");
   }
 
   const handleRetailer = () => {
-    navigate("/retailer");
+    // navigate("/retailer");
+    navigate("/dashboard");
   };
 
   return (
@@ -92,7 +97,7 @@ function Roles() {
                 </Text>
                 <Button
                   colorScheme="blue"
-                  // onClick={handleImportar}
+                  onClick={handleImporter}
                   rightIcon={<MdOutlineCallMade />}
                 >
                   <Link to="/importer">
