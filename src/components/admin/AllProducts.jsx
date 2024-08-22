@@ -1,12 +1,15 @@
-import { Divider, Box, Heading, Text, Stack, Spinner, Button, Collapse, SimpleGrid } from '@chakra-ui/react';
+import { Divider, Box, Heading, Text, Stack, Spinner, Button, Collapse, SimpleGrid, Flex, IconButton } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { etherContract } from '../../contants';
+import { ArrowLeftIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
 
 function AllProducts() {
     const [totalProducts, setTotalProducts] = useState(0);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [expandedProductIds, setExpandedProductIds] = useState({}); // Track which products are expanded
+    const navigate = useNavigate();
 
     useEffect(() => {
         const productCounter = async () => {
@@ -67,10 +70,11 @@ function AllProducts() {
 
     return (
         <Box p={10}>
-            <Box mb={4} textAlign="center">
-                <Heading as="h1" size="xl">All Products List</Heading>
-            </Box>
-
+            <div className='flex justify-between'>
+                <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} /> {/* Add onClick handler */}
+                <h1 className='text-center font-bold text-4xl'>All Products List</h1>
+                <p></p>
+            </div>
             <Divider my={4} />
 
             {loading ? (

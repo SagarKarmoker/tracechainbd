@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { TraceChainContract } from '../../contants';
 import { ABI } from '../../contractABI';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import {
   Table,
   Thead,
@@ -30,6 +31,8 @@ function AcceptedApplications() {
   const [applications, setApplications] = useState([]);
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [alreadyRole, setAlreadyRole] = useState([]);
+
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const getAllApplications = async () => {
@@ -89,40 +92,58 @@ function AcceptedApplications() {
     <>
       <div className='px-10 py-5'>
         <div className='flex justify-between'>
-          <IconButton icon={<ArrowLeftIcon />} />
+          <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} /> {/* Add onClick handler */}
           <h1 className='text-center font-bold text-4xl'>Registered Companies</h1>
           <p></p>
         </div>
         <Divider className='mt-5' />
         <div className='mt-5 border'>
-          <TableContainer className='rounded-md'>
-            <Table variant='striped' colorScheme='teal'>
-              <TableCaption>List of all registered companies</TableCaption>
-              <Thead>
+          <TableContainer className="rounded-md shadow-lg">
+            <Table variant="simple" size="md">
+              <TableCaption placement="top" fontSize="lg" fontWeight="bold" color="#5160be">
+                List of All Registered Companies
+              </TableCaption>
+              <Thead bg="#5160be">
                 <Tr>
-                  <Th>SL No</Th>
-                  <Th>Applied By</Th>
-                  <Th>Name</Th>
-                  <Th>Contact</Th>
-                  <Th>Country of Origin</Th>
-                  <Th>Tin Number</Th>
-                  <Th>Role</Th>
-                  <Th>Documents</Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    SL No
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Applied By
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Name
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Contact
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Country of Origin
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Tin Number
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Role
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Documents
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {uniqueApplications.map((application, index) => (
-                  <Tr key={application.address_registered}>
-                    <Td>{index + 1}</Td>
-                    <Td>{application.address_registered}</Td>
-                    <Td>{application.name}</Td>
-                    <Td>{application.contractNumber}</Td>
-                    <Td>{application.countryOfOrigin}</Td>
-                    <Td>{application.tinNumber}</Td>
-                    <Td>{application.role}</Td>
-                    <Td>
+                  <Tr key={application.address_registered} _hover={{ bg: "gray.100" }}>
+                    <Td textAlign="center">{index + 1}</Td>
+                    <Td textAlign="center">{application.address_registered}</Td>
+                    <Td textAlign="center">{application.name}</Td>
+                    <Td textAlign="center">{application.contractNumber}</Td>
+                    <Td textAlign="center">{application.countryOfOrigin}</Td>
+                    <Td textAlign="center">{application.tinNumber}</Td>
+                    <Td textAlign="center">{application.role}</Td>
+                    <Td textAlign="center">
                       <Button
-                        colorScheme='blue'
+                        colorScheme="blue"
                         onClick={() => handleViewDocuments(application)}
                       >
                         View Documents
@@ -133,6 +154,7 @@ function AcceptedApplications() {
               </Tbody>
             </Table>
           </TableContainer>
+
         </div>
       </div>
 
@@ -152,17 +174,17 @@ function AcceptedApplications() {
               <p>VAT Reg Number: {selectedApplication.vatRegNumber}</p>
               <p>Applied for Role: {selectedApplication.role}</p>
               <p>
-                Document TIN: <a className='bg-emerald-500 p-2 rounded-lg' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc1.jpg`}>View TIN</a>
+                Document TIN: <a className='p-2 rounded-lg text-blue-600 underline' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc1.jpg`}>View TIN</a>
               </p>
               <p>
-                Document Trade Licence: <a className='bg-emerald-500 p-2 rounded-lg' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc2.jpg`}>View Trade Licence</a>
+                Document Trade Licence: <a className='p-2 rounded-lg text-blue-600 underline' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc2.jpg`}>View Trade Licence</a>
               </p>
               <p>
-                Document VAT REG: <a className='bg-emerald-500 p-2 rounded-lg' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc3.jpg`}>View VAT REG</a>
+                Document VAT REG: <a className='p-2 rounded-lg text-blue-600 underline' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc3.jpg`}>View VAT REG</a>
               </p>
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme='blue' mr={3} onClick={onClose}>
+              <Button colorScheme='red' mr={3} onClick={onClose}>
                 Close
               </Button>
             </ModalFooter>

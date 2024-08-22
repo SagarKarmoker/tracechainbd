@@ -18,6 +18,9 @@ import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import { contract } from "../../chain";
 import { adminProvider, adminSigner } from '../utils/adminWallet';
 import { etherContract } from '../../contants';
+import { ArrowLeftIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
+import backgroundImage from "../../img/homeBG3.png";
 
 function AddAndShowAdmin({ isAdmin }) {
     const toast = useToast()
@@ -25,6 +28,7 @@ function AddAndShowAdmin({ isAdmin }) {
     const [adminAddr, setAdminAddr] = useState('');
     const [adminList, setAdminList] = useState([]);
     const [customsList, setCustomsList] = useState([]);
+    const navigate = useNavigate();
 
     // use to add admins and customs role
     const addRole = async () => {
@@ -113,12 +117,21 @@ function AddAndShowAdmin({ isAdmin }) {
     }, [loading]);
 
     return (
-        <div className='px-20'>
+        <div className='px-20 pt-4 w-full min-h-screen bg-cover bg-center flex flex-col ' style={{ backgroundImage: `url(${backgroundImage})` }}>
+
             {
                 isAdmin ? (
-                    <h1 className='text-center py-5 text-4xl font-bold'>Admin Management</h1>
+                    <div className='flex justify-between'>
+                        <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} /> {/* Add onClick handler */}
+                        <h1 className='text-center font-bold text-4xl'>Admin managment</h1>
+                        <p></p>
+                    </div>
                 ) : (
-                    <h1 className='text-center py-5 text-4xl font-bold'>Customs Management</h1>
+                    <div className='flex justify-between'>
+                        <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} /> {/* Add onClick handler */}
+                        <h1 className='text-center font-bold text-4xl'>Customs Management</h1>
+                        <p></p>
+                    </div>
                 )
             }
             <div className="flex flex-col lg:flex-row p-6 gap-6">
@@ -135,7 +148,7 @@ function AddAndShowAdmin({ isAdmin }) {
                         <FormLabel>Admin Email</FormLabel>
                         <Input type="email" placeholder="Enter admin email" />
                     </FormControl> */}
-                    <Button className='w-full' leftIcon={<AddIcon />} onClick={addRole} colorScheme="teal" variant="solid" isLoading={loading}>
+                    <Button className='w-full' leftIcon={<AddIcon />} onClick={addRole} bg="#5160be" color="white" _hover={{ bg: "#7db6f9" }} variant="solid" isLoading={loading}>
                         {loading ? "Adding..." : "Add to Ledger"}
                     </Button>
                 </Box>
@@ -144,58 +157,64 @@ function AddAndShowAdmin({ isAdmin }) {
                 </Center>
                 {/* Role table */}
                 <Box className="flex-1 bg-white p-6 shadow-md rounded-lg">
-                    <Table variant="simple">
-                        <Thead>
+                    <Table variant="simple" colorScheme="gray" size="md" className="hover-table">
+                        <Thead className="bg-[#5160be]">
                             <Tr>
-                                <Th>Sl No</Th>
-                                <Th>ID</Th>
-                                <Th>Address</Th>
-                                <Th>Actions</Th>
+                                <Th color="white" fontSize="lg" textAlign="left">
+                                    Sl No
+                                </Th>
+                                <Th color="white" fontSize="lg" textAlign="left">
+                                    ID
+                                </Th>
+                                <Th color="white" fontSize="lg" textAlign="left">
+                                    Address
+                                </Th>
+                                <Th color="white" fontSize="lg" textAlign="left">
+                                    Actions
+                                </Th>
                             </Tr>
                         </Thead>
+
                         <Tbody>
-                            {
-                                isAdmin ? (
-                                    adminList
-                                        .filter(admin => admin !== '0x0000000000000000000000000000000000000000')
-                                        .map((admin, index) => (
-                                            <Tr key={index}>
-                                                <Td>{index + 1}</Td>
-                                                <Td>admin@tracechain</Td>
-                                                <Td>{admin}</Td>
-                                                <Td>
-                                                    <IconButton
-                                                        aria-label="Delete Admin"
-                                                        icon={<DeleteIcon />}
-                                                        colorScheme="red"
-                                                        onClick={() => handleDelete(admin)}
-                                                    />
-                                                </Td>
-                                            </Tr>
-                                        ))
-                                ) : (
-                                    customsList
-                                        .filter(customs => customs !== '0x0000000000000000000000000000000000000000')
-                                        .map((customs, index) => (
-                                            <Tr key={index}>
-                                                <Td>{index + 1}</Td>
-                                                <Td>customs@tracechain</Td>
-                                                <Td>{customs}</Td>
-                                                <Td>
-                                                    <IconButton
-                                                        aria-label="Delete Customs"
-                                                        icon={<DeleteIcon />}
-                                                        colorScheme="red"
-                                                        onClick={() => handleDelete(customs)}
-                                                    />
-                                                </Td>
-                                            </Tr>
-                                        ))
-                                )
-                            }
+                            {isAdmin
+                                ? adminList
+                                    .filter(admin => admin !== '0x0000000000000000000000000000000000000000')
+                                    .map((admin, index) => (
+                                        <Tr key={index} _hover={{ bg: "gray.100" }}>
+                                            <Td>{index + 1}</Td>
+                                            <Td>admin@tracechain</Td>
+                                            <Td>{admin}</Td>
+                                            <Td>
+                                                <IconButton
+                                                    aria-label="Delete Admin"
+                                                    icon={<DeleteIcon />}
+                                                    colorScheme="red"
+                                                    onClick={() => handleDelete(admin)}
+                                                />
+                                            </Td>
+                                        </Tr>
+                                    ))
+                                : customsList
+                                    .filter(customs => customs !== '0x0000000000000000000000000000000000000000')
+                                    .map((customs, index) => (
+                                        <Tr key={index} _hover={{ bg: "gray.100" }}>
+                                            <Td>{index + 1}</Td>
+                                            <Td>customs@tracechain</Td>
+                                            <Td>{customs}</Td>
+                                            <Td>
+                                                <IconButton
+                                                    aria-label="Delete Customs"
+                                                    icon={<DeleteIcon />}
+                                                    colorScheme="red"
+                                                    onClick={() => handleDelete(customs)}
+                                                />
+                                            </Td>
+                                        </Tr>
+                                    ))}
                         </Tbody>
                     </Table>
                 </Box>
+
             </div>
         </div>
     );
