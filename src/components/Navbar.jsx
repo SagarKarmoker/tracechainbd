@@ -90,11 +90,11 @@ function Navbar() {
             <ul className="flex items-center gap-x-4 font-semibold">
               {role !== "" ? (
                 <>
-                  <li>
+                  {/* <li>
                     <Link to="/dashboard" className="text-black font-semibold">
                       Dashboard
                     </Link>
-                  </li>
+                  </li> */}
                 </>
               ) : (
                 role != "admin" &&

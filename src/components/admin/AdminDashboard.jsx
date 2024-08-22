@@ -40,19 +40,19 @@ function AdminDashboard({ setActiveComponent }) {
                 <div className='grid grid-cols-3 gap-4'>
                     <div className='bg-[#5160be] hover:bg-[#7db6f9] text-white p-5 rounded-lg hover:cursor-pointer' onClick={() => { setActiveComponent('admin-management') }}>
                         <h1 className='text-2xl font-bold'>Manage Admins</h1>
-                        <p>Manage admins and all details</p>
+                        <p>List of all admins and their details</p>
                     </div>
                     <div className='bg-[#5160be] hover:bg-[#7db6f9] text-white p-5 rounded-lg hover:cursor-pointer' onClick={() => { setActiveComponent('customs-management') }}>
                         <h1 className='text-2xl font-bold'>Manage Customs</h1>
-                        <p>Manage customs and all details</p>
+                        <p>List of all custom authorities and their details</p>
                     </div>
                     <div className='bg-[#5160be] hover:bg-[#7db6f9] text-white p-5 rounded-lg hover:cursor-pointer' onClick={() => { setActiveComponent('others-management') }}>
                         <h1 className='text-2xl font-bold'>Manage Other Users</h1>
-                        <p>Manage users and their roles</p>
+                        <p>List of importers, distributors and retailers</p>
                     </div>
                     <div className='bg-[#5160be] hover:bg-[#7db6f9] text-white p-5 rounded-lg hover:cursor-pointer' onClick={() => { setActiveComponent('all-products') }}>
                         <h1 className='text-2xl font-bold'>Manage Products</h1>
-                        <p>Manage products and their details</p>
+                        <p>List of all products and their details</p>
                     </div>
                 </div>
 
@@ -61,8 +61,8 @@ function AdminDashboard({ setActiveComponent }) {
                     <div className='grid grid-cols-3 gap-4 mt-4'>
                         {/* all applications */}
                         <div className='bg-[#5160be] hover:bg-[#7db6f9] text-white p-5 rounded-lg hover:cursor-pointer' onClick={() => { setActiveComponent('applications') }}>
-                            <h1 className='text-2xl font-bold'>Applications</h1>
-                            <p>Get all applictons and details</p>
+                            <h1 className='text-2xl font-bold'>Pending Applications</h1>
+                            <p>See all the pending applictons and their details</p>
                         </div>
                         {/* Accpeted Application */}
                         <div className='bg-[#5160be] hover:bg-[#7db6f9] text-white p-5 rounded-lg hover:cursor-pointer' onClick={() => { setActiveComponent('accepted-applications') }}>

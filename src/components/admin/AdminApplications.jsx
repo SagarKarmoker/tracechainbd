@@ -8,7 +8,6 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
@@ -24,6 +23,7 @@ import {
   useDisclosure,
   useToast
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 const gatewayBaseUrl = 'http://127.0.0.1:8080/ipfs/';
 
@@ -31,8 +31,10 @@ function AdminApplications() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [applications, setApplications] = useState([]);
   const [selectedApplication, setSelectedApplication] = useState(null);
-  const [alreadyRole, setAlreadyRole] = useState([])
+  const [alreadyRole, setAlreadyRole] = useState([]);
   const toast = useToast();
+
+  const navigate = useNavigate();
 
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
@@ -42,11 +44,10 @@ function AdminApplications() {
     try {
       const transaction = await contract.approveRole(account, role);
       await transaction.wait();
-      // Optionally, refresh the applications list
       const data = await contract.getApplictions();
       setApplications(data);
       toast({
-        title: 'Applications accepted successfully',
+        title: 'Application accepted successfully',
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -69,7 +70,6 @@ function AdminApplications() {
       }
     };
 
-    // Call the function to get applications
     getAllApplications();
   }, [contract]);
 
@@ -82,58 +82,75 @@ function AdminApplications() {
     <>
       <div className='px-10 py-5'>
         <div className='flex justify-between'>
-          <IconButton icon={<ArrowLeftIcon />} />
+          <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} />
           <h1 className='text-center font-bold text-4xl'>Registration Applications</h1>
           <p></p>
         </div>
         <Divider className='mt-5' />
         <div className='mt-5 border'>
-          <TableContainer className='rounded-md'>
-            <Table variant='striped' colorScheme='teal'>
-              <TableCaption>Apply for Registration</TableCaption>
-              <Thead>
+          <TableContainer className='rounded-md shadow-lg'>
+            <Table variant='simple' size="md">
+              <TableCaption placement="top" fontSize="lg" fontWeight="bold" color="#5160be">
+                Apply for Registration
+              </TableCaption>
+              <Thead bg="#5160be">
                 <Tr>
-                  <Th>SL No</Th>
-                  <Th>Applied By</Th>
-                  <Th>Name</Th>
-                  <Th>Contact</Th>
-                  <Th>Country of Origin</Th>
-                  <Th>Tin Number</Th>
-                  <Th>Role</Th>
-                  <Th>Documents</Th>
-                  <Th>Action</Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    SL No
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Applied By
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Name
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Contact
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Country of Origin
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Tin Number
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Role
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Documents
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Action
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {applications
                 .filter(application => !alreadyRole.includes(application.address_registered))
                 .map((application, index) => (
-                  <Tr key={index}>
-                    <Td>{index + 1}</Td>
-                    <Td>{application.address_registered}</Td>
-                    <Td>{application.name}</Td>
-                    <Td>{application.contractNumber}</Td>
-                    <Td>{application.countryOfOrigin}</Td>
-                    <Td>{application.tinNumber}</Td>
-                    <Td>{application.role}</Td>
-                    <Td>
-                      <button 
-                        className='bg-sky-500 p-2 font-semibold rounded-lg' 
+                  <Tr key={index} _hover={{ bg: "gray.100" }}>
+                    <Td textAlign="center">{index + 1}</Td>
+                    <Td textAlign="center">{application.address_registered}</Td>
+                    <Td textAlign="center">{application.name}</Td>
+                    <Td textAlign="center">{application.contractNumber}</Td>
+                    <Td textAlign="center">{application.countryOfOrigin}</Td>
+                    <Td textAlign="center">{application.tinNumber}</Td>
+                    <Td textAlign="center">{application.role}</Td>
+                    <Td textAlign="center">
+                      <Button
+                        colorScheme="blue"
                         onClick={() => handleViewDocuments(application)}
                       >
                         View Documents
-                      </button>
+                      </Button>
                     </Td>
-                    <Td>
-                      <button 
-                        className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded' 
+                    <Td textAlign="center">
+                      <Button
+                        colorScheme="green"
                         onClick={() => handleAccept(application.address_registered, application.role)}
                       >
                         Accept
-                      </button>
-                      {/* <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded'>
-                        Deny
-                      </button> */}
+                      </Button>
                     </Td>
                   </Tr>
                 ))}
@@ -151,25 +168,25 @@ function AdminApplications() {
             <ModalCloseButton />
             <ModalBody>
               <p>Applied By: {selectedApplication.address_registered}</p>
-              <p>Comp Name: {selectedApplication.name}</p>
+              <p>Company Name: {selectedApplication.name}</p>
               <p>Contact: {selectedApplication.contractNumber}</p>
               <p>Location: {selectedApplication.locAddress}</p>
               <p>Country of Origin: {selectedApplication.countryOfOrigin}</p>
               <p>Tin Number: {selectedApplication.tinNumber}</p>
-              <p>Vat Reg Number: {selectedApplication.vatRegNumber}</p>
+              <p>VAT Reg Number: {selectedApplication.vatRegNumber}</p>
               <p>Applied for Role: {selectedApplication.role}</p>
               <p>
-                Document TIN: <a className='bg-emerald-500 p-2 rounded-lg' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc1.jpg`}>View Tin</a>
+                Document TIN: <a className='p-2 rounded-lg text-blue-600 underline' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc1.jpg`}>View TIN</a>
               </p>
               <p>
-                Document Trade Licence: <a className='bg-emerald-500 p-2 rounded-lg' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc2.jpg`}>View Trade Lic</a>
+                Document Trade Licence: <a className='p-2 rounded-lg text-blue-600 underline' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc2.jpg`}>View Trade Licence</a>
               </p>
               <p>
-                Document VAT REG: <a className='bg-emerald-500 p-2 rounded-lg' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc3.jpg`}>View Vat Reg</a>
+                Document VAT REG: <a className='p-2 rounded-lg text-blue-600 underline' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc3.jpg`}>View VAT REG</a>
               </p>
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme='blue' mr={3} onClick={onClose}>
+              <Button colorScheme='red' mr={3} onClick={onClose}>
                 Close
               </Button>
             </ModalFooter>
