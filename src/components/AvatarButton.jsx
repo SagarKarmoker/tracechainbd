@@ -53,6 +53,7 @@ function AvatarButton({ setRole }) {
             await magic.user.logout();
             setRole("");
             window.location.reload();
+            navigate("/");
           }}
         >
           Logout

@@ -1,70 +1,55 @@
 import React, { useEffect, useState } from 'react';
 import { Divider, Table, Thead, Tbody, Tr, Th, Td, Box, Text, useToast, Button } from '@chakra-ui/react';
-import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
-import { ethers } from 'ethers';
 import useWallet from '../../hooks/userWallet';
-import { ProductStatus } from '../../utils/ProductStatus';
 
 function PendingProduct() {
     const [dispatches, setDispatches] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loadingStates, setLoadingStates] = useState({});
     const { account } = useAuth();
-    const { signer, traceChainBDContract, zeroGas } = useWallet();
+    const { traceChainBDContract, zeroGas } = useWallet();
     const toast = useToast();
 
     useEffect(() => {
+        let intervalId;
+    
         const fetchHistoryData = async () => {
             try {
-                const events = await etherContract.queryFilter('MultiProductDispatched');
-                const dispatchesList = events.map(event => {
-                    const { dispatchId, startId, endId, to, dispatchedOn, quantity } = event.args;
-                    return {
-                        dispatchId: Number(dispatchId.toString()),
-                        startId: Number(startId.toString()),
-                        endId: Number(endId.toString()),
-                        receiver: to,
-                        quantity: Number(quantity.toString()),
-                        timestamp: dispatchedOn.toNumber()
-                    };
-                });
-
-                const validDispatches = [];
-
-                for (const dispatch of dispatchesList) {
-                    const confirmed1st = await etherContract.productLifeCycles(ethers.BigNumber.from(dispatch.startId));
-                    const confirmedLast = await etherContract.productLifeCycles(ethers.BigNumber.from(dispatch.endId));
-
-                    if (Number(confirmed1st.importerDispatchId.toString()) === 0 && Number(confirmedLast.importerDispatchId.toString()) === 0 && confirmed1st.owner === account && confirmed1st.status != ProductStatus.AcceptedByImporter) {
-                        validDispatches.push(dispatch);
-                    }
+                const response = await fetch(`http://localhost:3000/api/dispatches/${account}`);
+                const data = await response.json();
+    
+                // Only update the state if there is new data
+                if (JSON.stringify(data) !== JSON.stringify(dispatches)) {
+                    setDispatches(data);
                 }
-
-                console.log(validDispatches)
-                setDispatches(validDispatches);
+    
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching history data:', error);
                 setLoading(false);
             }
         };
-
-        fetchHistoryData();
-    }, [account]);
+    
+        fetchHistoryData(); // Initial fetch
+    
+        intervalId = setInterval(fetchHistoryData, 60000); // Poll every 60 seconds
+    
+        return () => {
+            clearInterval(intervalId); // Cleanup interval on component unmount
+        };
+    }, [account, dispatches]);
+    
 
     const handleAccept = async (_dispatchId) => {
         setLoadingStates(prev => ({ ...prev, [_dispatchId]: true }));
 
         try {
-            console.log(_dispatchId)
             const tx = await traceChainBDContract.confirmDelivery(_dispatchId, {
                 gasLimit: 3000000,
                 ...zeroGas
             });
             const response = await tx.wait();
-
-            console.log(response)
 
             if (response) {
                 toast({
@@ -74,6 +59,9 @@ function PendingProduct() {
                     duration: 9000,
                     isClosable: true,
                 });
+
+                // Remove the accepted dispatch from the list
+                setDispatches(prevDispatches => prevDispatches.filter(dispatch => dispatch.dispatchId !== _dispatchId));
             } else {
                 toast({
                     title: "Not Accepted",
@@ -91,7 +79,7 @@ function PendingProduct() {
                 status: "error",
                 duration: 9000,
                 isClosable: true,
-            })
+            });
         } finally {
             setLoadingStates(prev => ({ ...prev, [_dispatchId]: false }));
         }
