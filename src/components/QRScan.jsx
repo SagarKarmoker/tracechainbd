@@ -1,109 +1,137 @@
-import React, { useState } from 'react';
-import { Button, Input, Box, Text, VStack } from '@chakra-ui/react';
-import { Scanner } from '@yudiel/react-qr-scanner';
+import React, { useEffect, useState } from 'react';
+import { Button, Box, Text, VStack, Icon, HStack, useToast } from '@chakra-ui/react';
+import { CheckCircleIcon } from '@chakra-ui/icons';
+import Html5QrcodePlugin from './Html5QrcodePlugin';
+import useWallet from '../hooks/userWallet';
+import useAuth from '../hooks/userAuth';
+import { etherContract } from '../contants';
 
 function QRScan() {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [isScannerOpen, setIsScannerOpen] = useState(false);
-  const [qrResult, setQrResult] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [decodedResults, setDecodedResults] = useState([]);
+  const { traceChainBDContract, zeroGas } = useWallet();
+  const { account } = useAuth();
+  const toast = useToast();
+  const [id, setId] = useState('');
+  const [loadingStates, setLoadingStates] = useState({});
+  const [owner, setOwner] = useState('');
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSelectedFile(URL.createObjectURL(file));
-      setIsScannerOpen(false);
-      setQrResult('');
-      setErrorMessage('');
+  const onNewScanResult = (decodedText, decodedResult) => {
+    const url = decodedResult.decodedText;
+    const decodeId = url.split('/').pop();
+    setId(decodeId);
+    setDecodedResults(prev => [...prev, decodedResult]);
+  };
+
+  useEffect(() => {
+    // Run checkOwner only when id is updated
+    if (id) {
+      checkOwner();
+    }
+  }, [id]);
+
+  const checkOwner = async () => {
+    try {
+      const check = await etherContract.productLifeCycles(id);
+      console.log(check.owner);
+      console.log(account)
+      setOwner(check.owner);
+    } catch (error) {
+      toast({
+        title: "Error checking owner",
+        description: `Something went wrong: ${error.message}`,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
     }
   };
 
-  const handleScan = (result) => {
-    if (result && result.data) {
-      console.log('QR Code Result:', result.data);
-      setQrResult(result.data);
-      setSelectedFile(null);
-      setIsScannerOpen(false);
-    } else {
-      console.log('No QR code detected in the image.');
-      setErrorMessage('No QR code detected. Please try again with a different image.');
+  const handleAccept = async (_dispatchId) => {
+    setLoadingStates(prev => ({ ...prev, [_dispatchId]: true }));
+
+    try {
+      const tx = await traceChainBDContract.confirmDelivery(_dispatchId, {
+        gasLimit: 3000000,
+        ...zeroGas,
+      });
+      const response = await tx.wait();
+
+      if (response) {
+        toast({
+          title: "Dispatch accepted successfully",
+          description: `Dispatch ${_dispatchId} accepted successfully`,
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Not Accepted",
+          description: `Something went wrong`,
+          status: "warning",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error('Error accepting dispatch:', error);
+      toast({
+        title: "Error accepting dispatch",
+        description: `Something went wrong: ${error.message}`,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } finally {
+      setLoadingStates(prev => ({ ...prev, [_dispatchId]: false }));
     }
   };
 
-  const handleError = (error) => {
-    console.error('Scanner Error:', error);
-    setErrorMessage('An error occurred while scanning. Please try again.');
-  };
+  console.log(owner)
+  console.log(id)
 
   return (
-    <Box px={8} py={10}>
-      <VStack spacing={6}>
-        <Text fontSize="3xl" fontWeight="bold" textAlign="center">
-          QR Code Scanner
-        </Text>
-        <Text fontSize="md" color="gray.600" textAlign="center">
-          Scan a QR code using your camera or upload an image containing a QR code.
-        </Text>
-
-        {/* QR Code from Image */}
-        <Box w="100%" textAlign="center">
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            mb={4}
-            variant="filled"
+    <Box p={4}>
+      <VStack spacing={4} align="center">
+        {/* QR Code Scanner */}
+        <Box border="1px" borderColor="gray.200" p={4} borderRadius="md" boxShadow="md" w="100%" maxW="400px">
+          <Html5QrcodePlugin
+            fps={10}
+            qrbox={250}
+            disableFlip={false}
+            qrCodeSuccessCallback={onNewScanResult}
           />
-          {selectedFile && (
-            <Scanner
-              image={selectedFile}
-              onScan={handleScan}
-              onError={handleError}
-              styles={{ width: '100%' }}
-            />
-          )}
         </Box>
 
-        <Text fontSize="lg" fontWeight="bold">
-          OR
-        </Text>
-
-        {/* Live Camera QR Scanner */}
-        <Box textAlign="center">
-          <Button colorScheme="teal" onClick={() => {
-            setIsScannerOpen(!isScannerOpen);
-            setQrResult('');
-            setErrorMessage('');
-          }}>
-            {isScannerOpen ? 'Close Camera Scanner' : 'Open Camera Scanner'}
-          </Button>
-          {isScannerOpen && (
-            <Box mt={4}>
-              <Scanner
-                onScan={handleScan}
-                onError={handleError}
-                styles={{ width: '100%' }}
-              />
-            </Box>
+        {/* Display Decoded Results */}
+        <VStack spacing={3} align="stretch" w="100%" maxW="400px">
+          {decodedResults.length > 0 ? (
+            decodedResults.map((result, index) => {
+              const resultId = result.decodedText.split('/').pop();
+              return (
+                <HStack key={index} p={3} bg="green.100" borderRadius="md" boxShadow="sm">
+                  <Icon as={CheckCircleIcon} color="green.500" />
+                  <Text fontWeight="bold">{result.decodedText}</Text>
+                  {
+                    owner === account ? (
+                      <Button
+                        colorScheme="green"
+                        isLoading={loadingStates[resultId]}
+                        onClick={() => handleAccept(resultId)}
+                      >
+                        Accept
+                      </Button>
+                    ) : (
+                      <Text>Not your product</Text>
+                    )
+                  }
+                </HStack>
+              );
+            })
+          ) : (
+            <Text>No QR code scanned yet.</Text>
           )}
-        </Box>
-
-        {/* Display Result or Error Message */}
-        {qrResult && (
-          <Box p={4} bg="green.100" borderRadius="md" w="100%" textAlign="center">
-            <Text fontSize="lg" color="green.800">
-              <strong>Scanned QR Code:</strong> {qrResult}
-            </Text>
-          </Box>
-        )}
-
-        {errorMessage && (
-          <Box p={4} bg="red.100" borderRadius="md" w="100%" textAlign="center">
-            <Text fontSize="lg" color="red.800">
-              {errorMessage}
-            </Text>
-          </Box>
-        )}
+        </VStack>
       </VStack>
     </Box>
   );
