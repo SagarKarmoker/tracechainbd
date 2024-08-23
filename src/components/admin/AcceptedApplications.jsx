@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { TraceChainContract } from '../../contants';
 import { ABI } from '../../contractABI';
+import backgroundImage from "../../img/homeBG3.png";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
+
 import {
   Table,
   Thead,
@@ -90,7 +92,7 @@ function AcceptedApplications() {
 
   return (
     <>
-      <div className='px-10 py-5'>
+      <div className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col ' style={{ backgroundImage: `url(${backgroundImage})` }}>
         <div className='flex justify-between'>
           <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} /> {/* Add onClick handler */}
           <h1 className='text-center font-bold text-4xl'>Registered Companies</h1>
@@ -98,7 +100,7 @@ function AcceptedApplications() {
         </div>
         <Divider className='mt-5' />
         <div className='mt-5 border'>
-          <TableContainer className="rounded-md shadow-lg">
+          <TableContainer className="rounded-md shadow-lg bg-white">
             <Table variant="simple" size="md">
               <TableCaption placement="top" fontSize="lg" fontWeight="bold" color="#5160be">
                 List of All Registered Companies

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { TraceChainContract } from '../../contants';
 import { ABI } from '../../contractABI';
+import backgroundImage from "../../img/homeBG3.png";
 import {
   Table,
   Thead,
@@ -80,18 +81,18 @@ function AdminApplications() {
 
   return (
     <>
-      <div className='px-10 py-5'>
+      <div className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col ' style={{ backgroundImage: `url(${backgroundImage})` }}>
         <div className='flex justify-between'>
           <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} />
-          <h1 className='text-center font-bold text-4xl'>Registration Applications</h1>
+          <h1 className='text-center font-bold text-4xl'>Pending Applications</h1>
           <p></p>
         </div>
         <Divider className='mt-5' />
         <div className='mt-5 border'>
-          <TableContainer className='rounded-md shadow-lg'>
+          <TableContainer className='rounded-md shadow-lg bg-white'>
             <Table variant='simple' size="md">
               <TableCaption placement="top" fontSize="lg" fontWeight="bold" color="#5160be">
-                Apply for Registration
+                Pending applications waiting for verification
               </TableCaption>
               <Thead bg="#5160be">
                 <Tr>
