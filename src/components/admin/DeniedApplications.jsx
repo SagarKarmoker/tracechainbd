@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { TraceChainContract } from '../../contants';
 import { ABI } from '../../contractABI';
+import { useNavigate } from 'react-router-dom';
 import {
   Table,
   Thead,
@@ -30,7 +31,8 @@ function DeniedApplications() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [applications, setApplications] = useState([]);
   const [selectedApplication, setSelectedApplication] = useState(null);
-  const [alreadyRole, setAlreadyRole] = useState([])
+  const [alreadyRole, setAlreadyRole] = useState([]);
+  const navigate = useNavigate();
 
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
@@ -78,8 +80,8 @@ function DeniedApplications() {
     <>
       <div className='px-10 py-5'>
         <div className='flex justify-between'>
-          <IconButton icon={<ArrowLeftIcon />} />
-          <h1 className='text-center font-bold text-4xl'>Denied/Pending Companies</h1>
+          <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} /> {/* Add onClick handler */}
+          <h1 className='text-center font-bold text-4xl'>Denied Application</h1>
           <p></p>
         </div>
         <Divider className='mt-5' />

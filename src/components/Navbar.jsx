@@ -59,7 +59,7 @@ function Navbar() {
     const checkRole = async () => {
       if (activeAccount?.address) {
         let userRole = "";
-        if(await isAdmin(activeAccount?.address)){
+        if (await isAdmin(activeAccount?.address)) {
           userRole = "admin";
         }
         setRole(userRole);
@@ -75,14 +75,16 @@ function Navbar() {
 
   return (
     <>
-      <nav className="bg-green-400">
+      <nav className="bg-[#f1f2f7]">
         <div className="container mx-auto flex justify-between items-center p-2">
           <h1 className="text-2xl font-bold text-red-500">
             {role !== "" ? (
-              <img src="logo.png" alt="Logo" className="hover:cursor-pointer" />
+              <Link to="/home">
+                <img src="logo.png" alt="Logo" className="hover:cursor-pointer h-16 w-32" />
+              </Link>
             ) : (
-              <Link to="/">
-                <img src="logo.png" alt="Logo" />
+              <Link to="/home">
+                <img src="logo.png" alt="Logo" className="hover:cursor-pointer h-16 w-32" />
               </Link>
             )}
           </h1>
@@ -90,22 +92,17 @@ function Navbar() {
             <ul className="flex items-center gap-x-4 font-semibold">
               {role !== "" ? (
                 <>
-                  <li>
-                    <Link to="/home" className="text-black font-semibold">
-                      Home
-                    </Link>
-                  </li>
-                  <li>
+                  {/* <li>
                     <Link to="/dashboard" className="text-black font-semibold">
                       Dashboard
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link to="/qrscan" className="text-black font-semibold">
-                      <div className="flex justify-center items-center border border-black rounded-lg px-4 py-1"> 
+                      <div className="flex justify-center items-center border border-black rounded-lg px-4 py-1">
                         <p className="mr-2">Scan QR</p>
                         <IoQrCodeOutline />
-                        </div>
+                      </div>
                     </Link>
                   </li>
                 </>
@@ -113,7 +110,7 @@ function Navbar() {
                 role != "admin" &&
                 role != "customs" && (
                   <li>
-                    <Link to="/apply" className="text-black font-semibold">
+                    <Link to="/apply" className="text-black font-semibold hover:text-[#5160be]">
                       Apply for Registration
                     </Link>
                   </li>
@@ -125,7 +122,7 @@ function Navbar() {
             </ul>
           </div>
         </div>
-      </nav>
+      </nav >
 
       <Routes>
         <Route path="/" element={<Roles />} />
@@ -162,10 +159,10 @@ function Navbar() {
           />
         )}
         {role === "customs" && (
-          <Route path="/dashboard" element={<CustomsPanel 
+          <Route path="/dashboard" element={<CustomsPanel
             setActiveComponent={setActiveComponent}
             activeComponent={activeComponent}
-            />} />
+          />} />
         )}
         {role === "importer" && (
           <Route path="/dashboard" element={<ImporterPanel />} />

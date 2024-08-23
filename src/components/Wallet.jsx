@@ -32,7 +32,7 @@ function Wallet() {
             <>
               <button
                 onClick={connectWallet}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-[#5160be] hover:bg-[#7db6f9] text-white font-bold py-2 px-4 rounded"
               >
                 Login / Register
               </button>

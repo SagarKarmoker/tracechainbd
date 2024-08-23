@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
-import { create } from 'ipfs-http-client'
+import React, { useState } from 'react';
+import { create } from 'ipfs-http-client';
 import { useToast } from '@chakra-ui/react';
 import useWallet from '../hooks/userWallet';
 import useAuth from '../hooks/userAuth';
 import { ethers } from 'ethers';
+import backgroundImage from "../img/homeBG2.png"; // Update this path accordingly
 
-// ipfs desktop: http://127.0.0.1:5001/api/v0/add
-const ipfs = create({ url: "http://127.0.0.1:5001/api/v0/add" }); //http://127.0.0.1:5001
+// IPFS client setup
+const ipfs = create({ url: "http://127.0.0.1:5001/api/v0/add" });
 
 function RegApplication() {
     const toast = useToast();
@@ -16,9 +17,9 @@ function RegApplication() {
     const [countryOfOrigin, setCountryOfOrigin] = useState('');
     const [tinNumber, setTinNumber] = useState('');
     const [vatRegNumber, setVatRegNumber] = useState('');
-    const [ipfsDocHash, setIpfsDocHash] = useState(''); // upload files as folder structure
+    const [ipfsDocHash, setIpfsDocHash] = useState('');
     const [role, setRole] = useState('');
-    const [loading, setLoading] = useState(false); // Loading state for the button
+    const [loading, setLoading] = useState(false);
     const { account } = useAuth();
     const { traceChainBDContract } = useWallet();
 
@@ -41,12 +42,10 @@ function RegApplication() {
             }
 
             const directoryName = `doc-${account}`;
-            const filesToAdd = files.map((file, index) => {
-                return {
-                    path: `${directoryName}/doc${index + 1}.jpg`,
-                    content: file,
-                };
-            });
+            const filesToAdd = files.map((file, index) => ({
+                path: `${directoryName}/doc${index + 1}.jpg`,
+                content: file,
+            }));
 
             const addedFiles = [];
             for await (const result of ipfs.addAll(filesToAdd, {
@@ -96,7 +95,7 @@ function RegApplication() {
             return;
         }
 
-        setLoading(true); // Start loading
+        setLoading(true);
 
         const tinDoc = await fetch(tin).then((r) => r.blob());
         const tradeDoc = await fetch(tradeLic).then((r) => r.blob());
@@ -112,10 +111,9 @@ function RegApplication() {
                 duration: 5000,
                 isClosable: true,
             });
-            setLoading(false); // Stop loading
+            setLoading(false);
             return;
         }
-        console.log(role);
 
         try {
             const txParams = {
@@ -162,7 +160,7 @@ function RegApplication() {
                 isClosable: true,
             });
         } finally {
-            setLoading(false); // Stop loading
+            setLoading(false);
         }
     }
 
@@ -175,68 +173,130 @@ function RegApplication() {
     }
 
     return (
-        <>
-            <div className='px-10 pt-5'>
-                <h1 className='font-semibold text-4xl text-center mb-4'>Registration Application</h1>
-                <div className='flex justify-center'>
-                    <div className='flex flex-col gap-4 w-fit'>
-                        <label htmlFor="name">
-                            <input type="text" placeholder='Enter name of company' className='border p-3 rounded-lg w-full'
-                                value={compName} onChange={(e) => setCompName(e.target.value)} />
-                        </label>
-                        <label htmlFor="location">
-                            <input type="text" placeholder='Enter location/address of company' className='border p-3 rounded-lg w-full'
-                                value={locAddress} onChange={(e) => setLocAddress(e.target.value)} />
-                        </label>
-                        <label htmlFor="contact">
-                            <input type="text" placeholder='Enter contact number of company' className='border p-3 rounded-lg w-full'
-                                value={contractNumber} onChange={(e) => setContractNumber(e.target.value)} />
-                        </label>
-                        <label htmlFor="origin">
-                            <input type="text" placeholder='Enter country Of Origin of the company' className='border p-3 rounded-lg w-full'
-                                value={countryOfOrigin} onChange={(e) => setCountryOfOrigin(e.target.value)} />
-                        </label>
-                        <label htmlFor="tinnumber">
-                            <input type="text" placeholder='Enter TIN number of the company' className='border p-3 rounded-lg w-full'
-                                value={tinNumber} onChange={(e) => setTinNumber(e.target.value)} />
-                        </label>
-                        <label htmlFor="vatregnumber">
-                            <input type="text" placeholder='Enter VAT Reg number of the company' className='border p-3 rounded-lg w-full'
-                                value={vatRegNumber} onChange={(e) => setVatRegNumber(e.target.value)} />
-                        </label>
+        <div
+            className='px-10 pt-5'
+            style={{
+                backgroundImage: `url(${backgroundImage})`, // Using the imported image
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+            }}
+        >
+            <h1 className='font-semibold text-4xl text-center mt-10 mb-4'>Registration Application</h1>
+            <div className='flex justify-center '>
+                <div className='flex flex-col gap-4 w-fit mt-4 mb-20'> 
+                    <label htmlFor="name">
+                        <input
+                            type="text"
+                            placeholder='Enter name of company'
+                            className='border p-3 rounded-lg w-full'
+                            style={{ borderColor: '#5160be', borderWidth: '2px' }}
+                            value={compName}
+                            onChange={(e) => setCompName(e.target.value)}
+                        />
+                    </label>
+                    <label htmlFor="location">
+                        <input
+                            type="text"
+                            placeholder='Enter location/address of company'
+                            className='border p-3 rounded-lg w-full'
+                            style={{ borderColor: '#5160be', borderWidth: '2px' }}
+                            value={locAddress}
+                            onChange={(e) => setLocAddress(e.target.value)}
+                        />
+                    </label>
+                    <label htmlFor="contact">
+                        <input
+                            type="text"
+                            placeholder='Enter contact number of company'
+                            className='border p-3 rounded-lg w-full'
+                            style={{ borderColor: '#5160be', borderWidth: '2px' }}
+                            value={contractNumber}
+                            onChange={(e) => setContractNumber(e.target.value)}
+                        />
+                    </label>
+                    <label htmlFor="origin">
+                        <input
+                            type="text"
+                            placeholder='Enter country Of Origin of the company'
+                            className='border p-3 rounded-lg w-full'
+                            style={{ borderColor: '#5160be', borderWidth: '2px' }}
+                            value={countryOfOrigin}
+                            onChange={(e) => setCountryOfOrigin(e.target.value)}
+                        />
+                    </label>
+                    <label htmlFor="tinnumber">
+                        <input
+                            type="text"
+                            placeholder='Enter TIN number of the company'
+                            className='border p-3 rounded-lg w-full'
+                            style={{ borderColor: '#5160be', borderWidth: '2px' }}
+                            value={tinNumber}
+                            onChange={(e) => setTinNumber(e.target.value)}
+                        />
+                    </label>
+                    <label htmlFor="vatregnumber">
+                        <input
+                            type="text"
+                            placeholder='Enter VAT Reg number of the company'
+                            className='border p-3 rounded-lg w-full'
+                            style={{ borderColor: '#5160be', borderWidth: '2px' }}
+                            value={vatRegNumber}
+                            onChange={(e) => setVatRegNumber(e.target.value)}
+                        />
+                    </label>
 
-                        <label htmlFor="tin">
-                            <input type="file" className='border p-3 rounded-lg w-full' onChange={(e) => handleFileChange(e, setTin)} />
-                        </label>
-                        <label htmlFor="vat">
-                            <input type="file" className='border p-3 rounded-lg w-full' onChange={(e) => handleFileChange(e, setTradeLic)} />
-                        </label>
-                        <label htmlFor="tradelic">
-                            <input type="file" className='border p-3 rounded-lg w-full' onChange={(e) => handleFileChange(e, setVat)} />
-                        </label>
+                    <label htmlFor="tin">
+                        <input
+                            type="file"
+                            className='border p-3 rounded-lg w-full bg-white'
+                            style={{ borderColor: '#5160be', borderWidth: '2px' }}
+                            onChange={(e) => handleFileChange(e, setTin)}
+                        />
+                    </label>
+                    <label htmlFor="vat">
+                        <input
+                            type="file"
+                            className='border p-3 rounded-lg w-full bg-white'
+                            style={{ borderColor: '#5160be', borderWidth: '2px' }}
+                            onChange={(e) => handleFileChange(e, setTradeLic)}
+                        />
+                    </label>
+                    <label htmlFor="tradelic">
+                        <input
+                            type="file"
+                            className='border p-3 rounded-lg w-full bg-white'
+                            style={{ borderColor: '#5160be', borderWidth: '2px' }}
+                            onChange={(e) => handleFileChange(e, setVat)}
+                        />
+                    </label>
 
-                        <select name="role" id="role" className='border p-3 rounded-lg w-[400px]'
-                            value={role} onChange={(e) => setRole(e.target.value)}>
-                            <option value="">Select a role</option>
-                            <option value="IMPORTER">Importer</option>
-                            <option value="DISTRIBUTOR">Distributor</option>
-                            <option value="RETAILER">Retailer</option>
-                        </select>
+                    <select
+                        name="role"
+                        id="role"
+                        className='border p-3 rounded-lg w-[400px]'
+                        style={{ borderColor: '#5160be', borderWidth: '2px' }}
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                    >
+                        <option value="">Select a role</option>
+                        <option value="IMPORTER">Importer</option>
+                        <option value="DISTRIBUTOR">Distributor</option>
+                        <option value="RETAILER">Retailer</option>
+                    </select>
 
-                        <div className='flex justify-center'>
-                            <button
-                                className='bg-blue-600 text-white w-[200px] p-4 rounded-xl font-bold'
-                                onClick={handleSubmit}
-                                disabled={loading} // Disable the button while loading
-                            >
-                                {loading ? "Submitting..." : "Submit Application"} {/* Display loading text */}
-                            </button>
-                        </div>
+                    <div className='flex justify-center'>
+                        <button
+                            className='bg-[#5160be] hover:bg-[#30486c] text-white font-bold py-2 px-4 rounded'
+                            onClick={handleSubmit}
+                            disabled={loading}
+                        >
+                            {loading ? "Submitting..." : "Submit Application"}
+                        </button>
                     </div>
                 </div>
             </div>
-        </>
-    )
+        </div>
+    );
 }
 
 export default RegApplication;
