@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useToast, Box, Button, Input, Heading, Table, Thead, Tbody, Tr, Th, Td, Spinner } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
 import useWallet from '../../hooks/userWallet';
@@ -39,6 +39,7 @@ function DispatchToImporter() {
   const [oldCounter, setOldCounter] = useState(0);
   const [base64Logo, setBase64Logo] = useState("");
   const [showPending, setShowPending] = useState(true);
+  const qrRef = useRef(null);
 
   const { traceChainBDContract, zeroGas } = useWallet();
   const { account } = useAuth();
@@ -138,6 +139,7 @@ function DispatchToImporter() {
       });
     }
     else {
+      setLoading(true);
       try {
         const _old = await etherContract.boxCounter()
         setOldCounter(_old.toNumber());
@@ -170,6 +172,7 @@ function DispatchToImporter() {
 
       // Reset form fields
       setIpfsDocHash('');
+      setLoading(false);
     }
 
   };
@@ -224,6 +227,7 @@ function DispatchToImporter() {
       }
 
       pdf.save(`product_${oldCounter}-qr-codes.pdf`);
+      setLoading(false);
     } catch (error) {
       console.error("Error generating PDF:", error);
       toast({
@@ -338,9 +342,9 @@ function DispatchToImporter() {
                     {showQr && (
                       <div className="flex flex-col items-center mt-8">
                         <div ref={qrRef} className="grid grid-cols-5 gap-x-4">
-                          <div key={index} className="mb-4">
+                          <div className="mb-4">
                             <QRCode
-                              value={`URL: https://localhost:5173/check-product/${oldCounter + index}`}
+                              value={`URL: https://localhost:5173/check-product/${oldCounter}`}
                               size={200}
                               fgColor="#00712D"
                               bgColor="#D5ED9F"
@@ -350,12 +354,12 @@ function DispatchToImporter() {
                             />
                           </div>
                         </div>
-                        <button
-                          onClick={handleGeneratePdf}
+                        <Button
+                          onClick={handleGeneratePdf} isLoading={loading}
                           className="bg-green-600 p-4 text-white rounded-xl w-[300px] font-bold"
                         >
-                          Download QR Codes as PDF
-                        </button>
+                          {loading ? "Generating PDF..." : "Download QR Codes as PDF"}
+                        </Button>
                       </div>
                     )}
                   </div>
@@ -369,7 +373,7 @@ function DispatchToImporter() {
       </Box>
 
       {
-        showPending && (
+        showPending && boxId == '' && (
           <PendingDispatch />
         )
       }
