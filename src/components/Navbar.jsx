@@ -97,13 +97,12 @@ function Navbar() {
                       Dashboard
                     </Link>
                   </li> */}
-                  </li>
                   <li>
                     <Link to="/qrscan" className="text-black font-semibold">
-                      <div className="flex justify-center items-center border border-black rounded-lg px-4 py-1"> 
+                      <div className="flex justify-center items-center border border-black rounded-lg px-4 py-1">
                         <p className="mr-2">Scan QR</p>
                         <IoQrCodeOutline />
-                        </div>
+                      </div>
                     </Link>
                   </li>
                 </>
@@ -123,7 +122,7 @@ function Navbar() {
             </ul>
           </div>
         </div>
-      </nav>
+      </nav >
 
       <Routes>
         <Route path="/" element={<Roles />} />
