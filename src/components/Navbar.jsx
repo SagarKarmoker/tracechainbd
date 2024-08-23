@@ -22,6 +22,7 @@ import Profile from "../pages/Profile";
 import useAuth from "../hooks/userAuth";
 import { useActiveAccount } from "thirdweb/react";
 import QRScan from "./QRScan";
+import ProductDetails from "../pages/ProductDetails";
 
 function Navbar() {
   const [role, setRole] = useState("");
@@ -149,6 +150,7 @@ function Navbar() {
         <Route path="/home" element={<Roles />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/apply" element={<RegApplication />} />
+        <Route path="/productdetails" element={<ProductDetails />} />
         <Route path="/*" element={<Error404 />} />
         <Route path="*" element={<Error404 />} />
 
