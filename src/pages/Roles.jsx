@@ -31,10 +31,10 @@ function Roles() {
     const role = event.target.value;
     setSelectedRole(role);
     if (role === "Admin") handleNavigation("/admin");
-    else if (role === "Customs") handleNavigation("/dashboard");
-    else if (role === "Importer") handleNavigation("/dashboard");
-    else if (role === "Distributor") handleNavigation("/dashboard");
-    else if (role === "Retailer") handleNavigation("/dashboard");
+    else if (role === "Customs") handleNavigation("/customs");
+    else if (role === "Importer") handleNavigation("/importer");
+    else if (role === "Distributor") handleNavigation("/distributor");
+    else if (role === "Retailer") handleNavigation("/retailer");
   };
 
   return (
