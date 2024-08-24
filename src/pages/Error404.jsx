@@ -1,23 +1,40 @@
 import React from "react";
+import { Box, Button, Heading, Text } from "@chakra-ui/react";
+import { ArrowLeftIcon } from "@chakra-ui/icons";
+import backgroundImage from "../img/homeBG2.png"; // Ensure you have this image in the correct path
 
 function Error404() {
-  const goBack = () => { 
+  const goBack = () => {
     window.history.back();
-  }
+  };
+
   return (
-    <>
-      <div className="flex justify-center items-center h-screen bg-gray-100">
-        <div className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-lg">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">404</h1>
-          <p className="text-gray-600 mb-8">Oops! The page you're looking for could not be found.</p>
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" onClick={
-            goBack
-          }>
+    <Box
+      className="flex justify-center items-center h-screen"
+      style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+    >
+      <Box className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-lg">
+        <Heading as="h1" size="2xl" mb={4} textAlign="center">
+          404
+        </Heading>
+        <Text fontSize="lg" mb={8} textAlign="center">
+          Oops! The page you're looking for could not be found.
+        </Text>
+        <Box display="flex" justifyContent="center">
+          <Button
+            onClick={goBack}
+            bg="#5160be"
+            color="white"
+            _hover={{ bg: "#7db6f9" }} // Hover background color
+            fontWeight="bold"
+            leftIcon={<ArrowLeftIcon />}
+            rounded="md"
+          >
             Go Back
-          </button>
-        </div>
-      </div>
-    </>
+          </Button>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 

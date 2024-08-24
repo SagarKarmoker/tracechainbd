@@ -69,21 +69,21 @@ function CustomsPanel() {
         );
     }
     
-    if (isConnected && !isCustoms) {
-        return (
-            <div className='flex flex-col justify-center items-center h-[90vh]'>
-                <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
-                <br />
-                <p className='text-red-400'>You are not a customs officer</p>
-                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4' onClick={() => { window.history.back(); }}>
-                    Go back
-                </button>
-            </div>
-        );
-    }
+    // if (isConnected && !isCustoms) {
+    //     return (
+    //         <div className='flex flex-col justify-center items-center h-[90vh]'>
+    //             <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
+    //             <br />
+    //             <p className='text-red-400'>You are not a customs officer</p>
+    //             <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4' onClick={() => { window.history.back(); }}>
+    //                 Go back
+    //             </button>
+    //         </div>
+    //     );
+    // }
 
     return (
-        <div className='px-10 pt-5'>
+        <div>
             <div>
                 {renderComponent()}
             </div>

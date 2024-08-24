@@ -5,6 +5,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import useWallet from "../../hooks/userWallet";
 
+
 // Utility function to convert an image to base64
 const convertImageToBase64 = (url) => {
   return new Promise((resolve, reject) => {
@@ -120,44 +121,44 @@ function SingleProductEntry({ customsAddr }) {
       });
       return;
     }
-  
+
     try {
       const qrElements = qrRef.current.querySelectorAll('div'); // Select all QR code elements
-  
+
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "px",
         format: "a4", // Default A4 size
       });
-  
+
       let x = 10; // Starting x position
       let y = 10; // Starting y position
       const maxX = 580; // Max x position before moving to next page
       const maxY = 800; // Max y position before moving to next page
       const padding = 10; // Space between QR codes
-  
+
       for (const element of qrElements) {
         const canvas = await html2canvas(element);
         const qrImage = canvas.toDataURL("image/png");
-  
+
         const width = 200;
         const height = 200;
-  
+
         if (x + width > maxX) {
           x = 10; // Reset x position
           y += height + padding; // Move to next row
         }
-  
+
         if (y + height > maxY) {
           pdf.addPage(); // Add new page if needed
           x = 10; // Reset x position
           y = 10; // Reset y position
         }
-  
+
         pdf.addImage(qrImage, "PNG", x, y, width, height); // Add QR code image
         x += width + padding; // Update x position for next QR code
       }
-      
+
       pdf.save(`product_${oldCounter}-qr-codes.pdf`);
     } catch (error) {
       console.error("Error generating PDF:", error);
@@ -170,71 +171,81 @@ function SingleProductEntry({ customsAddr }) {
       });
     }
   };
-  
+
 
   return (
+
     <div className="flex justify-center mt-4">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col mx-auto gap-4">
           <input
             type="text"
-            className="p-2 border rounded-lg w-[500px]"
             placeholder="Enter Product Name"
+            className='border p-3 rounded-lg w-[500px]'
+            style={{ borderColor: '#5160be', borderWidth: '2px' }}
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <input
             type="text"
-            className="p-2 border rounded-lg w-[500px]"
+            className='border p-3 rounded-lg w-[500px]'
+            style={{ borderColor: '#5160be', borderWidth: '2px' }}
             placeholder="Enter Product Details"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
           <input
             type="text"
-            className="p-2 border rounded-lg w-[500px]"
+            className='border p-3 rounded-lg w-[500px]'
+            style={{ borderColor: '#5160be', borderWidth: '2px' }}
             placeholder="Enter Product Category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           />
           <input
             type="text"
-            className="p-2 border rounded-lg w-[500px]"
+            className='border p-3 rounded-lg w-[500px]'
+            style={{ borderColor: '#5160be', borderWidth: '2px' }}
             placeholder="Enter Product Country of Origin"
             value={countryOfOrigin}
             onChange={(e) => setCountryOfOrigin(e.target.value)}
           />
           <input
             type="text"
-            className="p-2 border rounded-lg w-[500px]"
+            className='border p-3 rounded-lg w-[500px]'
+            style={{ borderColor: '#5160be', borderWidth: '2px' }}
             placeholder="Enter Product Manufacturer"
             value={manufacturer}
             onChange={(e) => setManufacturer(e.target.value)}
           />
           <input
             type="number"
-            className="p-2 border rounded-lg w-[500px]"
+            className='border p-3 rounded-lg w-[500px]'
+            style={{ borderColor: '#5160be', borderWidth: '2px' }}
             placeholder="Enter Product Price"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
           <input
             type="number"
-            className="p-2 border rounded-lg w-[500px]"
+            className='border p-3 rounded-lg w-[500px]'
+            style={{ borderColor: '#5160be', borderWidth: '2px' }}
             placeholder="Enter Product Quantity"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
           />
           <input
             type="text"
-            className="p-2 border rounded-lg w-[500px]"
+            className='border p-3 rounded-lg w-[500px]'
+            style={{ borderColor: '#5160be', borderWidth: '2px' }}
             placeholder="Enter Importer Address"
             value={importerAddr}
             onChange={(e) => setImporterAddr(e.target.value)}
           />
           <input
             type="text"
-            className="p-2 border rounded-lg w-[500px]"
+            className='border p-3 rounded-lg w-[500px]'
+            style={{ borderColor: '#5160be', borderWidth: '2px' }}
             placeholder="Enter Customs Address"
             value={customsAddr}
             readOnly
@@ -243,7 +254,8 @@ function SingleProductEntry({ customsAddr }) {
           <div className="flex justify-center">
             <button
               onClick={singleProductEntry}
-              className="bg-blue-600 p-4 text-white rounded-xl w-[300px] font-bold"
+              className="bg-[#5160be] hover:bg-[#30486c] text-white font-bold py-2 px-4 rounded"
+
             >
               Add Product to Ledger
             </button>
@@ -278,6 +290,7 @@ function SingleProductEntry({ customsAddr }) {
         </div>
       </div>
     </div>
+
   );
 }
 

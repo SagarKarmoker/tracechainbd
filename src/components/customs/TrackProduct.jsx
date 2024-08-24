@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
-import useAuth from '../../hooks/userAuth';
+import { useToast, Box, Button, Input, Spinner, List, ListItem, Heading, IconButton } from '@chakra-ui/react';
+import { ArrowLeftIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
 import { etherContract } from '../../contants';
+import useAuth from '../../hooks/userAuth';
+import backgroundImage from "../../img/homeBG2.png"; // Ensure the image path is correct
 
 function TrackProduct() {
+    const toast = useToast();
     const [pId, setPid] = useState("");
     const [trackingInfo, setTrackingInfo] = useState([]);
     const [loading, setLoading] = useState(false);
     const { account } = useAuth();
+    const navigate = useNavigate();
 
     const handleTrackBtn = async () => {
         if (!pId) {
-            alert("Please enter a product ID");
+            toast({
+                title: "Warning",
+                description: "Please enter a product ID",
+                status: "warning",
+                duration: 9000,
+                isClosable: true,
+            });
             return;
         }
 
@@ -18,7 +30,6 @@ function TrackProduct() {
         try {
             const events = await etherContract.queryFilter('ProductDispatched');
 
-            // Process events
             const trackingList = events
                 .map(event => {
                     const { dispatchId, productId, from, to, dispatchedOn, quantity } = event.args || {};
@@ -34,62 +45,80 @@ function TrackProduct() {
                     }
                     return null;
                 })
-                .filter(event => event !== null); // Filter out null values
+                .filter(event => event !== null);
 
             setTrackingInfo(trackingList);
         } catch (error) {
-            console.error("Error fetching tracking data:", error);
+            toast({
+                title: "Error",
+                description: "Failed to fetch tracking data",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <>
-            <div className='flex flex-col gap-4'>
-                <h1 className='text-center text-4xl font-bold mb-4'>Track Product by Customs</h1>
-                <div className='flex justify-center'>
-                    <div className='flex flex-col gap-4 w-96'>
-                        <input
+        <div className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <Box p={10}>
+                <div className='flex justify-between'>
+                    <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} /> {/* Back button to navigate to the previous page */}
+                    <h1 className='text-center font-bold text-4xl'>Track Product by Customs</h1>
+                    <p></p>
+                </div>
+                <Box display="flex" justifyContent="center" className='mt-4'>
+                    <Box width="96" display="flex" flexDirection="column" gap={4}>
+                        <Input
                             type="number"
-                            className='p-3 border rounded-lg'
-                            placeholder='Enter product ID to get details'
+                            bg="white"
+                            placeholder="Enter Product ID to get details"
                             value={pId}
                             onChange={(e) => setPid(e.target.value)}
-                            required
+                            isRequired
+                            border="2px"
+                            borderColor="#5160be"  // Border color set to #5160be
                         />
-                        <button
+                        <Button
                             onClick={handleTrackBtn}
-                            className='bg-blue-600 p-3 text-white font-bold rounded-xl'
+                            bg="#5160be"
+                            _hover={{ bg: "#7db6f9" }} // Hover background color
+                            color="white"
+                            fontWeight="bold"
+                            py={2}
+                            px={4}
+                            rounded="md"
                         >
-                            {loading ? 'Tracking...' : 'Track Product'}
-                        </button>
-                    </div>
-                </div>
+                            {loading ? <Spinner size="sm" /> : 'Track Product'}
+                        </Button>
+                    </Box>
+                </Box>
 
-                <div className='flex flex-col justify-center gap-4'>
-                    <p className='font-semibold text-center'>Get the step by step track of a product</p>
-                    <div>
-                        {trackingInfo.length > 0 ? (
-                            <ul>
-                                {trackingInfo.map((info) => (
-                                    <li key={info.id} className='border p-3 rounded mb-2'>
-                                        <strong>Dispatch ID:</strong> {info.dispatchId}<br />
-                                        <strong>Product ID:</strong> {info.productId}<br />
-                                        <strong>From:</strong> {info.from}<br />
-                                        <strong>To:</strong> {info.to}<br />
-                                        <strong>Timestamp:</strong> {new Date(info.timestamp * 1000).toLocaleString()}<br />
-                                        <strong>Quantity:</strong> {info.quantity}
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>No tracking information available.</p>
-                        )}
-                    </div>
-                </div>
-            </div>
-        </>
+                <Box display="flex" flexDirection="column" alignItems="center" mt={8}>
+                    <Heading as="h2" size="lg" textAlign="center" mb={4}>Tracking Information</Heading>
+                    {trackingInfo.length > 0 ? (
+                        <List spacing={3} w="full" maxW="600px">
+                            {trackingInfo.map((info, index) => (
+                                <ListItem key={index} border="1px solid" borderColor="#5160be" p={3} rounded="md" bg="white">
+                                    <strong>Dispatch ID:</strong> {info.dispatchId}<br />
+                                    <strong>Product ID:</strong> {info.productId}<br />
+                                    <strong>From:</strong> {info.from}<br />
+                                    <strong>To:</strong> {info.to}<br />
+                                    <strong>Timestamp:</strong> {new Date(info.timestamp * 1000).toLocaleString()}<br />
+                                    <strong>Quantity:</strong> {info.quantity}
+                                </ListItem>
+                            ))}
+                        </List>
+                    ) : (
+                        <Box mt={4} fontSize="lg" color="gray.600">
+                            No tracking information available.
+                        </Box>
+                    )}
+                </Box>
+            </Box>
+        </div>
     );
 }
 

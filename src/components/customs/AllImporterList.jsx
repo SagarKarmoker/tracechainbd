@@ -1,12 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Heading, Table, Thead, Tbody, Tr, Th, Td, Text } from '@chakra-ui/react';
-import { etherContract } from '../../contants'; // Adjust the path if necessary
+import {
+    Box,
+    Button,
+    Heading,
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    Td,
+    Text,
+    IconButton,
+    Divider,
+    TableContainer,
+    Spinner,
+    Center,
+} from '@chakra-ui/react';
+import { ArrowLeftIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
+import backgroundImage from "../../img/homeBG3.png";
+import { etherContract } from '../../contants';
 
 function AllImporterList() {
     const [importers, setImporters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedImporter, setSelectedImporter] = useState(null);
     const [isHidden, setIsHidden] = useState(true);
+
+    const navigate = useNavigate();
 
     const fetchData = async () => {
         try {
@@ -25,6 +46,7 @@ function AllImporterList() {
 
     const getMoreDetailsBtn = (importer) => {
         setSelectedImporter(importer);
+        setIsHidden(!isHidden);
     };
 
     useEffect(() => {
@@ -32,47 +54,61 @@ function AllImporterList() {
     }, []);
 
     if (loading) {
-        return <Text>Loading...</Text>;
+        return (
+            <Center height="100vh">
+                <Box textAlign="center">
+                    <Spinner size="xl" color="blue.500" />
+                    <Text mt={4} fontSize="xl" fontWeight="bold">Please wait while we prepare the importer list. This won't take long.</Text>
+                </Box>
+            </Center>
+        );
     }
 
     return (
-        <Box p={4}>
-            <Heading as='h1' size='xl' textAlign='center' mb={4}>All Importer List</Heading>
-            <Text textAlign='center' mb={4}>Show as table contains details</Text>
-            <Table variant='simple' size='lg'>
-                <Thead>
-                    <Tr>
-                        <Th>SL</Th>
-                        <Th>Name</Th>
-                        <Th>Address</Th>
-                        <Th>Country of Origin</Th>
-                        <Th>Details</Th>
-                    </Tr>
-                </Thead>
-                <Tbody>
-                    {importers
-                    .filter(importer => importer.role === 'IMPORTER')
-                    .map((importer, index) => (
-                        <Tr key={index}>
-                            <Td>{index + 1}</Td>
-                            <Td>{importer.name}</Td>
-                            <Td>{importer.address_registered.slice(0, 6) + '...' + importer.address_registered.slice(-4)}</Td>
-                            <Td>{importer.countryOfOrigin}</Td>
-                            <Td>
-                                <Button colorScheme='teal' onClick={() => {
-                                    getMoreDetailsBtn(importer);
-                                    setIsHidden(!isHidden);
-                                }}>
-                                    More
-                                </Button>
-                            </Td>
+        <div className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <div className='flex justify-between'>
+                <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} />
+                <Heading as='h1' size='xl' textAlign='center'>All Importer List</Heading>
+                <p></p>
+            </div>
+            <Divider className='mt-5' />
+            <Text textAlign='center' mt={2} mb={4}>Show as table contains details</Text>
+            <TableContainer className="rounded-md shadow-lg bg-white">
+                <Table variant='simple' size='md'>
+                    <Thead bg="#5160be">
+                        <Tr>
+                            <Th color="white" fontSize="md" textAlign="center">SL No</Th>
+                            <Th color="white" fontSize="md" textAlign="center">Name</Th>
+                            <Th color="white" fontSize="md" textAlign="center">Address</Th>
+                            <Th color="white" fontSize="md" textAlign="center">Country of Origin</Th>
+                            <Th color="white" fontSize="md" textAlign="center">Details</Th>
                         </Tr>
-                    ))}
-                </Tbody>
-            </Table>
+                    </Thead>
+                    <Tbody>
+                        {importers
+                            .filter(importer => importer.role === 'IMPORTER')
+                            .map((importer, index) => (
+                                <Tr key={index} _hover={{ bg: "gray.100" }}>
+                                    <Td textAlign="center">{index + 1}</Td>
+                                    <Td textAlign="center">{importer.name}</Td>
+                                    <Td textAlign="center">{importer.address_registered.slice(0, 6) + '...' + importer.address_registered.slice(-4)}</Td>
+                                    <Td textAlign="center">{importer.countryOfOrigin}</Td>
+                                    <Td textAlign="center">
+                                        <Button
+                                            colorScheme="blue"
+                                            onClick={() => getMoreDetailsBtn(importer)}
+                                        >
+                                            More
+                                        </Button>
+                                    </Td>
+                                </Tr>
+                            ))}
+                    </Tbody>
+                </Table>
+            </TableContainer>
 
             {selectedImporter && isHidden && (
-                <Box mt={4} p={4} borderWidth={1} borderRadius="md" boxShadow="md">
+                <Box mt={4} p={4} borderWidth={1} borderRadius="md" boxShadow="md" bg="white">
                     <Heading as='h2' size='md' mb={2}>Importer Details</Heading>
                     <Text><strong>Name:</strong> {selectedImporter.name}</Text>
                     <Text><strong>Address:</strong> {selectedImporter.address_registered}</Text>
@@ -85,7 +121,7 @@ function AllImporterList() {
                     <Text><strong>Role:</strong> {selectedImporter.role}</Text>
                 </Box>
             )}
-        </Box>
+        </div>
     );
 }
 
