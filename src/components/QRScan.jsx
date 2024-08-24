@@ -137,7 +137,7 @@ function QRScan() {
           {decodedResults.length > 0 ? (
             decodedResults.map((result, index) => {
               const resultId = result.decodedText.split('/').pop();
-              const event = events.find(e => e.dispatchId === 2);
+              const event = events.find(e => e.dispatchId === resultId);
               return (
                 <HStack key={index} p={3} bg="green.100" borderRadius="md" boxShadow="sm">
                   <Icon as={CheckCircleIcon} color="green.500" />
