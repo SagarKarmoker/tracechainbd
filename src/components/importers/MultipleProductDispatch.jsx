@@ -57,7 +57,7 @@ function MultipleProductDispatch() {
   };
 
   return (
-    <Box p={4} className="shadow-md rounded-md max-w-md mx-auto">
+    <Box p={4} className="shadow-md rounded-md max-w-md mx-auto bg-white">
       <Heading size="lg" mb={6} className="text-center">Multiple Product Dispatch</Heading>
       <VStack spacing={4}>
         <Input
@@ -97,7 +97,7 @@ function MultipleProductDispatch() {
           onChange={(e) => setMemoDocumentHash(e.target.value)}
         />
         <Button
-          colorScheme="teal"
+          colorScheme="green"
           onClick={handleDispatch}
           isLoading={isLoading}
           loadingText="Dispatching"
