@@ -54,6 +54,10 @@ function AdminDashboard({ setActiveComponent }) {
                         <h1 className='text-2xl font-bold'>Manage Products</h1>
                         <p>List of all products and their details</p>
                     </div>
+                    <div className='bg-[#5160be] hover:bg-[#7db6f9] text-white p-5 rounded-lg hover:cursor-pointer' onClick={() => { setActiveComponent('trace-product') }}>
+                        <h1 className='text-2xl font-bold'>Trace Product</h1>
+                        <p>Get step by step details of a product</p>
+                    </div>
                 </div>
 
                 <div className='mt-4'>

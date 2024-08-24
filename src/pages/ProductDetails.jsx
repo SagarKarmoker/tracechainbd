@@ -8,9 +8,9 @@ import { etherContract } from '../contants';
 import { useParams } from 'react-router-dom';
 import { ProductStatus } from '../utils/ProductStatus';
 
-function ProductDetails() {
-    const { id } = useParams();
-    const [productId, setProductId] = useState(id);
+function ProductDetails({ pid }) {
+    const { id: routeId } = useParams();
+    const [productId, setProductId] = useState(pid || routeId);
     const [productLifeCycle, setProductLifeCycle] = useState({});
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -56,28 +56,24 @@ function ProductDetails() {
                 const acceptedEvents = await etherContract.queryFilter('ProductAccepted');
 
                 const multiDispatchesList = multiEvents
-                .filter(event => {
-                    const startId = Number(event.args.startId.toString());
-                    const endId = Number(event.args.endId.toString());
-                    const productIdNum = Number(productId); // Ensure productId is a number
-                
-                    return productIdNum >= startId && productIdNum <= endId;
-                })
-                .map(event => ({
-                    type: 'Multi Dispatch',
-                    dispatchId: event.args.dispatchId.toString(),
-                    productId: productId,
-                    from: event.args.from,
-                    to: event.args.to,
-                    timestamp: Number(event.args.dispatchedOn.toString()),
-                    quantity: event.args.quantity.toString(),
-                    status: checkForStatus(event.args.status.toString()),
-                    icon: <MdOutlineLocalShipping />,
-                    background: 'rgb(33, 150, 243)',
-                }))
-                
-
-                console.log(multiDispatchesList)
+                    .filter(event => {
+                        const startId = Number(event.args.startId.toString());
+                        const endId = Number(event.args.endId.toString());
+                        const productIdNum = Number(productId);
+                        return productIdNum >= startId && productIdNum <= endId;
+                    })
+                    .map(event => ({
+                        type: 'Multi Dispatch',
+                        dispatchId: event.args.dispatchId.toString(),
+                        productId: productId,
+                        from: event.args.from,
+                        to: event.args.to,
+                        timestamp: Number(event.args.dispatchedOn.toString()),
+                        quantity: event.args.quantity.toString(),
+                        status: checkForStatus(event.args.status.toString()),
+                        icon: <MdOutlineLocalShipping />,
+                        background: 'rgb(33, 150, 243)',
+                    }));
 
                 const singleDispatchesList = singleEvents.map(event => ({
                     type: 'Single Dispatch',
@@ -106,7 +102,7 @@ function ProductDetails() {
                 const allEvents = [...multiDispatchesList, ...singleDispatchesList, ...productAcceptedList];
                 const sortedEvents = allEvents
                     .filter(event => event.productId === productId)
-                    .sort((a, b) => b.timestamp - a.timestamp); // Sort by timestamp (newest first)
+                    .sort((a, b) => b.timestamp - a.timestamp);
 
                 setEvents(sortedEvents);
                 setLoading(false);
@@ -155,9 +151,8 @@ function ProductDetails() {
                         icon={event.icon}
                     >
                         <h3 className="vertical-timeline-element-title">
-                            {event.type === 'Multi Dispatch' ? `Dispatch ID: ${event.dispatchId}` :
-                                event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` :
-                                    event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
+                            {event.type === 'Multi Dispatch' || event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` : 
+                                event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
                         </h3>
                         <h4 className="vertical-timeline-element-subtitle">{event.from} → {event.to}</h4>
                         <p>Quantity: {event.quantity} {event.status && `, Status: ${event.status}`}</p>

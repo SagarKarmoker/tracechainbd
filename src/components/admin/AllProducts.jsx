@@ -104,6 +104,9 @@ function AllProducts() {
                                             <Text>Imported Date: {new Date(product.importedDate * 1000).toLocaleDateString()}</Text>
                                             <Text>Importer Address: {product.importerAddr}</Text>
                                             <Text>Customs Address: {product.customsAddr}</Text>
+                                            <Button onClick={() => navigate(`/check-product/${product.proId}`)}>
+                                                View Details
+                                            </Button>
                                         </Stack>
                                     </Collapse>
                                 </Stack>
