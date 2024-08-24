@@ -5,11 +5,11 @@ import { ethers } from 'ethers';
 import { TraceChainContract } from '../../contants';
 import { ABI } from '../../contractABI';
 import { useNavigate } from 'react-router-dom';
+import backgroundImage from "../../img/homeBG3.png";
 import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
@@ -34,13 +34,13 @@ function DeniedApplications() {
   const [alreadyRole, setAlreadyRole] = useState([]);
   const navigate = useNavigate();
 
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-  const contract = new ethers.Contract(TraceChainContract, ABI, signer);
-
   useEffect(() => {
     const getAllApplications = async () => {
       try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(TraceChainContract, ABI, signer);
+
         const otherRoles = await contract.getOthersParty();
         setAlreadyRole(otherRoles);
         const data = await contract.getApplictions();
@@ -50,80 +50,93 @@ function DeniedApplications() {
       }
     };
 
-    // Call the function to get applications
     getAllApplications();
-  }, [contract]);
+  }, []);
 
   const handleViewDocuments = (application) => {
     setSelectedApplication(application);
     onOpen();
   };
 
-  // Deduplicate and filter applications
   const getUniqueApplications = () => {
-    const seen = new Set();
-    return applications
-      .filter(application => !alreadyRole.includes(application.address_registered))
-      .filter(application => {
-        if (seen.has(application.id)) {
-          return false;
-        } else {
-          seen.add(application.id);
-          return true;
-        }
-      });
+    const normalizedRoles = alreadyRole.map(role => role.toLowerCase());
+
+    const uniqueApplications = applications.filter(application => 
+      !normalizedRoles.includes(application.address_registered.toLowerCase())
+    );
+
+    return uniqueApplications;
   };
 
   const uniqueApplications = getUniqueApplications();
 
   return (
     <>
-      <div className='px-10 py-5'>
+      <div className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
         <div className='flex justify-between'>
           <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} /> {/* Add onClick handler */}
-          <h1 className='text-center font-bold text-4xl'>Denied Application</h1>
+          <h1 className='text-center font-bold text-4xl'>Denied Applications</h1>
           <p></p>
         </div>
         <Divider className='mt-5' />
         <div className='mt-5 border'>
-          <TableContainer className='rounded-md'>
-            <Table variant='striped' colorScheme='teal'>
-              <TableCaption>List of all pending/denied company</TableCaption>
-              <Thead>
+          <TableContainer className="rounded-md shadow-lg bg-white">
+            <Table variant="simple" size="md">
+              <TableCaption placement="top" fontSize="lg" fontWeight="bold" color="#5160be">
+                List of All Denied Applications
+              </TableCaption>
+              <Thead bg="#5160be">
                 <Tr>
-                  <Th>SL No</Th>
-                  <Th>Applied By</Th>
-                  <Th>Name</Th>
-                  <Th>Contact</Th>
-                  <Th>Country of Origin</Th>
-                  <Th>Tin Number</Th>
-                  <Th>Role</Th>
-                  <Th>Documents</Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    SL No
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Applied By
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Name
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Contact
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Country of Origin
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Tin Number
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Role
+                  </Th>
+                  <Th color="white" fontSize="md" textAlign="center">
+                    Documents
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {uniqueApplications.map((application, index) => (
-                  <Tr key={index}>
-                    <Td>{index + 1}</Td>
-                    <Td>{application.address_registered}</Td>
-                    <Td>{application.name}</Td>
-                    <Td>{application.contractNumber}</Td>
-                    <Td>{application.countryOfOrigin}</Td>
-                    <Td>{application.tinNumber}</Td>
-                    <Td>{application.role}</Td>
-                    <Td>
-                      <button
-                        className='bg-sky-500 p-2 font-semibold rounded-lg'
+                  <Tr key={application.address_registered} _hover={{ bg: "gray.100" }}>
+                    <Td textAlign="center">{index + 1}</Td>
+                    <Td textAlign="center">{application.address_registered}</Td>
+                    <Td textAlign="center">{application.name}</Td>
+                    <Td textAlign="center">{application.contractNumber}</Td>
+                    <Td textAlign="center">{application.countryOfOrigin}</Td>
+                    <Td textAlign="center">{application.tinNumber}</Td>
+                    <Td textAlign="center">{application.role}</Td>
+                    <Td textAlign="center">
+                      <Button
+                        colorScheme="blue"
                         onClick={() => handleViewDocuments(application)}
                       >
                         View Documents
-                      </button>
+                      </Button>
                     </Td>
                   </Tr>
                 ))}
               </Tbody>
             </Table>
           </TableContainer>
+
         </div>
       </div>
 
@@ -135,25 +148,25 @@ function DeniedApplications() {
             <ModalCloseButton />
             <ModalBody>
               <p>Applied By: {selectedApplication.address_registered}</p>
-              <p>Comp Name: {selectedApplication.name}</p>
+              <p>Company Name: {selectedApplication.name}</p>
               <p>Contact: {selectedApplication.contractNumber}</p>
-              <p>Location: {selectedApplication.locAddress}</p>
+              <p>Location: {selectedApplication.location}</p>
               <p>Country of Origin: {selectedApplication.countryOfOrigin}</p>
               <p>Tin Number: {selectedApplication.tinNumber}</p>
-              <p>Vat Reg Number: {selectedApplication.vatRegNumber}</p>
+              <p>VAT Reg Number: {selectedApplication.vatRegNumber}</p>
               <p>Applied for Role: {selectedApplication.role}</p>
               <p>
-                Document TIN: <a className='bg-emerald-500 p-2 rounded-lg' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc1.jpg`}>View Tin</a>
+                Document TIN: <a className='p-2 rounded-lg text-blue-600 underline' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc1.jpg`}>View TIN</a>
               </p>
               <p>
-                Document Trade Licence: <a className='bg-emerald-500 p-2 rounded-lg' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc2.jpg`}>View Trade Lic</a>
+                Document Trade Licence: <a className='p-2 rounded-lg text-blue-600 underline' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc2.jpg`}>View Trade Licence</a>
               </p>
               <p>
-                Document VAT REG: <a className='bg-emerald-500 p-2 rounded-lg' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc3.jpg`}>View Vat Reg</a>
+                Document VAT REG: <a className='p-2 rounded-lg text-blue-600 underline' target='_blank' rel="noopener noreferrer" href={`${gatewayBaseUrl}${selectedApplication.ipfsDocHash}/doc-${selectedApplication.address_registered}/doc3.jpg`}>View VAT REG</a>
               </p>
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme='blue' mr={3} onClick={onClose}>
+              <Button colorScheme='red' mr={3} onClick={onClose}>
                 Close
               </Button>
             </ModalFooter>
@@ -164,4 +177,4 @@ function DeniedApplications() {
   );
 }
 
-export default DeniedApplications
+export default DeniedApplications;

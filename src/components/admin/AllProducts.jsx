@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { etherContract } from '../../contants';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
+import backgroundImage from "../../img/homeBG1.png";
 
 function AllProducts() {
     const [totalProducts, setTotalProducts] = useState(0);
@@ -69,30 +70,31 @@ function AllProducts() {
     };
 
     return (
-        <Box p={10}>
-            <div className='flex justify-between'>
-                <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} /> {/* Add onClick handler */}
-                <h1 className='text-center font-bold text-4xl'>All Products List</h1>
-                <p></p>
-            </div>
-            <Divider my={4} />
+        <div className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col ' style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <Box p={10}>
+                <div className='flex justify-between'>
+                    <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} /> {/* Add onClick handler */}
+                    <h1 className='text-center font-bold text-4xl'>All Products List</h1>
+                    <p></p>
+                </div>
+                <Divider my={4} />
 
-            {loading ? (
-                <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                    <Spinner size="xl" />
-                </Box>
-            ) : (
-                products.length > 0 ? (
-                    <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
-                        {products.map((product, index) => (
-                            <Box key={index} p={4} borderWidth={1} borderRadius="md" boxShadow="sm">
-                                <Stack spacing={2}>
-                                    <Heading as="h3" size="md">{product.name} (ID: {product.proId})</Heading>
-                                    <Text fontSize="sm">{product.description}</Text>
+                {loading ? (
+                    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                        <Spinner size="xl" />
+                    </Box>
+                ) : (
+                    products.length > 0 ? (
+                        <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
+                            {products.map((product, index) => (
+                                <Box key={index} p={4} borderWidth={1} borderRadius="md" boxShadow="sm" className='bg-white'>
+                                    <Stack spacing={2}>
+                                        <Heading as="h3" size="md">{product.name} (ID: {product.proId})</Heading>
+                                        <Text fontSize="sm">{product.description}</Text>
 
-                                    <Button size="sm" onClick={() => toggleExpand(product.proId)}>
-                                        {expandedProductIds[product.proId] ? "Collapse" : "Expand"}
-                                    </Button>
+                                        <Button size="sm" onClick={() => toggleExpand(product.proId)}>
+                                            {expandedProductIds[product.proId] ? "Collapse" : "Expand"}
+                                        </Button>
 
                                     <Collapse in={expandedProductIds[product.proId]} animateOpacity>
                                         <Stack spacing={2} mt={4}>
@@ -117,7 +119,8 @@ function AllProducts() {
                     <Text textAlign="center">No products found.</Text>
                 )
             )}
-        </Box>
+            </Box>
+        </div>
     );
 }
 

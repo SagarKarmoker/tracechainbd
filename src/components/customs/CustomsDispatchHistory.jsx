@@ -1,5 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Box, Heading, Button, useToast } from '@chakra-ui/react';
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Box,
+  Heading,
+  Button,
+  useToast,
+  Divider,
+  Text,
+  IconButton,
+} from '@chakra-ui/react';
+import { ArrowLeftIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
+import backgroundImage from "../../img/homeBG3.png";
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
 import { QRCode } from "react-qrcode-logo";
@@ -32,6 +50,7 @@ function CustomsDispatchHistory() {
   const qrRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const navigate = useNavigate();
 
   // Load the logo as base64 when the component mounts
   useEffect(() => {
@@ -62,112 +81,69 @@ function CustomsDispatchHistory() {
         console.error('Error fetching history data:', error);
       }
     };
-    fetchHistoryData();
-  }, [account]);
 
-  const handleGeneratePdf = async () => {
-    if (!qrRef.current || !printId) {
-        toast({
-            title: "Error",
-            description: "QR Code not found or Dispatch ID is not set.",
-            status: "error",
-            duration: 9000,
-            isClosable: true,
-        });
-        return;
+    // Fetch history data on component mount or when etherContract changes
+    if (etherContract) {
+      fetchHistoryData();
     }
+  }, [etherContract]);
 
-    try {
-        setLoading(true);
-        const qrElements = qrRef.current.querySelectorAll('canvas');
-
-        // Delay to ensure QR codes are fully rendered
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        const pdf = new jsPDF({
-            orientation: "portrait",
-            unit: "px",
-            format: "a4",
-        });
-
-        let x = 10;
-        let y = 10;
-        const maxX = 580;
-        const maxY = 800;
-        const padding = 10;
-
-        for (const canvas of qrElements) {
-            const qrImage = canvas.toDataURL("image/png");
-
-            const width = 200;
-            const height = 200;
-
-            if (x + width > maxX) {
-                x = 10;
-                y += height + padding;
-            }
-
-            if (y + height > maxY) {
-                pdf.addPage();
-                x = 10;
-                y = 10;
-            }
-
-            pdf.addImage(qrImage, "PNG", x, y, width, height);
-            x += width + padding;
-        }
-
-        pdf.save(`product_${printId}_qr_codes.pdf`);
-    } catch (error) {
-        console.error("Error generating PDF:", error);
-        toast({
-            title: "Error",
-            description: "Failed to generate PDF.",
-            status: "error",
-            duration: 9000,
-            isClosable: true,
-        });
-    } finally {
-        setLoading(false);
-    }
-};
-
-
+  // Helper function to format address
   const formatAddress = (address) => {
     return `${address.slice(0, 5)}...${address.slice(-7)}`;
   };
 
+  // Function to handle PDF generation and download
+  const handleGeneratePdf = async () => {
+    setLoading(true);
+    try {
+      const canvas = await html2canvas(qrRef.current);
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, 'PNG', 10, 10);
+      pdf.save(`QRCode_${printId}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <Box p={5}>
-      <Heading as='h1' size='xl' mb={5} textAlign='center'>
-        Customs to Importer Dispatch History
-      </Heading>
-      <TableContainer>
-        <Table variant='simple'>
-          <Thead>
+    <div className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <div className='flex justify-between'>
+        <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(-1)} />
+        <Heading as='h1' size='xl' textAlign='center'>Customs to Importer Dispatch History</Heading>
+        <div></div>
+      </div>
+      <Divider className='mt-5' />
+      <Text textAlign='center' mt={2} mb={4}>Here you can find the history of all dispatches made by customs to importers.</Text>
+      <TableContainer className="rounded-md shadow-lg bg-white">
+        <Table variant='simple' size='md'>
+          <Thead bg="#5160be">
             <Tr>
-              <Th>Dispatch ID</Th>
-              <Th>Start PID</Th>
-              <Th>End PID</Th>
-              <Th>From</Th>
-              <Th>Importer</Th>
-              <Th>Timestamp</Th>
-              <Th>Quantity</Th>
-              <Th>Download QR</Th>
+              <Th color="white" fontSize="md" textAlign="center">Dispatch ID</Th>
+              <Th color="white" fontSize="md" textAlign="center">Start PID</Th>
+              <Th color="white" fontSize="md" textAlign="center">End PID</Th>
+              <Th color="white" fontSize="md" textAlign="center">From</Th>
+              <Th color="white" fontSize="md" textAlign="center">Importer</Th>
+              <Th color="white" fontSize="md" textAlign="center">Timestamp</Th>
+              <Th color="white" fontSize="md" textAlign="center">Quantity</Th>
+              <Th color="white" fontSize="md" textAlign="center">Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
             {dispatches
               .filter(dispatch => dispatch.quantity > 0 && dispatch.from === account)
               .map(dispatch => (
-                <Tr key={dispatch.dispatchId}>
-                  <Td>{dispatch.dispatchId}</Td>
-                  <Td>{dispatch.startId}</Td>
-                  <Td>{dispatch.endId}</Td>
-                  <Td>Self</Td>
-                  <Td>{formatAddress(dispatch.to)}</Td>
-                  <Td>{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
-                  <Td>{dispatch.quantity}</Td>
+                <Tr key={dispatch.dispatchId} _hover={{ bg: "gray.100" }}>
+                  <Td textAlign="center">{dispatch.dispatchId}</Td>
+                  <Td textAlign="center">{dispatch.startId}</Td>
+                  <Td textAlign="center">{dispatch.endId}</Td>
+                  <Td textAlign="center">Self</Td>
+                  <Td textAlign="center">{formatAddress(dispatch.to)}</Td>
+                  <Td textAlign="center">{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
+                  <Td textAlign="center">{dispatch.quantity}</Td>
                   <Td>
                     <Button
                       onClick={() => setPrintId(dispatch.dispatchId)}
@@ -204,7 +180,7 @@ function CustomsDispatchHistory() {
           </Button>
         </div>
       )}
-    </Box>
+    </div>
   );
 }
 
