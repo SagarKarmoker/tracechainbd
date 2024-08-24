@@ -13,7 +13,7 @@ function QRScan() {
   const toast = useToast();
   const [id, setId] = useState('');
   const [loadingStates, setLoadingStates] = useState({});
-  const [owner, setOwner] = useState('');
+  const [events, setEvents] = useState([]);
 
   const onNewScanResult = (decodedText, decodedResult) => {
     const url = decodedResult.decodedText;
@@ -23,28 +23,62 @@ function QRScan() {
   };
 
   useEffect(() => {
-    // Run checkOwner only when id is updated
     if (id) {
-      checkOwner();
+      fetchHistoryData();
     }
   }, [id]);
 
-  const checkOwner = async () => {
+  const fetchHistoryData = async () => {
     try {
-      const check = await etherContract.productLifeCycles(id);
-      console.log(check.owner);
-      console.log(account)
-      setOwner(check.owner);
+      const multiEvents = await etherContract.queryFilter('MultiProductDispatched');
+      const singleEvents = await etherContract.queryFilter('ProductDispatched');
+      const acceptedEvents = await etherContract.queryFilter('ProductAccepted');
+
+      const allDispatches = [
+        ...multiEvents.map(event => ({
+          type: 'Multi Dispatch',
+          dispatchId: event.args.dispatchId.toString(),
+          to: event.args.to,
+        })),
+        ...singleEvents.map(event => ({
+          type: 'Single Dispatch',
+          dispatchId: event.args.dispatchId.toString(),
+          to: event.args.to,
+        })),
+      ];
+
+      const acceptedDispatches = acceptedEvents.map(event => event.args.dispatchId.toString());
+
+      console.log(acceptedDispatches)
+
+      // Filter out dispatches that have already been accepted
+      const filteredDispatches = allDispatches.filter(dispatch => !acceptedDispatches.includes(dispatch.dispatchId) && dispatch.to === account);
+
+      console.log(filteredDispatches)
+
+      setEvents(filteredDispatches);
     } catch (error) {
-      toast({
-        title: "Error checking owner",
-        description: `Something went wrong: ${error.message}`,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
+      console.error('Error fetching history data:', error);
     }
   };
+
+  console.log(events)
+
+  // const checkOwner = async () => {
+  //   try {
+  //     await fetchHistoryData();
+  //     const owner = await traceChainBDContract.checkOwner(id);
+  //     setOwner(owner);
+  //   } catch (error) {
+  //     toast({
+  //       title: "Error checking owner",
+  //       description: `Something went wrong: ${error.message}`,
+  //       status: "error",
+  //       duration: 9000,
+  //       isClosable: true,
+  //     });
+  //   }
+  // };
 
   const handleAccept = async (_dispatchId) => {
     setLoadingStates(prev => ({ ...prev, [_dispatchId]: true }));
@@ -77,7 +111,7 @@ function QRScan() {
       console.error('Error accepting dispatch:', error);
       toast({
         title: "Error accepting dispatch",
-        description: `Something went wrong: ${error.message}`,
+        description: "Something went wrong",
         status: "error",
         duration: 9000,
         isClosable: true,
@@ -87,13 +121,9 @@ function QRScan() {
     }
   };
 
-  console.log(owner)
-  console.log(id)
-
   return (
     <Box p={4}>
       <VStack spacing={4} align="center">
-        {/* QR Code Scanner */}
         <Box border="1px" borderColor="gray.200" p={4} borderRadius="md" boxShadow="md" w="100%" maxW="400px">
           <Html5QrcodePlugin
             fps={10}
@@ -103,17 +133,17 @@ function QRScan() {
           />
         </Box>
 
-        {/* Display Decoded Results */}
         <VStack spacing={3} align="stretch" w="100%" maxW="400px">
           {decodedResults.length > 0 ? (
             decodedResults.map((result, index) => {
               const resultId = result.decodedText.split('/').pop();
+              const event = events.find(e => e.dispatchId === 2);
               return (
                 <HStack key={index} p={3} bg="green.100" borderRadius="md" boxShadow="sm">
                   <Icon as={CheckCircleIcon} color="green.500" />
                   <Text fontWeight="bold">{result.decodedText}</Text>
                   {
-                    owner === account ? (
+                    !event ? (
                       <Button
                         colorScheme="green"
                         isLoading={loadingStates[resultId]}
@@ -122,7 +152,7 @@ function QRScan() {
                         Accept
                       </Button>
                     ) : (
-                      <Text>Not your product</Text>
+                      <Text>Not your product or already accepted</Text>
                     )
                   }
                 </HStack>
