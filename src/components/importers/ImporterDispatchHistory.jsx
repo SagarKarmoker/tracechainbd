@@ -1,108 +1,132 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Box, Heading } from '@chakra-ui/react';
+import { Box, Table, Thead, Tbody, Tr, Th, Td, Text, IconButton, Divider, TableContainer, Spinner, Center } from '@chakra-ui/react';
+import { ArrowLeftIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
-
-// TODO: old smart contract events error is showing new code is fixed 
+import backgroundImage from "../../img/homeBG3.png";
 
 function ImporterDispatchHistory() {
-  const [dispatches, setDispatches] = useState([]);
-  const { account } = useAuth();
+    const [dispatches, setDispatches] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const { account } = useAuth();
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchHistoryData = async () => {
-      try {
-        const multiProductEvents = await etherContract.queryFilter('MultiProductDispatched');
-        const singleProductEvents = await etherContract.queryFilter('ProductDispatched');
+    useEffect(() => {
+        const fetchHistoryData = async () => {
+            try {
+                const multiProductEvents = await etherContract.queryFilter('MultiProductDispatched');
+                const singleProductEvents = await etherContract.queryFilter('ProductDispatched');
 
-        const multiProductDispatches = multiProductEvents.map(event => {
-          const { dispatchId, dispatchedOn, endId, quantity, from, startId, to } = event.args;
+                const multiProductDispatches = multiProductEvents.map(event => {
+                    const { dispatchId, dispatchedOn, endId, quantity, from, startId, to } = event.args;
 
-          return {
-            dispatchId: dispatchId.toString(),
-            startId: Number(startId.toString()),
-            endId: Number(endId.toString()),
-            from: from,
-            to: to,
-            timestamp: Number(dispatchedOn.toString()),
-            quantity: quantity.toString(),
-            type: 'Multi' 
-          };
-        });
+                    return {
+                        dispatchId: dispatchId.toString(),
+                        startId: Number(startId.toString()),
+                        endId: Number(endId.toString()),
+                        from: from,
+                        to: to,
+                        timestamp: Number(dispatchedOn.toString()),
+                        quantity: quantity.toString(),
+                        type: 'Multi'
+                    };
+                });
 
-        const singleProductDispatches = singleProductEvents.map(event => {
-          const { dispatchId, dispatchedOn, productId, quantity, from, to } = event.args;
+                const singleProductDispatches = singleProductEvents.map(event => {
+                    const { dispatchId, dispatchedOn, productId, quantity, from, to } = event.args;
 
-          return {
-            dispatchId: dispatchId.toString(),
-            startId: Number(productId.toString()),
-            endId: Number(productId.toString()),
-            from: from,
-            to: to,
-            timestamp: Number(dispatchedOn.toString()),
-            quantity: quantity.toString(),
-            type: 'Single' 
-          };
-        });
+                    return {
+                        dispatchId: dispatchId.toString(),
+                        startId: Number(productId.toString()),
+                        endId: Number(productId.toString()),
+                        from: from,
+                        to: to,
+                        timestamp: Number(dispatchedOn.toString()),
+                        quantity: quantity.toString(),
+                        type: 'Single'
+                    };
+                });
 
-        const allDispatches = [...multiProductDispatches, ...singleProductDispatches];
+                const allDispatches = [...multiProductDispatches, ...singleProductDispatches];
+                allDispatches.sort((a, b) => b.timestamp - a.timestamp);
 
-        allDispatches.sort((a, b) => b.timestamp - a.timestamp);
+                setDispatches(allDispatches);
+            } catch (error) {
+                console.error('Error fetching history data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        setDispatches(allDispatches);
-      } catch (error) {
-        console.error('Error fetching history data:', error);
-      }
+        if (etherContract) {
+            fetchHistoryData();
+        }
+    }, [etherContract, account]);
+
+    const formatAddress = (address) => {
+        return `${address.slice(0, 5)}...${address.slice(-7)}`;
     };
 
-    if (etherContract) {
-      fetchHistoryData();
+    if (loading) {
+        return (
+            <Center height="100vh">
+                <Box textAlign="center">
+                    <Spinner size="xl" color="blue.500" />
+                    <Text mt={4} fontSize="xl" fontWeight="bold">Please wait while we load the dispatch history. This won't take long.</Text>
+                </Box>
+            </Center>
+        );
     }
-  }, [etherContract, account]);
 
-  const formatAddress = (address) => {
-    return `${address.slice(0, 5)}...${address.slice(-7)}`;
-  };
-
-  return (
-    <Box p={5}>
-      <Heading as='h1' size='xl' mb={5} textAlign='center'>
-        Importer to Distributor Dispatch History
-      </Heading>
-      <TableContainer>
-        <Table variant='simple'>
-          <Thead>
-            <Tr>
-              <Th>Dispatch ID</Th>
-              <Th>Start PID</Th>
-              <Th>End PID</Th>
-              <Th>From</Th>
-              <Th>Distributor</Th>
-              <Th>Timestamp</Th>
-              <Th>Quantity</Th>
-              <Th>Type</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {dispatches
-              .filter(dispatch => dispatch.quantity > 0 && dispatch.from === account)
-              .map(dispatch => (
-                <Tr key={dispatch.dispatchId}>
-                  <Td className='text-center'>{dispatch.dispatchId}</Td>
-                  <Td className='text-center'>{dispatch.startId}</Td>
-                  <Td className='text-center'>{dispatch.endId}</Td>
-                  <Td className='text-center'>Self</Td> 
-                  <Td className='text-center'>{formatAddress(dispatch.to)}</Td>
-                  <Td className='text-center'>{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
-                  <Td className='text-center'>{dispatch.quantity}</Td>
-                  <Td className='text-center'>{dispatch.type}</Td>
-                </Tr>
-              ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
-    </Box>
-  );
+    return (
+        <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <Box className='flex justify-between'>
+                <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} />
+                <Text className='text-center font-bold text-4xl'>Importer to Distributor Dispatch History</Text>
+                <Box></Box>
+            </Box>
+            <Divider className='mt-5' />
+            {dispatches.length > 0 ? (
+                <Box className='mt-5 border bg-white'>
+                    <TableContainer>
+                        <Table variant='simple' size='md'>
+                            <Thead bg="#5160be">
+                                <Tr>
+                                    <Th color="white" textAlign="center">Dispatch ID</Th>
+                                    <Th color="white" textAlign="center">Start PID</Th>
+                                    <Th color="white" textAlign="center">End PID</Th>
+                                    <Th color="white" textAlign="center">From</Th>
+                                    <Th color="white" textAlign="center">Distributor</Th>
+                                    <Th color="white" textAlign="center">Timestamp</Th>
+                                    <Th color="white" textAlign="center">Quantity</Th>
+                                    <Th color="white" textAlign="center">Type</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {dispatches
+                                    .filter(dispatch => dispatch.quantity > 0 && dispatch.from === account)
+                                    .map(dispatch => (
+                                        <Tr key={dispatch.dispatchId} _hover={{ bg: "gray.100" }}>
+                                            <Td textAlign="center">{dispatch.dispatchId}</Td>
+                                            <Td textAlign="center">{dispatch.startId}</Td>
+                                            <Td textAlign="center">{dispatch.endId}</Td>
+                                            <Td textAlign="center">Self</Td>
+                                            <Td textAlign="center">{formatAddress(dispatch.to)}</Td>
+                                            <Td textAlign="center">{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
+                                            <Td textAlign="center">{dispatch.quantity}</Td>
+                                            <Td textAlign="center">{dispatch.type}</Td>
+                                        </Tr>
+                                    ))}
+                            </Tbody>
+                        </Table>
+                    </TableContainer>
+                </Box>
+            ) : (
+                <Text className='text-center mt-5'>No dispatch history available.</Text>
+            )}
+        </Box>
+    );
 }
 
 export default ImporterDispatchHistory;
