@@ -66,29 +66,29 @@ function UpdateProductPrice() {
         <Box></Box>
       </Box>
 
-      <Box p={4} className="shadow-md rounded-md mt-5 max-w-md mx-auto bg-white">
+      <Box p={4} className=" mt-5  mx-auto flex flex-col gap-4 ">
         <VStack spacing={4} >
           <FormControl id="product-id" isRequired >
-            <FormLabel>Box ID</FormLabel>
-            <Input
+            {/* <FormLabel>Box ID</FormLabel> */}
+            <input
               type="number"
               placeholder="Enter Box ID"
+              className='p-3 w-96 bg-white border-2 border-[#5160be] rounded-lg'
               value={boxId}
               onChange={(e) => setBoxId(e.target.value)}
-              size="lg"
-              focusBorderColor="blue.500"
+              required
             />
           </FormControl>
 
           <FormControl id="price" isRequired>
-            <FormLabel>Updated Price</FormLabel>
-            <Input
+            {/* <FormLabel>Updated Price</FormLabel> */}
+            <input
               type="number"
               placeholder="Enter Updated Price"
+              className='p-3 w-96 bg-white border-2 border-[#5160be] rounded-lg'
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              size="lg"
-              focusBorderColor="blue.500"
+              required
             />
           </FormControl>
 
