@@ -1,9 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Box, Heading, Button, useToast } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
 import {
-  Box,
-  Heading,
   Table,
   Thead,
   Tbody,
@@ -11,11 +7,13 @@ import {
   Th,
   Td,
   TableContainer,
-  IconButton,
+  Box,
+  Heading,
+  Button,
+  useToast,
   Divider,
   Text,
-  Center,
-  Spinner
+  IconButton,
 } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
@@ -52,6 +50,7 @@ function CustomsDispatchHistory() {
   const qrRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const navigate = useNavigate();
 
   // Load the logo as base64 when the component mounts
   useEffect(() => {
@@ -60,7 +59,6 @@ function CustomsDispatchHistory() {
       .then(setBase64Logo)
       .catch((error) => console.error("Error converting logo to base64:", error));
   }, []);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchHistoryData = async () => {
@@ -88,20 +86,35 @@ function CustomsDispatchHistory() {
     if (etherContract) {
       fetchHistoryData();
     }
-  }, []);
+  }, [etherContract]);
 
   // Helper function to format address
   const formatAddress = (address) => {
-    // Slice the address to show only specific parts
     return `${address.slice(0, 5)}...${address.slice(-7)}`;
+  };
+
+  // Function to handle PDF generation and download
+  const handleGeneratePdf = async () => {
+    setLoading(true);
+    try {
+      const canvas = await html2canvas(qrRef.current);
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, 'PNG', 10, 10);
+      pdf.save(`QRCode_${printId}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
       <div className='flex justify-between'>
-        <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} />
+        <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(-1)} />
         <Heading as='h1' size='xl' textAlign='center'>Customs to Importer Dispatch History</Heading>
-        <p></p>
+        <div></div>
       </div>
       <Divider className='mt-5' />
       <Text textAlign='center' mt={2} mb={4}>Here you can find the history of all dispatches made by customs to importers.</Text>
@@ -116,6 +129,7 @@ function CustomsDispatchHistory() {
               <Th color="white" fontSize="md" textAlign="center">Importer</Th>
               <Th color="white" fontSize="md" textAlign="center">Timestamp</Th>
               <Th color="white" fontSize="md" textAlign="center">Quantity</Th>
+              <Th color="white" fontSize="md" textAlign="center">Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
