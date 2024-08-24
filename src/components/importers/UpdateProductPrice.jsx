@@ -9,9 +9,12 @@ import {
   Spinner,
   FormControl,
   FormLabel,
+  IconButton,
 } from '@chakra-ui/react';
-import { CheckIcon } from '@chakra-ui/icons';
+import { CheckIcon, ArrowLeftIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
 import useWallet from '../../hooks/userWallet';
+import backgroundImage from "../../img/homeBG3.png"; // Adjust the path if necessary
 
 function UpdateProductPrice() {
   const { traceChainBDContract, zeroGas } = useWallet();
@@ -19,6 +22,7 @@ function UpdateProductPrice() {
   const [price, setPrice] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
+  const navigate = useNavigate();
 
   const handleUpdateProduct = async () => {
     setIsLoading(true);
@@ -53,49 +57,55 @@ function UpdateProductPrice() {
   };
 
   return (
-    <Box display="flex" justifyContent="center" p={5}>
-      <VStack spacing={5} width="full" maxW="md">
-        <Heading as="h1" size="xl" mb={5} textAlign="center">
+    <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <Box className='flex justify-between'>
+        <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} />
+        <Heading as="h1" size="xl" textAlign="center" mt={5} className='text-center'>
           Update Product Price by Importer
         </Heading>
+        <Box></Box>
+      </Box>
 
-        <FormControl id="product-id" isRequired>
-          <FormLabel>Box ID</FormLabel>
-          <Input
-            type="number"
-            placeholder="Enter Box ID"
-            value={boxId}
-            onChange={(e) => setBoxId(e.target.value)}
+      <Box p={4} className="shadow-md rounded-md mt-5 max-w-md mx-auto bg-white">
+        <VStack spacing={4} >
+          <FormControl id="product-id" isRequired >
+            <FormLabel>Box ID</FormLabel>
+            <Input
+              type="number"
+              placeholder="Enter Box ID"
+              value={boxId}
+              onChange={(e) => setBoxId(e.target.value)}
+              size="lg"
+              focusBorderColor="blue.500"
+            />
+          </FormControl>
+
+          <FormControl id="price" isRequired>
+            <FormLabel>Updated Price</FormLabel>
+            <Input
+              type="number"
+              placeholder="Enter Updated Price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              size="lg"
+              focusBorderColor="blue.500"
+            />
+          </FormControl>
+
+          <Button
+            leftIcon={isLoading ? <Spinner size="sm" /> : <CheckIcon />}
+            colorScheme="green"
             size="lg"
-            focusBorderColor="blue.500"
-          />
-        </FormControl>
-
-        <FormControl id="price" isRequired>
-          <FormLabel>Updated Price</FormLabel>
-          <Input
-            type="number"
-            placeholder="Enter Updated Price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            size="lg"
-            focusBorderColor="blue.500"
-          />
-        </FormControl>
-
-        <Button
-          leftIcon={isLoading ? <Spinner size="sm" /> : <CheckIcon />}
-          colorScheme="blue"
-          size="lg"
-          width="full"
-          onClick={handleUpdateProduct}
-          isLoading={isLoading}
-          loadingText="Updating"
-          disabled={!boxId || !price || isLoading}
-        >
-          Update Price
-        </Button>
-      </VStack>
+            width="full"
+            onClick={handleUpdateProduct}
+            isLoading={isLoading}
+            loadingText="Updating"
+            disabled={!boxId || !price || isLoading}
+          >
+            Update Price
+          </Button>
+        </VStack>
+      </Box>
     </Box>
   );
 }

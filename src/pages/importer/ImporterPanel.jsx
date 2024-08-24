@@ -57,7 +57,7 @@ function ImporterPanel() {
     }
 
     return (
-        <div className='px-10 pt-5'>
+        <div className=''>
             <div>
                 {renderComponent()}
             </div>

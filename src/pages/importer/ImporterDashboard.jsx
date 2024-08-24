@@ -1,124 +1,124 @@
 import React from 'react'
 // import ApexCharts from 'apexcharts';
 import ApexCharts from 'apexcharts'
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 
 function ImporterDashboard() {
 
-  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
-  const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] = useState(false);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [isPagesMenuOpen, setIsPagesMenuOpen] = useState(false);
-  
-  const toggleSideMenu = () => {
-      setIsSideMenuOpen(!isSideMenuOpen);
-  };
-  
-  const closeSideMenu = () => {
-      setIsSideMenuOpen(false);
-  };
-  
-  const toggleNotificationsMenu = () => {
-      setIsNotificationsMenuOpen(!isNotificationsMenuOpen);
-  };
-  
-  const closeNotificationsMenu = () => {
-      setIsNotificationsMenuOpen(false);
-  };
-  
-  const toggleProfileMenu = () => {
-      setIsProfileMenuOpen(!isProfileMenuOpen);
-  };
-  
-  const closeProfileMenu = () => {
-      setIsProfileMenuOpen(false);
-  };
-  
-  const togglePagesMenu = () => {
-      setIsPagesMenuOpen(!isPagesMenuOpen);
-  };
-  
-  // This useEffect will render the ApexCharts once the component mounts
- 
-  useEffect(() => {
-    // Line chart
-    var options1 = {
-        series: [
-            { name: 'TEAM A', type: 'area', data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33] },
-            { name: 'TEAM B', type: 'line', data: [55, 69, 45, 61, 43, 54, 37, 52, 44, 61, 43] }
-        ],
-        chart: {
-            height: 350,
-            type: 'line',
-            zoom: { enabled: false }
-        },
-        stroke: { curve: 'smooth' },
-        fill: { type: 'solid', opacity: [0.35, 1] },
-        labels: ['Dec 01', 'Dec 02', 'Dec 03', 'Dec 04', 'Dec 05', 'Dec 06', 'Dec 07', 'Dec 08', 'Dec 09 ', 'Dec 10', 'Dec 11'],
-        markers: { size: 0 },
-        yaxis: [
-            { title: { text: 'Sales' } },
-            { opposite: true, title: { text: 'Sales' } }
-        ],
-        tooltip: {
-            shared: true,
-            intersect: false,
-            y: {
-                formatter: function(y) {
-                    if (typeof y !== "undefined") {
-                        return y.toFixed(0) + " points";
-                    }
-                    return y;
-                }
-            }
-        }
+    const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+    const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] = useState(false);
+    const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+    const [isPagesMenuOpen, setIsPagesMenuOpen] = useState(false);
+
+    const toggleSideMenu = () => {
+        setIsSideMenuOpen(!isSideMenuOpen);
     };
 
-    var chart1 = new ApexCharts(document.querySelector("#chartline"), options1);
-    chart1.render();
+    const closeSideMenu = () => {
+        setIsSideMenuOpen(false);
+    };
 
-    // Radial chart
-    var options2 = {
-        series: [44, 55, 67, 83],
-        chart: {
-            height: 350,
-            type: 'radialBar'
-        },
-        plotOptions: {
-            radialBar: {
-                dataLabels: {
-                    name: { fontSize: '22px' },
-                    value: { fontSize: '16px' },
-                    total: {
-                        show: true,
-                        label: 'Total',
-                        formatter: function(w) {
-                            return 4510; // Example formatter
+    const toggleNotificationsMenu = () => {
+        setIsNotificationsMenuOpen(!isNotificationsMenuOpen);
+    };
+
+    const closeNotificationsMenu = () => {
+        setIsNotificationsMenuOpen(false);
+    };
+
+    const toggleProfileMenu = () => {
+        setIsProfileMenuOpen(!isProfileMenuOpen);
+    };
+
+    const closeProfileMenu = () => {
+        setIsProfileMenuOpen(false);
+    };
+
+    const togglePagesMenu = () => {
+        setIsPagesMenuOpen(!isPagesMenuOpen);
+    };
+
+    // This useEffect will render the ApexCharts once the component mounts
+
+    useEffect(() => {
+        // Line chart
+        var options1 = {
+            series: [
+                { name: 'TEAM A', type: 'area', data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33] },
+                { name: 'TEAM B', type: 'line', data: [55, 69, 45, 61, 43, 54, 37, 52, 44, 61, 43] }
+            ],
+            chart: {
+                height: 350,
+                type: 'line',
+                zoom: { enabled: false }
+            },
+            stroke: { curve: 'smooth' },
+            fill: { type: 'solid', opacity: [0.35, 1] },
+            labels: ['Dec 01', 'Dec 02', 'Dec 03', 'Dec 04', 'Dec 05', 'Dec 06', 'Dec 07', 'Dec 08', 'Dec 09 ', 'Dec 10', 'Dec 11'],
+            markers: { size: 0 },
+            yaxis: [
+                { title: { text: 'Sales' } },
+                { opposite: true, title: { text: 'Sales' } }
+            ],
+            tooltip: {
+                shared: true,
+                intersect: false,
+                y: {
+                    formatter: function (y) {
+                        if (typeof y !== "undefined") {
+                            return y.toFixed(0) + " points";
+                        }
+                        return y;
+                    }
+                }
+            }
+        };
+
+        var chart1 = new ApexCharts(document.querySelector("#chartline"), options1);
+        chart1.render();
+
+        // Radial chart
+        var options2 = {
+            series: [44, 55, 67, 83],
+            chart: {
+                height: 350,
+                type: 'radialBar'
+            },
+            plotOptions: {
+                radialBar: {
+                    dataLabels: {
+                        name: { fontSize: '22px' },
+                        value: { fontSize: '16px' },
+                        total: {
+                            show: true,
+                            label: 'Total',
+                            formatter: function (w) {
+                                return 4510; // Example formatter
+                            }
                         }
                     }
                 }
-            }
-        },
-        labels: ['Apples', 'Oranges', 'Bananas', 'Berries']
-    };
+            },
+            labels: ['Apples', 'Oranges', 'Bananas', 'Berries']
+        };
 
-    var chart2 = new ApexCharts(document.querySelector("#chartpie"), options2);
-    chart2.render();
+        var chart2 = new ApexCharts(document.querySelector("#chartpie"), options2);
+        chart2.render();
 
-    // Clean up function to destroy charts on unmount
-    return () => {
-        chart1.destroy();
-        chart2.destroy();
-    };
-}, []); // Empty dependency array ensures this runs only once
-
+        // Clean up function to destroy charts on unmount
+        return () => {
+            chart1.destroy();
+            chart2.destroy();
+        };
+    }, []); // Empty dependency array ensures this runs only once
 
 
-  
-  return (
-    <div>
-      <main class="">
+
+
+    return (
+        <div>
+            <main class="">
                 <div class="grid mb-4 pb-10 px-8 mx-4 rounded-1xl bg-gray-100 border-2 border-black-100 shadow-xl">
 
                     <div class="grid grid-cols-12 gap-6">
@@ -305,28 +305,28 @@ function ImporterDashboard() {
                                                                             class="px-6 py-4 whitespace-no-wrap text-sm leading-5">
                                                                             <div class="flex space-x-4">
                                                                                 <a href="#" class="text-blue-500 hover:text-blue-600">
-                                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                                    class="w-5 h-5 mr-1"
-                                                                                    fill="none" viewBox="0 0 24 24"
-                                                                                    stroke="currentColor">
-                                                                                    <path stroke-linecap="round"
-                                                                                        stroke-linejoin="round"
-                                                                                        stroke-width="2"
-                                                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                                                </svg>
-                                                                                <p>Edit</p>
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                        class="w-5 h-5 mr-1"
+                                                                                        fill="none" viewBox="0 0 24 24"
+                                                                                        stroke="currentColor">
+                                                                                        <path stroke-linecap="round"
+                                                                                            stroke-linejoin="round"
+                                                                                            stroke-width="2"
+                                                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                                                    </svg>
+                                                                                    <p>Edit</p>
                                                                                 </a>
                                                                                 <a href="#" class="text-red-500 hover:text-red-600">
-                                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                                    class="w-5 h-5 mr-1 ml-3"
-                                                                                    fill="none" viewBox="0 0 24 24"
-                                                                                    stroke="currentColor">
-                                                                                    <path stroke-linecap="round"
-                                                                                        stroke-linejoin="round"
-                                                                                        stroke-width="2"
-                                                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                                                </svg>
-                                                                                <p>Delete</p>
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                        class="w-5 h-5 mr-1 ml-3"
+                                                                                        fill="none" viewBox="0 0 24 24"
+                                                                                        stroke="currentColor">
+                                                                                        <path stroke-linecap="round"
+                                                                                            stroke-linejoin="round"
+                                                                                            stroke-width="2"
+                                                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                                                    </svg>
+                                                                                    <p>Delete</p>
                                                                                 </a>
                                                                             </div>
                                                                         </td>
@@ -346,9 +346,9 @@ function ImporterDashboard() {
                 </div>
             </main>
 
-            
-    </div>
-  )
+
+        </div>
+    )
 }
 
 export default ImporterDashboard
