@@ -27,6 +27,7 @@ const convertImageToBase64 = (url) => {
     img.onerror = reject;
   });
 };
+
 import backgroundImage from "../../img/homeBG2.png"; // Ensure you have this image in the correct path
 
 function DispatchToImporter() {
@@ -46,6 +47,7 @@ function DispatchToImporter() {
 
   const { traceChainBDContract, zeroGas } = useWallet();
   const { account } = useAuth();
+  const navigate = useNavigate();
 
   // Load the logo as base64 when the component mounts
   useEffect(() => {
@@ -54,74 +56,9 @@ function DispatchToImporter() {
       .then(setBase64Logo)
       .catch((error) => console.error("Error converting logo to base64:", error));
   }, []);
-  const navigate = useNavigate();
 
   const handleDetails = async () => {
-    if (boxId !== '') {
-      try {
-        setLoading(true);
-        setShowPending(false);
-        // Get product details from blockchain
-        const product = await etherContract.boxes(boxId);
-
-        // Convert BigNumber and other types to strings or numbers
-        const formattedProduct = {
-          boxid: Number(product.boxId.toString()),
-          startId: Number(product.start_productId.toString()),
-          endId: Number(product.end_productId.toString()),
-          name: product.name,
-          description: product.description,
-          category: product.category,
-          countryOfOrigin: product.countryOfOrigin,
-          manufacturer: product.manufacturer,
-          price: Number(product.price.toString()),
-          quantity: Number(product.quantity.toString()), // Convert BigNumber to number
-          importedDate: Number(product.importedDate.toString()), // Convert BigNumber to number
-          importerAddr: product.importerAddr,
-          customsAddr: product.customsAddr
-        };
-
-        if (formattedProduct.customsAddr !== account) {
-          toast({
-            title: "Error",
-            description: "You are not authorized to view this product",
-            status: "error",
-            duration: 9000,
-            isClosable: true,
-          });
-          return;
-        }
-
-        const isDispatched = await etherContract.productLifeCycles(formattedProduct.startId);
-
-        if (isDispatched.owner === account) {
-          setImporterAddr(product.importerAddr);
-          setProductDetails(formattedProduct);
-          setIsHidden(false);
-          setHideGetBtn(true);
-        } else {
-          toast({
-            title: "Already Dispatched",
-            description: "You are not authorized to view this product",
-            status: "error",
-            duration: 9000,
-            isClosable: true,
-            position: "top-right",
-          });
-        }
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch product details",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      // Show warning toast
+    if (boxId === '') {
       toast({
         title: "Warning",
         description: "Product ID is required",
@@ -129,6 +66,68 @@ function DispatchToImporter() {
         duration: 9000,
         isClosable: true,
       });
+      return;
+    }
+
+    setLoading(true);
+    setShowPending(false);
+
+    try {
+      const product = await etherContract.boxes(boxId);
+
+      const formattedProduct = {
+        boxid: Number(product.boxId.toString()),
+        startId: Number(product.start_productId.toString()),
+        endId: Number(product.end_productId.toString()),
+        name: product.name,
+        description: product.description,
+        category: product.category,
+        countryOfOrigin: product.countryOfOrigin,
+        manufacturer: product.manufacturer,
+        price: Number(product.price.toString()),
+        quantity: Number(product.quantity.toString()),
+        importedDate: Number(product.importedDate.toString()),
+        importerAddr: product.importerAddr,
+        customsAddr: product.customsAddr
+      };
+
+      if (formattedProduct.customsAddr !== account) {
+        toast({
+          title: "Error",
+          description: "You are not authorized to view this product",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+        return;
+      }
+
+      const isDispatched = await etherContract.productLifeCycles(formattedProduct.startId);
+
+      if (isDispatched.owner === account) {
+        setImporterAddr(product.importerAddr);
+        setProductDetails(formattedProduct);
+        setIsHidden(false);
+        setHideGetBtn(true);
+      } else {
+        toast({
+          title: "Already Dispatched",
+          description: "You are not authorized to view this product",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch product details",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -141,44 +140,42 @@ function DispatchToImporter() {
         duration: 9000,
         isClosable: true,
       });
+      return;
     }
-    else {
-      setLoading(true);
-      try {
-        const _old = await etherContract.boxCounter()
-        setOldCounter(_old.toNumber());
 
-        const tx = await traceChainBDContract.dispatch(
-          productDetails.startId, productDetails.endId, importerAddr, _ipfsDocHash, zeroGas
-        );
+    setLoading(true);
 
-        await tx.wait();
+    try {
+      const _old = await etherContract.boxCounter();
+      setOldCounter(_old.toNumber());
 
-        toast({
-          title: "Success",
-          description: "Product dispatched successfully",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
+      const tx = await traceChainBDContract.dispatch(
+        productDetails.startId, productDetails.endId, importerAddr, _ipfsDocHash, zeroGas
+      );
 
-        // Show QR code after successful transaction
-        setShowQr(true);
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to dispatch product",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      }
+      await tx.wait();
 
-      // Reset form fields
+      toast({
+        title: "Success",
+        description: "Product dispatched successfully",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+
+      setShowQr(true);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to dispatch product",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } finally {
       setIpfsDocHash('');
       setLoading(false);
     }
-
   };
 
   const handleGeneratePdf = async () => {
@@ -194,19 +191,19 @@ function DispatchToImporter() {
     }
 
     try {
-      const qrElements = qrRef.current.querySelectorAll('div'); // Select all QR code elements
+      const qrElements = qrRef.current.querySelectorAll('div');
 
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "px",
-        format: "a4", // Default A4 size
+        format: "a4",
       });
 
-      let x = 10; // Starting x position
-      let y = 10; // Starting y position
-      const maxX = 580; // Max x position before moving to next page
-      const maxY = 800; // Max y position before moving to next page
-      const padding = 10; // Space between QR codes
+      let x = 10;
+      let y = 10;
+      const maxX = 580;
+      const maxY = 800;
+      const padding = 10;
 
       for (const element of qrElements) {
         const canvas = await html2canvas(element);
@@ -216,22 +213,21 @@ function DispatchToImporter() {
         const height = 200;
 
         if (x + width > maxX) {
-          x = 10; // Reset x position
-          y += height + padding; // Move to next row
+          x = 10;
+          y += height + padding;
         }
 
         if (y + height > maxY) {
-          pdf.addPage(); // Add new page if needed
-          x = 10; // Reset x position
-          y = 10; // Reset y position
+          pdf.addPage();
+          x = 10;
+          y = 10;
         }
 
-        pdf.addImage(qrImage, "PNG", x, y, width, height); // Add QR code image
-        x += width + padding; // Update x position for next QR code
+        pdf.addImage(qrImage, "PNG", x, y, width, height);
+        x += width + padding;
       }
 
       pdf.save(`product_${oldCounter}-qr-codes.pdf`);
-      setLoading(false);
     } catch (error) {
       console.error("Error generating PDF:", error);
       toast({
@@ -241,11 +237,12 @@ function DispatchToImporter() {
         duration: 9000,
         isClosable: true,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <>
     <div className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
       <Box p={10}>
         <div className='flex justify-between'>
@@ -263,12 +260,12 @@ function DispatchToImporter() {
               onChange={(e) => setBoxId(e.target.value)}
               isRequired
               border="2px"
-              borderColor="#5160be"  // Border color set to #5160be
+              borderColor="#5160be"
             />
             <Button
               onClick={handleDetails}
               bg="#5160be"
-              _hover={{ bg: "#7db6f9" }} // Hover background color
+              _hover={{ bg: "#7db6f9" }}
               color="white"
               fontWeight="bold"
               py={2}
@@ -279,128 +276,120 @@ function DispatchToImporter() {
             >
               {loading ? "Fetching..." : "Get Product Details"}
             </Button>
-
           </Box>
         </Box>
 
+        {!isHidden && (
+          <Box display="flex" flexDirection="column" alignItems="center">
+            {loading ? (
+              <Spinner size="xl" />
+            ) : productDetails && productDetails.boxid !== 0 ? (
+              <Box>
+                <Table variant="simple" mb={5}>
+                  <Thead>
+                    <Tr>
+                      <Th>Box</Th>
+                      <Th>Details</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    <Tr>
+                      <Td>Box ID</Td>
+                      <Td>{productDetails.boxid} [Product ID Range: {productDetails.startId} to {productDetails.endId}]</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Name</Td>
+                      <Td>{productDetails.name}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Description</Td>
+                      <Td>{productDetails.description}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Category</Td>
+                      <Td>{productDetails.category}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Country of Origin</Td>
+                      <Td>{productDetails.countryOfOrigin}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Manufacturer</Td>
+                      <Td>{productDetails.manufacturer}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Price</Td>
+                      <Td>{productDetails.price}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Quantity</Td>
+                      <Td>{productDetails.quantity}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Imported Date</Td>
+                      <Td>{new Date(productDetails.importedDate * 1000).toLocaleDateString()}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Importer Address</Td>
+                      <Td>{productDetails.importerAddr}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Customs Address</Td>
+                      <Td>{productDetails.customsAddr}</Td>
+                    </Tr>
+                  </Tbody>
+                </Table>
 
-            {!isHidden && (
-            <Box display="flex" flexDirection="column" alignItems="center">
-              {loading ? (
-                <Spinner size="xl" />
-              ) : (
-                productDetails && productDetails.boxid !== 0 ? (
-                  <Box>
-                    <Table variant="simple" mb={5}>
-                      <Thead>
-                        <Tr>
-                          <Th>Box</Th>
-                          <Th>Details</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        <Tr>
-                          <Td>Box ID</Td>
-                          <Td>{productDetails.boxid} [Product ID Range: {productDetails.startId} to {productDetails.endId}]</Td>
-                        </Tr>
-                        <Tr>
-                          <Td>Name</Td>
-                          <Td>{productDetails.name}</Td>
-                        </Tr>
-                        <Tr>
-                          <Td>Description</Td>
-                          <Td>{productDetails.description}</Td>
-                        </Tr>
-                        <Tr>
-                          <Td>Category</Td>
-                          <Td>{productDetails.category}</Td>
-                        </Tr>
-                        <Tr>
-                          <Td>Country of Origin</Td>
-                          <Td>{productDetails.countryOfOrigin}</Td>
-                        </Tr>
-                        <Tr>
-                          <Td>Manufacturer</Td>
-                          <Td>{productDetails.manufacturer}</Td>
-                        </Tr>
-                        <Tr>
-                          <Td>Price</Td>
-                          <Td>{productDetails.price}</Td>
-                        </Tr>
-                        <Tr>
-                          <Td>Quantity</Td>
-                          <Td>{productDetails.quantity}</Td>
-                        </Tr>
-                        <Tr>
-                          <Td>Imported Date</Td>
-                          <Td>{new Date(productDetails.importedDate * 1000).toLocaleDateString()}</Td>
-                        </Tr>
-                        <Tr>
-                          <Td>Importer Address</Td>
-                          <Td>{productDetails.importerAddr}</Td>
-                        </Tr>
-                        <Tr>
-                          <Td>Customs Address</Td>
-                          <Td>{productDetails.customsAddr}</Td>
-                        </Tr>
-                      </Tbody>
-                    </Table>
+                <Heading as="h1" size="lg" textAlign="center" mb={4}>Enter Dispatch Details</Heading>
+                <Input
+                  type="text"
+                  placeholder="Enter IPFS Document Hash"
+                  value={_ipfsDocHash}
+                  onChange={(e) => setIpfsDocHash(e.target.value)}
+                  isRequired
+                />
+                <div className='flex justify-center'>
+                  <Button mt={4} colorScheme="blue" onClick={handleDispatch} isLoading={loading}>
+                    {loading ? "Dispatching..." : "Dispatch Product to Importer"}
+                  </Button>
+                </div>
 
-                    <Heading as="h1" size="lg" textAlign="center" mb={4}>Enter Dispatch Details</Heading>
-                    <Input
-                      type="text"
-                      placeholder="Enter IPFS Document Hash"
-                      value={_ipfsDocHash}
-                      onChange={(e) => setIpfsDocHash(e.target.value)}
-                      isRequired
-                    />
-                    <div className='flex justify-center'>
-                    <Button mt={4} colorScheme="blue" onClick={handleDispatch} isLoading={loading}>
-                      {loading ? "Dispatching..." : "Dispatch Product to Importer"}
-                    </Button>
-                    </div>
-  
-                  <div>
-                    {showQr && (
-                      <div className="flex flex-col items-center mt-8">
-                        <div ref={qrRef} className="grid grid-cols-5 gap-x-4">
-                          <div className="mb-4">
-                            <QRCode
-                              value={`URL: https://localhost:5173/check-product/${oldCounter}`}
-                              size={200}
-                              fgColor="#00712D"
-                              bgColor="#D5ED9F"
-                              logoImage={base64Logo}
-                              logoWidth={200}
-                              logoHeight={200}
-                            />
-                          </div>
-                        </div>
-                        <Button
-                          onClick={handleGeneratePdf} isLoading={loading}
-                          className="bg-green-600 p-4 text-white rounded-xl w-[300px] font-bold"
-                        >
-                          {loading ? "Generating PDF..." : "Download QR Codes as PDF"}
-                        </Button>
+                {showQr && (
+                  <div className="flex flex-col items-center mt-8">
+                    <div ref={qrRef} className="grid grid-cols-5 gap-x-4">
+                      <div className="mb-4">
+                        <QRCode
+                          value={`URL: https://localhost:5173/check-product/${oldCounter}`}
+                          size={200}
+                          fgColor="#00712D"
+                          bgColor="#D5ED9F"
+                          logoImage={base64Logo}
+                          logoWidth={200}
+                          logoHeight={200}
+                        />
                       </div>
-                    )}
+                    </div>
+                    <Button
+                      onClick={handleGeneratePdf}
+                      isLoading={loading}
+                      className="bg-green-600 p-4 text-white rounded-xl w-[300px] font-bold"
+                    >
+                      {loading ? "Generating PDF..." : "Download QR Codes as PDF"}
+                    </Button>
                   </div>
-                </Box>
-                ) : (
-                  <Box>No product details available.</Box>
-                )
-              )}
-            </Box>
-          )}
-        </Box>
-    </div>
+                )}
+              </Box>
+            ) : (
+              <Box>No product details available.</Box>
+            )}
+          </Box>
+        )}
+      </Box>
 
-      {
-        showPending && boxId == '' && (
-          <PendingDispatch />
-        )
-      }
-    </>
+      {showPending && boxId === '' && (
+        <PendingDispatch />
+      )}
+    </div>
   );
 }
 
