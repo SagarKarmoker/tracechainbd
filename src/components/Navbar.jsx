@@ -150,7 +150,7 @@ function Navbar() {
         <Route path="/home" element={<Roles />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/apply" element={<RegApplication />} />
-        <Route path="/productdetails" element={<ProductDetails />} />
+        <Route path="/check-product/:id" element={<ProductDetails />} />
         <Route path="/*" element={<Error404 />} />
         <Route path="*" element={<Error404 />} />
 
