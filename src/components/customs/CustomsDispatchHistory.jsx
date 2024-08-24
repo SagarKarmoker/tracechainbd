@@ -67,68 +67,71 @@ function CustomsDispatchHistory() {
 
   const handleGeneratePdf = async () => {
     if (!qrRef.current || !printId) {
-      toast({
-        title: "Error",
-        description: "QR Code not found or Dispatch ID is not set.",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-      return;
+        toast({
+            title: "Error",
+            description: "QR Code not found or Dispatch ID is not set.",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+        });
+        return;
     }
 
     try {
-      setLoading(true);
-      const qrElements = qrRef.current.querySelectorAll('div');
+        setLoading(true);
+        const qrElements = qrRef.current.querySelectorAll('canvas');
 
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "px",
-        format: "a4",
-      });
+        // Delay to ensure QR codes are fully rendered
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      let x = 10;
-      let y = 10;
-      const maxX = 580;
-      const maxY = 800;
-      const padding = 10;
+        const pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "px",
+            format: "a4",
+        });
 
-      for (const element of qrElements) {
-        const canvas = await html2canvas(element);
-        const qrImage = canvas.toDataURL("image/png");
+        let x = 10;
+        let y = 10;
+        const maxX = 580;
+        const maxY = 800;
+        const padding = 10;
 
-        const width = 200;
-        const height = 200;
+        for (const canvas of qrElements) {
+            const qrImage = canvas.toDataURL("image/png");
 
-        if (x + width > maxX) {
-          x = 10;
-          y += height + padding;
+            const width = 200;
+            const height = 200;
+
+            if (x + width > maxX) {
+                x = 10;
+                y += height + padding;
+            }
+
+            if (y + height > maxY) {
+                pdf.addPage();
+                x = 10;
+                y = 10;
+            }
+
+            pdf.addImage(qrImage, "PNG", x, y, width, height);
+            x += width + padding;
         }
 
-        if (y + height > maxY) {
-          pdf.addPage();
-          x = 10;
-          y = 10;
-        }
-
-        pdf.addImage(qrImage, "PNG", x, y, width, height);
-        x += width + padding;
-      }
-
-      pdf.save(`product_${printId}_qr_codes.pdf`);
+        pdf.save(`product_${printId}_qr_codes.pdf`);
     } catch (error) {
-      console.error("Error generating PDF:", error);
-      toast({
-        title: "Error",
-        description: "Failed to generate PDF.",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
+        console.error("Error generating PDF:", error);
+        toast({
+            title: "Error",
+            description: "Failed to generate PDF.",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+        });
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   const formatAddress = (address) => {
     return `${address.slice(0, 5)}...${address.slice(-7)}`;
