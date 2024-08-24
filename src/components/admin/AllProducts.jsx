@@ -96,26 +96,29 @@ function AllProducts() {
                                             {expandedProductIds[product.proId] ? "Collapse" : "Expand"}
                                         </Button>
 
-                                        <Collapse in={expandedProductIds[product.proId]} animateOpacity>
-                                            <Stack spacing={2} mt={4}>
-                                                <Text>Category: {product.category}</Text>
-                                                <Text>Country of Origin: {product.countryOfOrigin}</Text>
-                                                <Text>Manufacturer: {product.manufacturer}</Text>
-                                                <Text>Price: {product.price}</Text>
-                                                <Text>Quantity: {product.quantity}</Text>
-                                                <Text>Imported Date: {new Date(product.importedDate * 1000).toLocaleDateString()}</Text>
-                                                <Text>Importer Address: {product.importerAddr}</Text>
-                                                <Text>Customs Address: {product.customsAddr}</Text>
-                                            </Stack>
-                                        </Collapse>
-                                    </Stack>
-                                </Box>
-                            ))}
-                        </SimpleGrid>
-                    ) : (
-                        <Text textAlign="center">No products found.</Text>
-                    )
-                )}
+                                    <Collapse in={expandedProductIds[product.proId]} animateOpacity>
+                                        <Stack spacing={2} mt={4}>
+                                            <Text>Category: {product.category}</Text>
+                                            <Text>Country of Origin: {product.countryOfOrigin}</Text>
+                                            <Text>Manufacturer: {product.manufacturer}</Text>
+                                            <Text>Price: {product.price}</Text>
+                                            <Text>Quantity: {product.quantity}</Text>
+                                            <Text>Imported Date: {new Date(product.importedDate * 1000).toLocaleDateString()}</Text>
+                                            <Text>Importer Address: {product.importerAddr}</Text>
+                                            <Text>Customs Address: {product.customsAddr}</Text>
+                                            <Button onClick={() => navigate(`/check-product/${product.proId}`)}>
+                                                View Details
+                                            </Button>
+                                        </Stack>
+                                    </Collapse>
+                                </Stack>
+                            </Box>
+                        ))}
+                    </SimpleGrid>
+                ) : (
+                    <Text textAlign="center">No products found.</Text>
+                )
+            )}
             </Box>
         </div>
     );

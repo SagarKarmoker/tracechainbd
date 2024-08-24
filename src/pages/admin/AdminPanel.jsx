@@ -8,6 +8,7 @@ import DeniedApplications from '../../components/admin/DeniedApplications';
 import AllProducts from '../../components/admin/AllProducts';
 import { etherContract } from '../../contants';
 import { Spinner, Center, Text, Box } from '@chakra-ui/react';
+import TraceProduct from '../../components/admin/TraceProduct';
 
 function AdminPanel() {
   const activeAccount = useActiveAccount();
@@ -39,6 +40,8 @@ function AdminPanel() {
         return <DeniedApplications />;
       case 'denied-report-applications':
         return <DeniedApplications />;
+      case 'trace-product':
+        return <TraceProduct />;
       default:
         return <AdminDashboard setActiveComponent={setActiveComponent} />;
     }
