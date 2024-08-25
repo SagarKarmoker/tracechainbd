@@ -18,7 +18,7 @@ function SingleProductDispatch() {
         productId, productId, distributorAddress, memoDocumentHash, zeroGas
       );
       const response = await tx.wait();
-      if(response){
+      if (response) {
         setIsLoading(false);
         toast({
           title: 'Success',
@@ -30,7 +30,7 @@ function SingleProductDispatch() {
         setProductId('');
         setDistributorAddress('');
         setMemoDocumentHash('');
-      }else{
+      } else {
         setIsLoading(false);
         toast({
           title: 'Error',
@@ -54,46 +54,59 @@ function SingleProductDispatch() {
   };
 
   return (
-    <Box p={4} className="shadow-md rounded-md max-w-md mx-auto bg-white">
+    <Box p={4} className=" max-w-md mx-auto">
       <Heading size="lg" mb={6} className='text-center'>Single Product Dispatch</Heading>
       <VStack spacing={4}>
-        <Input
+        <input
           placeholder="Enter Product ID"
           type="number"
-          focusBorderColor="blue.500"
-          className="border-gray-300 rounded-md shadow-sm"
+          className='p-3 bg-white w-96 border rounded-lg'
+          style={{ borderColor: '#5160be', borderWidth: '3px' }}
           value={productId}
           onChange={(e) => setProductId(e.target.value)}
+          required
         />
-        <Input
+        <input
           placeholder="Distributor Address"
           type="text"
-          focusBorderColor="green.500"
-          className="border-gray-300 rounded-md shadow-sm"
+          className='p-3 bg-white w-96 border rounded-lg'
+          style={{ borderColor: '#5160be', borderWidth: '3px' }}
           value={distributorAddress}
           onChange={(e) => setDistributorAddress(e.target.value)}
+          required
         />
         {/* <Link href="#" color="blue.400" fontSize="sm" alignSelf="flex-start">
           <Icon as={FiSearch} mr={2} />
           Find distributor addresses
         </Link> */}
-        <Input
+        <input
           placeholder="Memo Document Hash"
           type="text"
-          focusBorderColor="purple.500"
-          className="border-gray-300 rounded-md shadow-sm"
+          className='p-3 bg-white w-96 border rounded-lg'
+          style={{ borderColor: '#5160be', borderWidth: '3px' }}
           value={memoDocumentHash}
           onChange={(e) => setMemoDocumentHash(e.target.value)}
+          required
         />
         <Button
-          colorScheme="green"
-          onClick={handleDispatch}
-          isLoading={isLoading}
-          loadingText="Dispatching"
-          leftIcon={<Icon as={FiSend} />}
-          className="w-full"
+            onClick={handleDispatch}
+            isLoading={isLoading}
+            loadingText="Dispatching"
+            leftIcon={<Icon as={FiSend} />}
+            sx={{
+                backgroundColor: '#5160be',
+                color: 'white',
+                fontWeight: 'bold',
+                borderRadius: 'md',
+                paddingY: '2',
+                paddingX: '4',
+                _hover: {
+                    backgroundColor: '#7db6f9',
+                },
+            }}
+            className="w-96"
         >
-          Dispatch
+            Dispatch
         </Button>
       </VStack>
     </Box>
