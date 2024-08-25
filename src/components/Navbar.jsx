@@ -76,7 +76,7 @@ function Navbar() {
 
   return (
     <>
-      <nav className="bg-[#f1f2f7] sticky top-0 ">
+      <nav className="bg-[#f1f2f7] sticky top-0 z-10">
         <div className="container mx-auto flex justify-between items-center p-2">
           <h1 className="text-2xl font-bold text-red-500">
             {role !== "" ? (
