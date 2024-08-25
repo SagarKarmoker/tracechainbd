@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Box, Button, Heading, VStack, Icon, Text } from '@chakra-ui/react';
-import { FiPackage, FiLayers } from 'react-icons/fi'; 
+import { FiPackage, FiLayers } from 'react-icons/fi';
 import SingleProductDispatch from '../importers/SingleProductDispatch';
 import MultipleProductDispatch from '../importers/MultipleProductDispatch';
 import backgroundImage from "../../img/homeBG5.png"; // Adjust the path if necessary
 
 function DispatchToRetailer() {
-    const [selectedOption, setSelectedOption] = useState(null);
+    // Set the default selectedOption to 'single'
+    const [selectedOption, setSelectedOption] = useState('single');
 
     return (
         <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col items-center' style={{ backgroundImage: `url(${backgroundImage})` }}>
@@ -15,7 +16,7 @@ function DispatchToRetailer() {
                 <Text className='text-center font-bold text-4xl'>Distributor to Retailer Dispatch</Text>
                 <Box></Box>
             </Box>
-            
+
             <Heading size="md" mb={4} textAlign="center" mt={8}>Please choose your option:</Heading>
             <VStack spacing={4} className='flex'>
                 <Button
@@ -39,6 +40,7 @@ function DispatchToRetailer() {
             </VStack>
 
             <Box mt={8} className='w-full'>
+                {/* Display SingleProductDispatch by default, and also show MultipleProductDispatch based on selection */}
                 {selectedOption === 'single' && <SingleProductDispatch />}
                 {selectedOption === 'multiple' && <MultipleProductDispatch />}
             </Box>

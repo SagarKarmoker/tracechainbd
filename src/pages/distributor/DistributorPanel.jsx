@@ -15,7 +15,7 @@ import ReportProduct from '../../components/ReportProduct';
 import AllProduct from '../../components/distributors/AllProduct';
 import sidebarBackgroundImage from '../../img/homeBG4.png'; 
 
-const SidebarContent = ({ setActiveComponent }) => {
+const SidebarContent = ({ setActiveComponent, activeComponent }) => {
     const linkItems = [
         { name: 'Pending Product', component: 'pending-product', icon: FiBox },
         { name: 'All Product', component: 'all-product', icon: FiHome },
@@ -41,7 +41,12 @@ const SidebarContent = ({ setActiveComponent }) => {
         >
             <Box mt="4">
                 {linkItems.map((link) => (
-                    <NavItem key={link.name} icon={link.icon} onClick={() => setActiveComponent(link.component)}>
+                    <NavItem
+                        key={link.name}
+                        icon={link.icon}
+                        isActive={activeComponent === link.component}
+                        onClick={() => setActiveComponent(link.component)}
+                    >
                         {link.name}
                     </NavItem>
                 ))}
@@ -50,7 +55,7 @@ const SidebarContent = ({ setActiveComponent }) => {
     );
 };
 
-const NavItem = ({ icon, children, onClick }) => {
+const NavItem = ({ icon, children, onClick, isActive }) => {
     return (
         <Box
             as="a"
@@ -61,10 +66,13 @@ const NavItem = ({ icon, children, onClick }) => {
         >
             <Flex
                 align="center"
-                p="4"
+                p="3"
+                mt="2"
                 borderRadius="lg"
                 role="group"
                 cursor="pointer"
+                bg={isActive ? '#5160be' : 'transparent'} // Background color for active state
+                color={isActive ? 'white' : 'inherit'} // Text color for active state
                 _hover={{
                     bg: '#5160be',
                     color: 'white',
@@ -74,6 +82,7 @@ const NavItem = ({ icon, children, onClick }) => {
                     <Icon
                         mr="4"
                         fontSize="20" // Adjusted for better visibility
+                        color={isActive ? 'white' : 'inherit'} // Icon color for active state
                         _groupHover={{
                             color: 'white',
                         }}
@@ -142,7 +151,7 @@ function DistributorPanel() {
 
     return (
         <Box display="flex">
-            <SidebarContent setActiveComponent={setActiveComponent} />
+            <SidebarContent setActiveComponent={setActiveComponent} activeComponent={activeComponent} />
             <Box ml="20%" flex="1"> {/* Updated margin-left to 20% */}
                 {/* Main Content */}
                 {renderComponent()}

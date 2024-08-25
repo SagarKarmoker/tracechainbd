@@ -1,12 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Heading, Table, Thead, Tbody, Tr, Th, Td, Text } from '@chakra-ui/react';
+import { Box, Button, Heading, Table, Thead, Tbody, Tr, Th, Td, Text, Divider, Spinner, Center, IconButton } from '@chakra-ui/react';
+import { CloseIcon } from '@chakra-ui/icons';
 import { etherContract } from '../../contants'; // Adjust the path if necessary
+import backgroundImage from "../../img/homeBG5.png";
+import { keyframes } from '@chakra-ui/react';
+
+const vanishAnimation = keyframes`
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+`;
+
 
 function AllRetailerList() {
     const [importers, setImporters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedImporter, setSelectedImporter] = useState(null);
     const [isHidden, setIsHidden] = useState(true);
+    const [isCrossed, setIsCrossed] = useState(false); // State to control cross-out animation
 
     const fetchData = async () => {
         try {
@@ -32,48 +48,87 @@ function AllRetailerList() {
     }, []);
 
     if (loading) {
-        return <Text>Loading...</Text>;
+        return (
+            <Center height="100vh">
+                <Box textAlign="center">
+                    <Spinner size="xl" color="blue.500" />
+                    <Text mt={4} fontSize="xl" fontWeight="bold">Please wait while we load the retailer list. This won't take long.</Text>
+                </Box>
+            </Center>
+        );
     }
 
     return (
-        <Box p={4}>
-            <Heading as='h1' size='xl' textAlign='center' mb={4}>All Retailer List</Heading>
+        <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <Box className='flex justify-center'>
+                <Heading as='h1' size='xl' textAlign='center' mb={4}>All Retailer List</Heading>
+            </Box>
             <Text textAlign='center' mb={4}>Show as table contains details</Text>
-            <Table variant='simple' size='lg'>
-                <Thead>
-                    <Tr>
-                        <Th>SL</Th>
-                        <Th>Name</Th>
-                        <Th>Address</Th>
-                        <Th>Country of Origin</Th>
-                        <Th>Details</Th>
-                    </Tr>
-                </Thead>
-                <Tbody>
-                    {importers
-                    .filter(importer => importer.role === 'RETAILER')
-                    .map((importer, index) => (
-                        <Tr key={index}>
-                            <Td>{index + 1}</Td>
-                            <Td>{importer.name}</Td>
-                            <Td>{importer.address_registered.slice(0, 6) + '...' + importer.address_registered.slice(-4)}</Td>
-                            <Td>{importer.countryOfOrigin}</Td>
-                            <Td>
-                                <Button colorScheme='teal' onClick={() => {
-                                    getMoreDetailsBtn(importer);
-                                    setIsHidden(!isHidden);
-                                }}>
-                                    More
-                                </Button>
-                            </Td>
+            <Divider className='mt-5' borderWidth='1px' borderColor='#5160be' />
+            <Box className='mt-5 border bg-white'>
+                <Table variant='simple' size='lg'>
+                    <Thead bg="#5160be">
+                        <Tr>
+                            <Th color="white" textAlign="center">SL</Th>
+                            <Th color="white" textAlign="center">Name</Th>
+                            <Th color="white" textAlign="center">Address</Th>
+                            <Th color="white" textAlign="center">Country of Origin</Th>
+                            <Th color="white" textAlign="center">Details</Th>
                         </Tr>
-                    ))}
-                </Tbody>
-            </Table>
+                    </Thead>
+                    <Tbody>
+                        {importers
+                        .filter(importer => importer.role === 'RETAILER')
+                        .map((importer, index) => (
+                            <Tr key={index} _hover={{ bg: "gray.100" }}>
+                                <Td textAlign="center">{index + 1}</Td>
+                                <Td textAlign="center">{importer.name}</Td>
+                                <Td textAlign="center">{importer.address_registered.slice(0, 6) + '...' + importer.address_registered.slice(-4)}</Td>
+                                <Td textAlign="center">{importer.countryOfOrigin}</Td>
+                                <Td textAlign="center">
+                                    <Button colorScheme='blue' onClick={() => {
+                                        getMoreDetailsBtn(importer);
+                                        setIsHidden(!isHidden);
+                                        setIsCrossed(false); // Ensure animation resets when showing details
+                                    }}>
+                                        More
+                                    </Button>
+                                </Td>
+                            </Tr>
+                        ))}
+                    </Tbody>
+                </Table>
+            </Box>
 
             {selectedImporter && isHidden && (
-                <Box mt={4} p={4} borderWidth={1} borderRadius="md" boxShadow="md">
-                    <Heading as='h2' size='md' mb={2}>Distributor Details</Heading>
+                <Box
+                    mt={4}
+                    p={4}
+                    borderWidth={3}
+                    borderColor={'#5160be'}
+                    borderRadius="md"
+                    boxShadow="md"
+                    backgroundColor={'white'}
+                    position="relative"
+                    overflow="hidden"
+                    animation={isCrossed ? `${vanishAnimation} 0.5s forwards` : 'none'}
+                >
+                    <Heading as='h2' size='md' mb={2} display="flex" alignItems="center" position="relative">
+                        Distributor Details
+                        <IconButton
+                            icon={<CloseIcon />}
+                            aria-label="Close"
+                            size="sm"
+                            colorScheme="red"
+                            variant="ghost"
+                            position="absolute"
+                            right={2}
+                            onClick={() => {
+                                setIsCrossed(true);
+                                setTimeout(() => setIsHidden(true), 500); // Hide the box after animation
+                            }}
+                        />
+                    </Heading>
                     <Text><strong>Name:</strong> {selectedImporter.name}</Text>
                     <Text><strong>Address:</strong> {selectedImporter.address_registered}</Text>
                     <Text><strong>Location:</strong> {selectedImporter.locAddress}</Text>
