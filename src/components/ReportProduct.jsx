@@ -1,44 +1,202 @@
-import { Divider } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import {
+    Box,
+    Button,
+    Divider,
+    FormControl,
+    FormLabel,
+    Input,
+    Select,
+    Textarea,
+    Spinner,
+    Heading,
+    useToast,
+    Icon,
+} from '@chakra-ui/react';
+import { FaExclamationTriangle } from 'react-icons/fa';
+import useAuth from '../hooks/userAuth';
+import useWallet from '../hooks/userWallet';
 
 function ReportProduct() {
-    const [productId, setProductId] = useState('')
+    const [productId, setProductId] = useState('');
+    const [role, setRole] = useState('');
+    const [comment, setComment] = useState('');
+    const [reportee, setReportee] = useState('');
+    const [proof, setProof] = useState(null);
+    const { account } = useAuth();
+    const { traceChainBDContract, zeroGas } = useWallet();
+    const toast = useToast();
+    const [loading, setLoading] = useState(false);
 
+    const checkProductOwner = async () => {
+        try {
+            const product = await traceChainBDContract.productLifeCycles(productId);
+
+            if (product.owner === account) {
+                return true;
+            }else{
+                toast({
+                    title: 'Error',
+                    description: 'You are not the owner of the product',
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                });
+                return false;
+            }
+
+        } catch (error) {
+            toast({
+                title: 'Error',
+                description: 'Error while fetching product owner',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+            return null;
+        }
+    }
+
+    const handleReport = async () => {
+        if (!productId || !role || !comment) {
+            toast({
+                title: 'Error',
+                description: 'Please fill all the fields',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        const isOwner = await checkProductOwner();
+        if (isOwner === null) {
+            toast({
+                title: 'Error',
+                description: 'Error while checking product owner',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            })
+            return;
+        } else if (!isOwner) {
+            toast({
+                title: 'Error',
+                description: 'You are not the owner of the product',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            })
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const tx = await traceChainBDContract.reportProduct(productId, comment, reportee, proof, zeroGas);
+            await tx.wait();
+
+            toast({
+                title: 'Success',
+                description: 'Product reported successfully',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            });
+
+            // Clear form fields after success
+            setProductId('');
+            setRole('');
+            setComment('');
+            setReportee('');
+            setProof(null);
+
+        } catch (error) {
+            toast({
+                title: 'Error',
+                description: 'Error while reporting product',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
-        <div>
-            <div>
-                <h1 className='text-4xl font-bold text-center mb-2'>Report Portal</h1>
-                <p className='text-center'>Report a product to respective entity to take action</p>
-            </div>
-            <Divider className='m-2' />
-            <div className='mt-5 flex justify-center'>
-                <div className='flex flex-col gap-4'>
-                    <label htmlFor="role" className='font-semibold'>Product ID</label>
-                    <input type="number" className='p-2 border rounded-lg' placeholder='Enter Product Id' value={productId} onChange={(e) => setProductId(e.target.value)} />
+        <Box padding="10" maxW="600px" mx="auto" mt="10" bg="gray.50" boxShadow="lg" borderRadius="lg">
+            <Heading textAlign="center" mb="5">Report Portal</Heading>
+            <Divider mb="5" />
+            <Box as="form" className="flex flex-col gap-4">
+                <FormControl>
+                    <FormLabel>Product ID</FormLabel>
+                    <Input
+                        type="number"
+                        placeholder="Enter Product ID"
+                        value={productId}
+                        onChange={(e) => setProductId(e.target.value)}
+                    />
+                </FormControl>
 
-                    {/* role selection */}
-                    <label htmlFor="role" className='font-semibold'>Your role</label>
-                    <select name="role" id="role" className='border p-3 rounded-lg w-[400px]'>
+                <FormControl>
+                    <FormLabel>Your Role</FormLabel>
+                    <Select placeholder="Select your role" value={role} onChange={(e) => setRole(e.target.value)}>
                         <option value="Importer">Importer</option>
                         <option value="Distributor">Distributor</option>
                         <option value="Retailer">Retailer</option>
-                    </select>
+                    </Select>
+                </FormControl>
 
-                    <label htmlFor="role" className='font-semibold'>Your Comment</label>
-                    <textarea name="" id=""
-                        className='border p-3 rounded-lg w-[400px] h-48' placeholder='Enter your report details'></textarea>
+                <FormControl>
+                    <FormLabel>Against Role</FormLabel>
+                    <Select placeholder="Select the role you are reporting against" value={reportee} onChange={(e) => setReportee(e.target.value)}>
+                        <option value="Importer">Importer</option>
+                        <option value="Distributor">Distributor</option>
+                        <option value="Retailer">Retailer</option>
+                    </Select>
+                </FormControl>
 
-                    <label htmlFor="role" className='font-semibold'>Proof (if Any)</label>
-                    <input type="file" name="" id="" className='border p-3 rounded-lg w-[400px]' />
+                <FormControl>
+                    <FormLabel>Reportee Address</FormLabel>
+                    <Input
+                        type="text"
+                        placeholder="Enter Reportee Address"
+                        value={reportee}
+                        onChange={(e) => setReportee(e.target.value)}
+                    />
+                </FormControl>
 
-                    <div className='flex justify-center'>
-                        <button className='bg-blue-600 p-4 text-white rounded-xl w-[300px] font-bold'>Report</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
+                <FormControl>
+                    <FormLabel>Your Comment</FormLabel>
+                    <Textarea
+                        placeholder="Enter your report details"
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                    />
+                </FormControl>
+
+                <FormControl>
+                    <FormLabel>Proof (if Any)</FormLabel>
+                    <Input
+                        type="file"
+                        onChange={(e) => setProof(e.target.files[0])}
+                    />
+                </FormControl>
+
+                <Box display="flex" justifyContent="center" mt="5">
+                    <Button
+                        colorScheme="blue"
+                        size="lg"
+                        leftIcon={loading ? <Spinner size="sm" /> : <Icon as={FaExclamationTriangle} />}
+                        onClick={handleReport}
+                        isDisabled={loading}
+                    >
+                        {loading ? 'Reporting...' : 'Report'}
+                    </Button>
+                </Box>
+            </Box>
+        </Box>
+    );
 }
 
-export default ReportProduct
+export default ReportProduct;
