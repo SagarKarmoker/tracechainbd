@@ -19,18 +19,18 @@ function ImporterDashboard({ setActiveComponent }) {
         checkIfImporter();
     }, [account]);
 
-    // if (!isConnected) {
-    //     return (
-    //         <div className='flex flex-col justify-center items-center h-[90vh]'>
-    //             <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
-    //             <br />
-    //             <p className='text-red-400'>Please Login</p>
-    //             <button className='bg-[#5160be] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4'>
-    //                 Go back
-    //             </button>
-    //         </div>
-    //     );
-    // }
+    if (!isConnected) {
+        return (
+            <div className='flex flex-col justify-center items-center h-[90vh]'>
+                <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
+                <br />
+                <p className='text-red-400'>Please Login</p>
+                <button className='bg-[#5160be] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4'>
+                    Go back
+                </button>
+            </div>
+        );
+    }
 
     if (isConnected && !checkImporter) {
         return (
