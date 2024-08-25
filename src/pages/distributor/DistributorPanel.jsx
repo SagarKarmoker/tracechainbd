@@ -127,7 +127,7 @@ function DistributorPanel() {
                 return <DistributorDashboard setActiveComponent={setActiveComponent} />;
         }
     };
-
+    
     if (account == null && !isConnected) {
         return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
