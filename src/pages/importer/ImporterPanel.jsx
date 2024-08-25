@@ -25,8 +25,8 @@ const SidebarContent = ({ setActiveComponent, activeComponent }) => {
         { name: 'Dispatch Product', component: 'dispatch-to-distributor', icon: FiStar },
         { name: 'Dispatch History', component: 'dispatch-history', icon: FiSettings },
         { name: 'Track Product', component: 'track-product', icon: FiTrendingUp },
-        { name: 'Report Product', component: 'report-product', icon: FiHome },
         { name: 'Update Price', component: 'update-price', icon: FiTrendingUp },
+        { name: 'Report Product', component: 'report-product', icon: FiHome },
     ];
 
     return (
