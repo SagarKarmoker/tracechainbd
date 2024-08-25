@@ -96,14 +96,14 @@ function DistributorDispatchHistory() {
         <Table variant='simple'>
           <Thead bg="#5160be">
             <Tr>
-              <Th color="white">Dispatch ID</Th>
-              <Th color="white">Start PID</Th>
-              <Th color="white">End PID</Th>
-              <Th color="white">From</Th>
-              <Th color="white">Distributor</Th>
-              <Th color="white">Timestamp</Th>
-              <Th color="white">Quantity</Th>
-              <Th color="white">Type</Th>
+              <Th color="white" textAlign="center">Dispatch ID</Th>
+              <Th color="white" textAlign="center">Start PID</Th>
+              <Th color="white" textAlign="center">End PID</Th>
+              <Th color="white" textAlign="center">From</Th>
+              <Th color="white" textAlign="center">Distributor</Th>
+              <Th color="white" textAlign="center">Timestamp</Th>
+              <Th color="white" textAlign="center">Quantity</Th>
+              <Th color="white" textAlign="center">Type</Th>
             </Tr>
           </Thead>
           <Tbody>

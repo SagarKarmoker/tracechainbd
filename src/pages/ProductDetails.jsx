@@ -8,7 +8,7 @@ import { etherContract } from '../contants';
 import { useParams } from 'react-router-dom';
 import { ProductStatus } from '../utils/ProductStatus';
 
-function ProductDetails({ pid }) {
+function ProductDetails({ pid, role = 'Admin' }) {
     const { id: routeId } = useParams();
     const [productId, setProductId] = useState(pid || routeId);
     const [productLifeCycle, setProductLifeCycle] = useState({});
@@ -142,23 +142,119 @@ function ProductDetails({ pid }) {
         <div>
             <h1 className='text-center font-bold text-2xl p-4'>Product #{productId} TraceChain</h1>
 
-            <VerticalTimeline>
-                {events.map((event, index) => (
-                    <VerticalTimelineElement
-                        key={index}
-                        date={new Date(event.timestamp * 1000).toLocaleString()}
-                        iconStyle={{ background: event.background, color: '#fff' }}
-                        icon={event.icon}
-                    >
-                        <h3 className="vertical-timeline-element-title">
-                            {event.type === 'Multi Dispatch' || event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` : 
-                                event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
-                        </h3>
-                        <h4 className="vertical-timeline-element-subtitle">{event.from} → {event.to}</h4>
-                        <p>Quantity: {event.quantity} {event.status && `, Status: ${event.status}`}</p>
-                    </VerticalTimelineElement>
-                ))}
-            </VerticalTimeline>
+            {
+                role === 'Admin' && (
+                    <VerticalTimeline>
+                        {events.map((event, index) => (
+                            <VerticalTimelineElement
+                                key={index}
+                                date={new Date(event.timestamp * 1000).toLocaleString()}
+                                iconStyle={{ background: event.background, color: '#fff' }}
+                                icon={event.icon}
+                            >
+                                <h3 className="vertical-timeline-element-title">
+                                    {event.type === 'Multi Dispatch' || event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` :
+                                        event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
+                                </h3>
+                                <h4 className="vertical-timeline-element-subtitle">{event.from} → {event.to}</h4>
+                                <p>Quantity: {event.quantity} {event.status && `, Status: ${event.status}`}</p>
+                            </VerticalTimelineElement>
+                        ))}
+                    </VerticalTimeline>
+                )
+            }
+
+            {
+                role === 'Customs' && (
+                    <VerticalTimeline>
+                        {events.slice(0, 2).map((event, index) => (
+                            <VerticalTimelineElement
+                                key={index}
+                                date={new Date(event.timestamp * 1000).toLocaleString()}
+                                iconStyle={{ background: event.background, color: '#fff' }}
+                                icon={event.icon}
+                            >
+                                <h3 className="vertical-timeline-element-title">
+                                    {event.type === 'Multi Dispatch' || event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` :
+                                        event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
+                                </h3>
+                                <h4 className="vertical-timeline-element-subtitle">{event.from} → {event.to}</h4>
+                                <p>Quantity: {event.quantity} {event.status && `, Status: ${event.status}`}</p>
+                            </VerticalTimelineElement>
+                        ))}
+                    </VerticalTimeline>
+
+                )
+            }
+
+            {
+                role === 'Importer' && (
+                    <VerticalTimeline>
+                        {events.slice(0, 4).map((event, index) => (
+                            <VerticalTimelineElement
+                                key={index}
+                                date={new Date(event.timestamp * 1000).toLocaleString()}
+                                iconStyle={{ background: event.background, color: '#fff' }}
+                                icon={event.icon}
+                            >
+                                <h3 className="vertical-timeline-element-title">
+                                    {event.type === 'Multi Dispatch' || event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` :
+                                        event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
+                                </h3>
+                                <h4 className="vertical-timeline-element-subtitle">{event.from} → {event.to}</h4>
+                                <p>Quantity: {event.quantity} {event.status && `, Status: ${event.status}`}</p>
+                            </VerticalTimelineElement>
+                        ))}
+                    </VerticalTimeline>
+
+                )
+            }
+
+            {
+                role === 'Distributor' && (
+                    <VerticalTimeline>
+                        {events.slice(2, 6).map((event, index) => (
+                            <VerticalTimelineElement
+                                key={index}
+                                date={new Date(event.timestamp * 1000).toLocaleString()}
+                                iconStyle={{ background: event.background, color: '#fff' }}
+                                icon={event.icon}
+                            >
+                                <h3 className="vertical-timeline-element-title">
+                                    {event.type === 'Multi Dispatch' || event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` :
+                                        event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
+                                </h3>
+                                <h4 className="vertical-timeline-element-subtitle">{event.from} → {event.to}</h4>
+                                <p>Quantity: {event.quantity} {event.status && `, Status: ${event.status}`}</p>
+                            </VerticalTimelineElement>
+                        ))}
+                    </VerticalTimeline>
+
+                )
+            }
+
+            {
+                role === 'Retailer' && (
+                    <VerticalTimeline>
+                        {events.slice(6, 8).map((event, index) => (
+                            <VerticalTimelineElement
+                                key={index}
+                                date={new Date(event.timestamp * 1000).toLocaleString()}
+                                iconStyle={{ background: event.background, color: '#fff' }}
+                                icon={event.icon}
+                            >
+                                <h3 className="vertical-timeline-element-title">
+                                    {event.type === 'Multi Dispatch' || event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` :
+                                        event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
+                                </h3>
+                                <h4 className="vertical-timeline-element-subtitle">{event.from} → {event.to}</h4>
+                                <p>Quantity: {event.quantity} {event.status && `, Status: ${event.status}`}</p>
+                            </VerticalTimelineElement>
+                        ))}
+                    </VerticalTimeline>
+
+                )
+            }
         </div>
     );
 }

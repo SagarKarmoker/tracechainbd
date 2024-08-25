@@ -1,28 +1,22 @@
 import React, { useState } from 'react';
-import { useToast, Box, Button, Input, Spinner, List, ListItem, Heading, IconButton } from '@chakra-ui/react';
-import { ArrowLeftIcon } from '@chakra-ui/icons';
+import { Box, Center, Divider, Input, Text, Button, IconButton, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
-import backgroundImage from "../../img/homeBG2.png"; // Ensure the image path is correct
+import { etherContract } from '../../contants';
+import backgroundImage from "../../img/homeBG3.png";
+import ProductDetails from '../../pages/ProductDetails'
 
 function TrackProduct() {
-    const toast = useToast();
     const [pId, setPid] = useState("");
     const [trackingInfo, setTrackingInfo] = useState([]);
     const [loading, setLoading] = useState(false);
     const { account } = useAuth();
-    const navigate = useNavigate();
+    const [showDetails, setShowDetails] = useState(false);
+    const toast = useToast();
 
     const handleTrackBtn = async () => {
         if (!pId) {
-            toast({
-                title: "Warning",
-                description: "Please enter a product ID",
-                status: "warning",
-                duration: 9000,
-                isClosable: true,
-            });
+            alert("Please enter a product ID");
             return;
         }
 
@@ -30,6 +24,7 @@ function TrackProduct() {
         try {
             const events = await etherContract.queryFilter('ProductDispatched');
 
+            // Process events
             const trackingList = events
                 .map(event => {
                     const { dispatchId, productId, from, to, dispatchedOn, quantity } = event.args || {};
@@ -45,80 +40,85 @@ function TrackProduct() {
                     }
                     return null;
                 })
-                .filter(event => event !== null);
+                .filter(event => event !== null); // Filter out null values
 
             setTrackingInfo(trackingList);
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to fetch tracking data",
-                status: "error",
-                duration: 9000,
-                isClosable: true,
-            });
+            console.error("Error fetching tracking data:", error);
         } finally {
             setLoading(false);
         }
     };
 
+    const getTrackingInfo = async () => {
+        if (!pId) {
+            toast({
+                title: "Warning",
+                description: "Please enter a product ID",
+                status: "warning",
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+
+        setShowDetails(true);
+    }
+
     return (
-        <div className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
-            <Box p={10}>
-                <div className='flex justify-between'>
-                    <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} /> {/* Back button to navigate to the previous page */}
-                    <h1 className='text-center font-bold text-4xl'>Track Product by Customs</h1>
-                    <p></p>
-                </div>
-                <Box display="flex" justifyContent="center" className='mt-4'>
-                    <Box width="96" display="flex" flexDirection="column" gap={4}>
-                        <Input
-                            type="number"
-                            bg="white"
-                            placeholder="Enter Product ID to get details"
-                            value={pId}
-                            onChange={(e) => setPid(e.target.value)}
-                            isRequired
-                            border="2px"
-                            borderColor="#5160be"  // Border color set to #5160be
-                        />
-                        <Button
-                            onClick={handleTrackBtn}
-                            bg="#5160be"
-                            _hover={{ bg: "#7db6f9" }} // Hover background color
-                            color="white"
-                            fontWeight="bold"
-                            py={2}
-                            px={4}
-                            rounded="md"
-                        >
-                            {loading ? <Spinner size="sm" /> : 'Track Product'}
-                        </Button>
-                    </Box>
+        <Box
+            className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col'
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+        >
+            <Box className='flex justify-center'>
+                <Text className='text-center font-bold text-4xl'>Track Product</Text>
+                <Box></Box>
+            </Box>
+            <Text className='text-center mt-4'>
+                Track the step-by-step dispatch history of a product
+            </Text>
+            <Divider className='mt-5' borderWidth='1px' borderColor='#5160be' />
+            <Center className='flex flex-col gap-4'>
+                <Box className='flex flex-col gap-4 w-96 mt-5'>
+                    <input
+                        type="number"
+                        className='p-3 bg-white border-2 border-[#5160be] rounded-lg'
+                        placeholder='Enter product ID to get details'
+                        value={pId}
+                        onChange={(e) => setPid(e.target.value)}
+                        required
+                    />
+                    <button
+                        onClick={getTrackingInfo}
+                        className="bg-[#5160be] hover:bg-[#7db6f9] text-white font-bold py-2 px-4 rounded"
+                    >
+                        {loading ? 'Tracking...' : 'Track Product'}
+                    </button>
                 </Box>
 
-                <Box display="flex" flexDirection="column" alignItems="center" mt={8}>
-                    <Heading as="h2" size="lg" textAlign="center" mb={4}>Tracking Information</Heading>
+                {
+                    showDetails && <ProductDetails pid={pId} role={"Customs"} />
+                }
+
+                {/* <Box className='flex flex-col justify-center gap-4 w-full mt-5'>
                     {trackingInfo.length > 0 ? (
-                        <List spacing={3} w="full" maxW="600px">
+                        <Box>
                             {trackingInfo.map((info, index) => (
-                                <ListItem key={index} border="1px solid" borderColor="#5160be" p={3} rounded="md" bg="white">
-                                    <strong>Dispatch ID:</strong> {info.dispatchId}<br />
-                                    <strong>Product ID:</strong> {info.productId}<br />
-                                    <strong>From:</strong> {info.from}<br />
-                                    <strong>To:</strong> {info.to}<br />
-                                    <strong>Timestamp:</strong> {new Date(info.timestamp * 1000).toLocaleString()}<br />
-                                    <strong>Quantity:</strong> {info.quantity}
-                                </ListItem>
+                                <Box key={index} className='border p-3 rounded mb-2 bg-white'>
+                                    <Text fontWeight="bold">Dispatch ID:</Text> {info.dispatchId}<br />
+                                    <Text fontWeight="bold">Product ID:</Text> {info.productId}<br />
+                                    <Text fontWeight="bold">From:</Text> {info.from}<br />
+                                    <Text fontWeight="bold">To:</Text> {info.to}<br />
+                                    <Text fontWeight="bold">Timestamp:</Text> {new Date(info.timestamp * 1000).toLocaleString()}<br />
+                                    <Text fontWeight="bold">Quantity:</Text> {info.quantity}
+                                </Box>
                             ))}
-                        </List>
-                    ) : (
-                        <Box mt={4} fontSize="lg" color="gray.600">
-                            No tracking information available.
                         </Box>
+                    ) : (
+                        <Text>No tracking information available.</Text>
                     )}
-                </Box>
-            </Box>
-        </div>
+                </Box> */}
+            </Center>
+        </Box>
     );
 }
 

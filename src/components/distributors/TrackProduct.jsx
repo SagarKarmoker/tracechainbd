@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { Box, Center, Divider, Input, Text, Button, IconButton } from '@chakra-ui/react';
+import { Box, Center, Divider, Input, Text, Button, IconButton, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/userAuth';
 import { etherContract } from '../../contants';
 import backgroundImage from "../../img/homeBG3.png";
+import ProductDetails from '../../pages/ProductDetails'
 
 function TrackProduct() {
     const [pId, setPid] = useState("");
     const [trackingInfo, setTrackingInfo] = useState([]);
     const [loading, setLoading] = useState(false);
     const { account } = useAuth();
+    const [showDetails, setShowDetails] = useState(false);
+    const toast = useToast();
 
     const handleTrackBtn = async () => {
         if (!pId) {
@@ -47,6 +50,20 @@ function TrackProduct() {
         }
     };
 
+    const getTrackingInfo = async () => {
+        if (!pId) {
+            toast({
+                title: "Warning",
+                description: "Please enter a product ID",
+                status: "warning",
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+
+        setShowDetails(true);
+    }
+
     return (
         <Box
             className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col'
@@ -71,13 +88,18 @@ function TrackProduct() {
                         required
                     />
                     <button
-                        onClick={handleTrackBtn}
+                        onClick={getTrackingInfo}
                         className="bg-[#5160be] hover:bg-[#7db6f9] text-white font-bold py-2 px-4 rounded"
                     >
                         {loading ? 'Tracking...' : 'Track Product'}
                     </button>
                 </Box>
-                <Box className='flex flex-col justify-center gap-4 w-full mt-5'>
+
+                {
+                    showDetails && <ProductDetails pid={pId} role={"Distributor"} />
+                }
+
+                {/* <Box className='flex flex-col justify-center gap-4 w-full mt-5'>
                     {trackingInfo.length > 0 ? (
                         <Box>
                             {trackingInfo.map((info, index) => (
@@ -94,7 +116,7 @@ function TrackProduct() {
                     ) : (
                         <Text>No tracking information available.</Text>
                     )}
-                </Box>
+                </Box> */}
             </Center>
         </Box>
     );
