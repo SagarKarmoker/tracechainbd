@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Center, Divider, Input, Text, Button, IconButton, useToast } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
-import useAuth from '../../hooks/userAuth';
+import { Box, Center, Divider, Text, useToast } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
 import backgroundImage from "../../img/homeBG3.png";
-import ProductDetails from '../../pages/ProductDetails'
+import ProductDetails from '../../pages/ProductDetails';
+import useAuth from '../../hooks/userAuth';
 
 function TrackProduct() {
     const [pId, setPid] = useState("");
@@ -16,11 +15,20 @@ function TrackProduct() {
 
     const handleTrackBtn = async () => {
         if (!pId) {
-            alert("Please enter a product ID");
+            toast({
+                title: "Warning",
+                description: "Please enter a product ID",
+                status: "warning",
+                duration: 9000,
+                isClosable: true,
+            });
             return;
         }
 
         setLoading(true);
+        setTrackingInfo([]); // Clear previous tracking info
+        setShowDetails(false); // Reset showDetails
+
         try {
             const events = await etherContract.queryFilter('ProductDispatched');
 
@@ -43,26 +51,13 @@ function TrackProduct() {
                 .filter(event => event !== null); // Filter out null values
 
             setTrackingInfo(trackingList);
+            setShowDetails(true);
         } catch (error) {
             console.error("Error fetching tracking data:", error);
         } finally {
             setLoading(false);
         }
     };
-
-    const getTrackingInfo = async () => {
-        if (!pId) {
-            toast({
-                title: "Warning",
-                description: "Please enter a product ID",
-                status: "warning",
-                duration: 9000,
-                isClosable: true,
-            });
-        }
-
-        setShowDetails(true);
-    }
 
     return (
         <Box
@@ -88,7 +83,7 @@ function TrackProduct() {
                         required
                     />
                     <button
-                        onClick={getTrackingInfo}
+                        onClick={handleTrackBtn}
                         className="bg-[#5160be] hover:bg-[#7db6f9] text-white font-bold py-2 px-4 rounded"
                     >
                         {loading ? 'Tracking...' : 'Track Product'}
@@ -98,25 +93,6 @@ function TrackProduct() {
                 {
                     showDetails && <ProductDetails pid={pId} role={"Distributor"} />
                 }
-
-                {/* <Box className='flex flex-col justify-center gap-4 w-full mt-5'>
-                    {trackingInfo.length > 0 ? (
-                        <Box>
-                            {trackingInfo.map((info, index) => (
-                                <Box key={index} className='border p-3 rounded mb-2 bg-white'>
-                                    <Text fontWeight="bold">Dispatch ID:</Text> {info.dispatchId}<br />
-                                    <Text fontWeight="bold">Product ID:</Text> {info.productId}<br />
-                                    <Text fontWeight="bold">From:</Text> {info.from}<br />
-                                    <Text fontWeight="bold">To:</Text> {info.to}<br />
-                                    <Text fontWeight="bold">Timestamp:</Text> {new Date(info.timestamp * 1000).toLocaleString()}<br />
-                                    <Text fontWeight="bold">Quantity:</Text> {info.quantity}
-                                </Box>
-                            ))}
-                        </Box>
-                    ) : (
-                        <Text>No tracking information available.</Text>
-                    )}
-                </Box> */}
             </Center>
         </Box>
     );
