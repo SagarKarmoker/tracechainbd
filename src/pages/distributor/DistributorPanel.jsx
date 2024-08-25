@@ -38,6 +38,7 @@ const SidebarContent = ({ setActiveComponent, activeComponent }) => {
             backgroundImage={`url(${sidebarBackgroundImage})`}
             backgroundSize="cover"
             backgroundPosition="left"
+            boxShadow="0 4px 6px rgba(0, 0, 0, 0.5)" // Add box shadow here
         >
             <Box mt="4">
                 {linkItems.map((link) => (
@@ -54,6 +55,7 @@ const SidebarContent = ({ setActiveComponent, activeComponent }) => {
         </Box>
     );
 };
+
 
 const NavItem = ({ icon, children, onClick, isActive }) => {
     return (
