@@ -1,13 +1,10 @@
 import React from 'react';
-import { Box, Text, Heading, Button, useColorModeValue } from '@chakra-ui/react';
+import { Box, Text, Heading, useColorModeValue } from '@chakra-ui/react';
+import backgroundImage from '../img/homeBG5.png'; // Update with the correct path to your image
 
 function Welcome() {
-    // Use color mode values to make it responsive to light/dark mode
-    const bgGradient = useColorModeValue(
-        'linear(to-r, #7928CA, #FF0080)',
-        'linear(to-r, #2D3748, #1A202C)'
-    );
-    const textColor = useColorModeValue('white', 'gray.200');
+    // Use color mode values to adjust text color for light/dark mode
+    const textColor = useColorModeValue('Black', 'gray.200');
 
     return (
         <Box
@@ -16,7 +13,9 @@ function Welcome() {
             alignItems="center"
             justifyContent="center"
             height="100vh"
-            bgGradient={bgGradient}
+            bgImage={`url(${backgroundImage})`}
+            bgSize="cover"
+            bgPosition="center"
             color={textColor}
             padding="5"
             textAlign="center"
@@ -27,14 +26,6 @@ function Welcome() {
             <Text fontSize="lg" mb="8">
                 Manage your data and track your progress efficiently with our powerful tools.
             </Text>
-            <Button
-                colorScheme="teal"
-                size="lg"
-                onClick={() => console.log('Explore Dashboard')}
-                _hover={{ bg: "teal.400" }}
-            >
-                Explore Dashboard
-            </Button>
         </Box>
     );
 }

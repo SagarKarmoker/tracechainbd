@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button, IconButton, Spinner, Center, useToast } from '@chakra-ui/react';
-import { ArrowLeftIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
 import useWallet from '../../hooks/userWallet';
@@ -15,7 +13,6 @@ function PendingProduct() {
     const { account } = useAuth();
     const { signer, traceChainBDContract, zeroGas } = useWallet();
     const toast = useToast();
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchHistoryData = async () => {
@@ -100,7 +97,7 @@ function PendingProduct() {
     if (loading) {
         return (
             <Center height="100vh">
-                <Box textAlign="center">
+                <Box textAlign="center" >
                     <Spinner size="xl" color="blue.500" />
                     <Text mt={4} fontSize="xl" fontWeight="bold">Please wait while we load the pending products. This won't take long.</Text>
                 </Box>
@@ -110,13 +107,12 @@ function PendingProduct() {
 
     return (
         <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
-            <Box className='flex justify-between'>
-                <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} />
+            <Box className='flex justify-center'>
                 <Text className='text-center font-bold text-4xl'>Pending Products</Text>
                 <Box></Box>
             </Box>
             <Text className='text-center mt-4'>List of products pending for your acceptance (Dispatch ID)</Text>
-            <Divider className='mt-5' />
+            <Divider className='mt-5' borderWidth='1px' borderColor='#5160be' />
             {dispatches.length > 0 ? (
                 <Box className='mt-5 border bg-white'>
                     <Table variant='simple' size='md'>

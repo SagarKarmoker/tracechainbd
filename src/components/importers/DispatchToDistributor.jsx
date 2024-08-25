@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
 import { Box, Button, Heading, VStack, Icon, IconButton, Text } from '@chakra-ui/react';
-import { FiPackage, FiLayers } from 'react-icons/fi'; 
-import { ArrowLeftIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
+import { FiPackage, FiLayers } from 'react-icons/fi';
 import SingleProductDispatch from './SingleProductDispatch';
 import MultipleProductDispatch from './MultipleProductDispatch';
 import backgroundImage from "../../img/homeBG3.png"; // Adjust the path if necessary
 
 function DispatchToDistributor() {
-    const [selectedOption, setSelectedOption] = useState(null);
-    const navigate = useNavigate();
+    const [selectedOption, setSelectedOption] = useState('single'); // Set default selectedOption to 'single'
 
     return (
         <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col items-center' style={{ backgroundImage: `url(${backgroundImage})` }}>
-            <Box className='flex justify-between w-full'>
-                <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} />
-                <Text className='text-center font-bold text-4xl'>Importer to Distributor Dispatch</Text>
+            <Box className='flex justify-center w-full'>
                 <Box></Box>
+                <Text className='text-center font-bold text-4xl'>Importer to Distributor Dispatch</Text>
             </Box>
-            
+
             <Heading size="md" mb={4} textAlign="center" mt={8}>Please choose your option:</Heading>
             <VStack spacing={4} className='flex'>
                 <Button

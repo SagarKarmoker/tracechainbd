@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button, IconButton, Spinner, Center } from '@chakra-ui/react';
-import { ArrowLeftIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
 import backgroundImage from "../../img/homeBG3.png";
@@ -10,7 +8,6 @@ function AllProduct() {
     const [deliveredProducts, setDeliveredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const { account } = useAuth();
-    const navigate = useNavigate();
 
     const fetchDeliveredProducts = async () => {
         try {
@@ -127,13 +124,13 @@ function AllProduct() {
 
     return (
         <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
-            <Box className='flex justify-between'>
-                <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} />
+            <Box className='flex justify-center'>
+                
                 <Text className='text-center font-bold text-4xl'>Accepted Products</Text>
                 <Box></Box>
             </Box>
             <Text className='text-center mt-4'>List of products confirmed as delivered (Dispatch ID)</Text>
-            <Divider className='mt-5' />
+            <Divider className='mt-5' borderWidth='1px' borderColor='#5160be' />
             {deliveredProducts.length > 0 ? (
                 <Box className='mt-5 border bg-white'>
                     <Table variant='simple' size='md'>

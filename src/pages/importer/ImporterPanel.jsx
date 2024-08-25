@@ -3,6 +3,7 @@ import { Box, Flex, Text, Icon, useColorModeValue } from '@chakra-ui/react';
 import { FiTrendingUp, FiHome, FiCompass, FiStar, FiSettings, FiBox } from 'react-icons/fi';
 import userAuth from '../../hooks/userAuth';
 import { isImporter } from '../../components/utils/RoleCheck';
+import Welcome from '../../components/Welcome';
 
 // Import your components
 import AcceptProduct from '../../components/importers/AcceptProduct';
@@ -102,13 +103,15 @@ const NavItem = ({ icon, children, onClick, isActive }) => {
 };
 
 function ImporterPanel() {
-    const [activeComponent, setActiveComponent] = useState('dashboard');
+    const [activeComponent, setActiveComponent] = useState('welcome');
     const { account, isConnected } = userAuth();
 
     const renderComponent = () => {
         switch (activeComponent) {
             case 'all-product':
                 return <AllProduct />;
+            case 'welcome':
+                return <Welcome />;
             case 'pending-product':
                 return <PendingProduct />;
             case 'distributor-list':
