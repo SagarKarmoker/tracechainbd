@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Input, Button, Heading, VStack, Icon, Link, useToast } from '@chakra-ui/react';
-import { FiSend, FiSearch } from 'react-icons/fi';
+import { Box, Input, Button, Heading, VStack, Icon, useToast } from '@chakra-ui/react';
+import { FiSend } from 'react-icons/fi';
 import useWallet from '../../hooks/userWallet';
 
 function MultipleProductDispatch() {
@@ -57,51 +57,61 @@ function MultipleProductDispatch() {
   };
 
   return (
-    <Box p={4} className="shadow-md rounded-md max-w-md mx-auto bg-white">
+    <Box p={4} className=" max-w-md mx-auto">
       <Heading size="lg" mb={6} className="text-center">Multiple Product Dispatch</Heading>
       <VStack spacing={4}>
-        <Input
+        <input
           placeholder="Enter Start Product ID"
           type="number"
-          focusBorderColor="blue.500"
-          className="border-gray-300 rounded-md shadow-sm"
           value={startProductId}
           onChange={(e) => setStartProductId(e.target.value)}
+          className='p-3 bg-white w-96 border rounded-lg'
+          style={{ borderColor: '#5160be', borderWidth: '3px' }}
+          required
         />
-        <Input
+        <input
           placeholder="Enter End Product ID"
           type="number"
-          focusBorderColor="blue.500"
-          className="border-gray-300 rounded-md shadow-sm"
           value={endProductId}
           onChange={(e) => setEndProductId(e.target.value)}
+          className='p-3 bg-white w-96 border rounded-lg'
+          style={{ borderColor: '#5160be', borderWidth: '3px' }}
+          required
         />
-        <Input
+        <input
           placeholder="Distributor Address"
           type="text"
-          focusBorderColor="green.500"
-          className="border-gray-300 rounded-md shadow-sm"
           value={distributorAddress}
           onChange={(e) => setDistributorAddress(e.target.value)}
+          className='p-3 bg-white w-96 border rounded-lg'
+          style={{ borderColor: '#5160be', borderWidth: '3px' }}
+          required
         />
-        {/* <Link href="#" color="blue.400" fontSize="sm" alignSelf="flex-start">
-          <Icon as={FiSearch} mr={2} />
-          Find distributor addresses
-        </Link> */}
-        <Input
+        <input
           placeholder="Memo Document Hash"
           type="text"
-          focusBorderColor="purple.500"
-          className="border-gray-300 rounded-md shadow-sm"
           value={memoDocumentHash}
           onChange={(e) => setMemoDocumentHash(e.target.value)}
+          className='p-3 bg-white w-96 border rounded-lg'
+          style={{ borderColor: '#5160be', borderWidth: '3px' }}
+          required
         />
         <Button
-          colorScheme="green"
           onClick={handleDispatch}
           isLoading={isLoading}
           loadingText="Dispatching"
           leftIcon={<Icon as={FiSend} />}
+          sx={{
+            backgroundColor: '#5160be',
+            color: 'white',
+            fontWeight: 'bold',
+            borderRadius: 'md',
+            paddingY: '2',
+            paddingX: '4',
+            _hover: {
+              backgroundColor: '#7db6f9',
+            },
+          }}
           className="w-full"
         >
           Dispatch

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button } from '@chakra-ui/react';
+import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button, IconButton, Spinner, Center } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
+import backgroundImage from "../../img/homeBG5.png";
 
 function AllProduct() {
     const [deliveredProducts, setDeliveredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const { account } = useAuth();
+
 
     const fetchDeliveredProducts = async () => {
         try {
@@ -54,9 +56,6 @@ function AllProduct() {
                 })
             );
 
-            console.log(parsedEvents);
-
-            // Update state with the fetched data
             setDeliveredProducts(parsedEvents);
         } catch (error) {
             console.error('Error fetching delivered products:', error);
@@ -117,65 +116,70 @@ function AllProduct() {
         };
     }, [account]);
 
-
     if (loading) {
-        return <Text>Loading...</Text>;
+        return (
+            <Center height="100vh">
+                <Box textAlign="center">
+                    <Spinner size="xl" color="blue.500" />
+                    <Text mt={4} fontSize="xl" fontWeight="bold">Please wait while we load the accepted products. This won't take long.</Text>
+                </Box>
+            </Center>
+        );
     }
 
     return (
-        <Box p={4}>
-            <Box textAlign='center' mb={4}>
-                <Text fontSize='4xl' fontWeight='bold' mb={2}>Accepted Products</Text>
-                <Text>List of products confirmed as delivered (Dispatch ID)</Text>
+        <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <Box className='flex justify-center'>
+                <Text className='text-center font-bold text-4xl'>Accepted Products</Text>
+                <Box></Box>
             </Box>
-            <Divider mb={4} />
+            <Text className='text-center mt-4'>List of products confirmed as delivered (Dispatch ID)</Text>
+            <Divider className='mt-5' borderWidth='1px' borderColor='#5160be' />
             {deliveredProducts.length > 0 ? (
-                <Table variant='simple'>
-                    <Thead>
-                        <Tr>
-                            <Th>Dispatch ID</Th>
-                            <Th>Product ID</Th>
-                            <Th>Product Name</Th>
-                            <Th>Category</Th>
-                            <Th>Country of Origin</Th>
-                            <Th>Manufacturer</Th>
-                            <Th>Price</Th>
-                            <Th>Recipient</Th>
-                            <Th>Timestamp</Th>
-                            <Th>Quantity</Th>
-                            <Th>Distribution Status</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {deliveredProducts
-                        .filter(product => product.acceptedBy === account)
-                        .map((product, index) => (
-                            <Tr key={index}>
-                                <Td>{product.dispatchId}</Td>
-                                <Td>{product.productId}</Td>
-                                <Td>{product.name}</Td>
-                                <Td>{product.category}</Td>
-                                <Td>{product.countryOfOrigin}</Td>
-                                <Td>{product.manufacturer}</Td>
-                                <Td>{product.price}</Td>
-                                <Td>Self</Td>
-                                <Td>{new Date(product.acceptedOn * 1000).toLocaleString()}</Td>
-                                <Td>{product.quantity}</Td>
-                                {
-                                    product.owner !== account ? (
-                                        <Td>
-                                            <Button colorScheme='green'>Done</Button>
-                                        </Td>
-                                    ) :
-                                        (<Td>
-
-                                            <Button colorScheme='blue'>In House</Button>
-                                        </Td>)
-                                }
+                <Box className='mt-5 border bg-white'>
+                    <Table variant='simple' size='md'>
+                        <Thead bg="#5160be">
+                            <Tr>
+                                <Th color="white" textAlign="center">Dispatch ID</Th>
+                                <Th color="white" textAlign="center">Product ID</Th>
+                                <Th color="white" textAlign="center">Product Name</Th>
+                                <Th color="white" textAlign="center">Category</Th>
+                                <Th color="white" textAlign="center">Country of Origin</Th>
+                                <Th color="white" textAlign="center">Manufacturer</Th>
+                                <Th color="white" textAlign="center">Price</Th>
+                                <Th color="white" textAlign="center">Recipient</Th>
+                                <Th color="white" textAlign="center">Timestamp</Th>
+                                <Th color="white" textAlign="center">Quantity</Th>
+                                <Th color="white" textAlign="center">Distribution Status</Th>
                             </Tr>
-                        ))}
-                    </Tbody>
-                </Table>
+                        </Thead>
+                        <Tbody>
+                            {deliveredProducts
+                                .filter(product => product.acceptedBy === account)
+                                .map((product, index) => (
+                                    <Tr key={index} _hover={{ bg: "gray.100" }}>
+                                        <Td textAlign="center">{product.dispatchId}</Td>
+                                        <Td textAlign="center">{product.productId}</Td>
+                                        <Td textAlign="center">{product.name}</Td>
+                                        <Td textAlign="center">{product.category}</Td>
+                                        <Td textAlign="center">{product.countryOfOrigin}</Td>
+                                        <Td textAlign="center">{product.manufacturer}</Td>
+                                        <Td textAlign="center">{product.price}</Td>
+                                        <Td textAlign="center">Self</Td>
+                                        <Td textAlign="center">{new Date(product.acceptedOn * 1000).toLocaleString()}</Td>
+                                        <Td textAlign="center">{product.quantity}</Td>
+                                        <Td textAlign="center">
+                                            {product.owner !== account ? (
+                                                <Button colorScheme='green'>Done</Button>
+                                            ) : (
+                                                <Button colorScheme='blue'>In House</Button>
+                                            )}
+                                        </Td>
+                                    </Tr>
+                                ))}
+                        </Tbody>
+                    </Table>
+                </Box>
             ) : (
                 <Text>No products delivered yet.</Text>
             )}

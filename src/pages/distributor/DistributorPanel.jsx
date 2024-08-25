@@ -1,23 +1,108 @@
-import { useState } from 'react'
-import TrackProduct from '../../components/distributors/TrackProduct'
-import useAuth from '../../hooks/userAuth'
-import DistributorDashboard from '../../components/distributors/DistributorDashboard'
-import AllRetailerList from '../../components/distributors/AllRetailerList'
-import DispatchToRetailer from '../../components/distributors/DispatchToRetailer'
-import PendingProduct from '../../components/distributors/PendingProduct'
-import DistributorDispatchHistory from '../../components/distributors/DistributorDispatchHistory'
-import ReportProduct from '../../components/ReportProduct'
+import React, { useState } from 'react';
+import { Box, Flex, Text, Icon, useColorModeValue } from '@chakra-ui/react';
+import { FiTrendingUp, FiHome, FiCompass, FiStar, FiSettings, FiBox } from 'react-icons/fi';
+import useAuth from '../../hooks/userAuth';
 import { isDistributor } from '../../components/utils/RoleCheck';
-import AllProduct from '../../components/distributors/AllProduct'
+
+// Import your components
+import TrackProduct from '../../components/distributors/TrackProduct';
+import DistributorDashboard from '../../components/distributors/DistributorDashboard';
+import AllRetailerList from '../../components/distributors/AllRetailerList';
+import DispatchToRetailer from '../../components/distributors/DispatchToRetailer';
+import PendingProduct from '../../components/distributors/PendingProduct';
+import DistributorDispatchHistory from '../../components/distributors/DistributorDispatchHistory';
+import ReportProduct from '../../components/ReportProduct';
+import AllProduct from '../../components/distributors/AllProduct';
+import sidebarBackgroundImage from '../../img/homeBG4.png'; 
+
+const SidebarContent = ({ setActiveComponent, activeComponent }) => {
+    const linkItems = [
+        { name: 'Pending Product', component: 'pending-product', icon: FiBox },
+        { name: 'All Product', component: 'all-product', icon: FiHome },
+        { name: 'Manager Retailers', component: 'retailer-list', icon: FiCompass },
+        { name: 'Dispatch Product', component: 'dispatch-to-retailer', icon: FiStar },
+        { name: 'Dispatch History', component: 'dispatch-history', icon: FiSettings },
+        { name: 'Track Product', component: 'track-product', icon: FiTrendingUp },
+        { name: 'Report Product', component: 'report-product', icon: FiHome },
+    ];
+
+    return (
+        <Box
+            bg={useColorModeValue('white', 'gray.900')}
+            borderRight="2px"
+            borderRightColor="#5160be"
+            w="20%" // Updated width to 20%
+            pos="fixed"
+            h="full"
+            p="4"
+            backgroundImage={`url(${sidebarBackgroundImage})`}
+            backgroundSize="cover"
+            backgroundPosition="left"
+        >
+            <Box mt="4">
+                {linkItems.map((link) => (
+                    <NavItem
+                        key={link.name}
+                        icon={link.icon}
+                        isActive={activeComponent === link.component}
+                        onClick={() => setActiveComponent(link.component)}
+                    >
+                        {link.name}
+                    </NavItem>
+                ))}
+            </Box>
+        </Box>
+    );
+};
+
+const NavItem = ({ icon, children, onClick, isActive }) => {
+    return (
+        <Box
+            as="a"
+            href="#"
+            style={{ textDecoration: 'none' }}
+            _focus={{ boxShadow: 'none' }}
+            onClick={onClick}
+        >
+            <Flex
+                align="center"
+                p="3"
+                mt="2"
+                borderRadius="lg"
+                role="group"
+                cursor="pointer"
+                bg={isActive ? '#5160be' : 'transparent'} // Background color for active state
+                color={isActive ? 'white' : 'inherit'} // Text color for active state
+                _hover={{
+                    bg: '#5160be',
+                    color: 'white',
+                }}
+            >
+                {icon && (
+                    <Icon
+                        mr="4"
+                        fontSize="20" // Adjusted for better visibility
+                        color={isActive ? 'white' : 'inherit'} // Icon color for active state
+                        _groupHover={{
+                            color: 'white',
+                        }}
+                        as={icon}
+                    />
+                )}
+                <Text ml="2" fontWeight="medium" textAlign="left">
+                    {children}
+                </Text>
+            </Flex>
+        </Box>
+    );
+};
 
 function DistributorPanel() {
-    const [activeComponent, setActiveComponent] = useState('dashboard');
+    const [activeComponent, setActiveComponent] = useState('pending-product');
     const { account, isConnected } = useAuth();
 
     const renderComponent = () => {
         switch (activeComponent) {
-            case 'dashboard':
-                return <DistributorDashboard setActiveComponent={setActiveComponent} />;
             case 'all-product':
                 return <AllProduct />;
             case 'pending-product':
@@ -33,33 +118,46 @@ function DistributorPanel() {
             case 'report-product':
                 return <ReportProduct />;
             default:
-                return <DistributorDashboard />;
+                return <DistributorDashboard setActiveComponent={setActiveComponent} />;
         }
     };
 
     if (account == null && !isConnected) {
         return (
-            <div>
-                <p>Please login first</p>
+            <div className='flex flex-col justify-center items-center h-[90vh]'>
+                <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
+                <br />
+                <p className='text-red-400'>Please Login</p>
+                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4'>
+                    Go back
+                </button>
             </div>
-        )
+        );
     }
 
-    if (account != '' && isConnected && !isDistributor(account)) {
+    if (account !== '' && isConnected && !isDistributor(account)) {
         return (
-            <div className="text-red-500 text-center mt-10">
-                <p>Please Register for Distributor Role</p>
+            <div className='flex flex-col justify-center items-center h-[90vh]'>
+                <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
+                <br />
+                <p className='text-red-400'>You are not a distributor</p>
+                <p className='text-red-400'>Please apply for registration</p>
+                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4'>
+                    Go back
+                </button>
             </div>
-        )
+        );
     }
 
     return (
-        <div className='px-10 pt-5'>
-            <div>
+        <Box display="flex">
+            <SidebarContent setActiveComponent={setActiveComponent} activeComponent={activeComponent} />
+            <Box ml="20%" flex="1"> {/* Updated margin-left to 20% */}
+                {/* Main Content */}
                 {renderComponent()}
-            </div>
-        </div>
-    )
+            </Box>
+        </Box>
+    );
 }
 
-export default DistributorPanel
+export default DistributorPanel;
