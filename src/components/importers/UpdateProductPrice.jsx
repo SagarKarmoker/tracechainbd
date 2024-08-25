@@ -11,8 +11,7 @@ import {
   FormLabel,
   IconButton,
 } from '@chakra-ui/react';
-import { CheckIcon, ArrowLeftIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
+import { CheckIcon} from '@chakra-ui/icons';
 import useWallet from '../../hooks/userWallet';
 import backgroundImage from "../../img/homeBG3.png"; // Adjust the path if necessary
 
@@ -22,7 +21,6 @@ function UpdateProductPrice() {
   const [price, setPrice] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
-  const navigate = useNavigate();
 
   const handleUpdateProduct = async () => {
     setIsLoading(true);
@@ -58,8 +56,7 @@ function UpdateProductPrice() {
 
   return (
     <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
-      <Box className='flex justify-between'>
-        <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} />
+      <Box className='flex justify-center'>
         <Heading as="h1" size="xl" textAlign="center" mt={5} className='text-center'>
           Update Product Price by Importer
         </Heading>
@@ -94,7 +91,7 @@ function UpdateProductPrice() {
 
           <Button
             leftIcon={isLoading ? <Spinner size="sm" /> : <CheckIcon />}
-            colorScheme="green"
+            colorScheme="blue"
             size="lg"
             width="full"
             onClick={handleUpdateProduct}
@@ -104,6 +101,7 @@ function UpdateProductPrice() {
           >
             Update Price
           </Button>
+
         </VStack>
       </Box>
     </Box>

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Table, Thead, Tbody, Tr, Th, Td, Text, IconButton, Divider, TableContainer, Spinner, Center } from '@chakra-ui/react';
-import { ArrowLeftIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
 import backgroundImage from "../../img/homeBG3.png";
@@ -10,7 +8,6 @@ function ImporterDispatchHistory() {
     const [dispatches, setDispatches] = useState([]);
     const [loading, setLoading] = useState(true);
     const { account } = useAuth();
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchHistoryData = async () => {
@@ -81,8 +78,7 @@ function ImporterDispatchHistory() {
 
     return (
         <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
-            <Box className='flex justify-between'>
-                <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} />
+            <Box className='flex justify-center'>
                 <Text className='text-center font-bold text-4xl'>Importer to Distributor Dispatch History</Text>
                 <Box></Box>
             </Box>
