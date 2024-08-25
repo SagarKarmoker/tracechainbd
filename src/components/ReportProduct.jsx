@@ -14,15 +14,21 @@ import {
     Icon,
 } from '@chakra-ui/react';
 import { FaExclamationTriangle } from 'react-icons/fa';
+import { create } from 'ipfs-http-client';
 import useAuth from '../hooks/userAuth';
 import useWallet from '../hooks/userWallet';
+
+// IPFS client setup
+const ipfs = create({ url: "http://127.0.0.1:5001/api/v0/add" });
 
 function ReportProduct() {
     const [productId, setProductId] = useState('');
     const [role, setRole] = useState('');
     const [comment, setComment] = useState('');
     const [reportee, setReportee] = useState('');
+    const [reporteeAddr, setReporteeAddr] = useState('');
     const [proof, setProof] = useState(null);
+    const [ipfsProofHash, setIpfsProofHash] = useState('');
     const { account } = useAuth();
     const { traceChainBDContract, zeroGas } = useWallet();
     const toast = useToast();
@@ -31,10 +37,11 @@ function ReportProduct() {
     const checkProductOwner = async () => {
         try {
             const product = await traceChainBDContract.productLifeCycles(productId);
+            console.log(product)
 
             if (product.owner === account) {
                 return true;
-            }else{
+            } else {
                 toast({
                     title: 'Error',
                     description: 'You are not the owner of the product',
@@ -55,10 +62,34 @@ function ReportProduct() {
             });
             return null;
         }
-    }
+    };
+
+    const uploadProofToIPFS = async (file) => {
+        try {
+            const addedFile = await ipfs.add(file);
+            console.log(addedFile.cid.toString())
+            setIpfsProofHash(addedFile.cid.toString());
+            toast({
+                title: "Success",
+                description: "Proof uploaded to IPFS successfully.",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+            });
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Error uploading proof to IPFS.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+            console.error("Error uploading proof to IPFS:", error);
+        }
+    };
 
     const handleReport = async () => {
-        if (!productId || !role || !comment) {
+        if (!productId || !role || !comment || !reportee || !reporteeAddr) {
             toast({
                 title: 'Error',
                 description: 'Please fill all the fields',
@@ -68,31 +99,17 @@ function ReportProduct() {
             });
             return;
         }
-
-        const isOwner = await checkProductOwner();
-        if (isOwner === null) {
-            toast({
-                title: 'Error',
-                description: 'Error while checking product owner',
-                status: 'error',
-                duration: 9000,
-                isClosable: true,
-            })
-            return;
-        } else if (!isOwner) {
-            toast({
-                title: 'Error',
-                description: 'You are not the owner of the product',
-                status: 'error',
-                duration: 9000,
-                isClosable: true,
-            })
-            return;
-        }
-
         setLoading(true);
+        const isOwner = await checkProductOwner();
+        if(!isOwner) return;
+
         try {
-            const tx = await traceChainBDContract.reportProduct(productId, comment, reportee, proof, zeroGas);
+            if (proof) {
+                const proofFile = await fetch(proof).then((r) => r.blob());
+                await uploadProofToIPFS(proofFile);
+            }
+
+            const tx = await traceChainBDContract.reportProduct(productId, comment, reporteeAddr, ipfsProofHash , zeroGas);
             await tx.wait();
 
             toast({
@@ -108,7 +125,9 @@ function ReportProduct() {
             setRole('');
             setComment('');
             setReportee('');
+            setReporteeAddr('');
             setProof(null);
+            setIpfsProofHash('');
 
         } catch (error) {
             toast({
@@ -118,6 +137,7 @@ function ReportProduct() {
                 duration: 9000,
                 isClosable: true,
             });
+            console.error('Error while reporting product:', error);
         } finally {
             setLoading(false);
         }
@@ -161,8 +181,8 @@ function ReportProduct() {
                     <Input
                         type="text"
                         placeholder="Enter Reportee Address"
-                        value={reportee}
-                        onChange={(e) => setReportee(e.target.value)}
+                        value={reporteeAddr}
+                        onChange={(e) => setReporteeAddr(e.target.value)}
                     />
                 </FormControl>
 
