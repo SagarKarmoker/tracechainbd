@@ -14,6 +14,7 @@ import DistributorDispatchHistory from '../../components/distributors/Distributo
 import ReportProduct from '../../components/ReportProduct';
 import AllProduct from '../../components/distributors/AllProduct';
 import sidebarBackgroundImage from '../../img/homeBG4.png'; 
+import ReportHistory from '../../components/ReportHistory';
 
 const SidebarContent = ({ setActiveComponent, activeComponent }) => {
     const linkItems = [
@@ -24,6 +25,7 @@ const SidebarContent = ({ setActiveComponent, activeComponent }) => {
         { name: 'Dispatch History', component: 'dispatch-history', icon: FiSettings },
         { name: 'Track Product', component: 'track-product', icon: FiTrendingUp },
         { name: 'Report Product', component: 'report-product', icon: FiHome },
+        { name: 'Report History', component: 'report-history', icon: FiHome },
     ];
 
     return (
@@ -119,6 +121,8 @@ function DistributorPanel() {
                 return <TrackProduct />;
             case 'report-product':
                 return <ReportProduct />;
+            case 'report-history':
+                return <ReportHistory />;
             default:
                 return <DistributorDashboard setActiveComponent={setActiveComponent} />;
         }

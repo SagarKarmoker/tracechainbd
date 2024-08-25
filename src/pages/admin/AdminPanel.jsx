@@ -9,6 +9,10 @@ import AllProducts from '../../components/admin/AllProducts';
 import { etherContract } from '../../contants';
 import { Spinner, Center, Text, Box } from '@chakra-ui/react';
 import TraceProduct from '../../components/admin/TraceProduct';
+import AllReport from '../../components/admin/AllReport';
+import AcceptedReports from '../../components/admin/AcceptedReports';
+import DeniedReports from '../../components/admin/DeniedReports';
+
 
 function AdminPanel() {
   const activeAccount = useActiveAccount();
@@ -35,11 +39,11 @@ function AdminPanel() {
       case 'all-products':
         return <AllProducts />;
       case 'report-applications':
-        return <DeniedApplications />;
+        return <AllReport />;
       case 'accepted-report-applications':
-        return <DeniedApplications />;
+        return <AcceptedReports />;
       case 'denied-report-applications':
-        return <DeniedApplications />;
+        return <DeniedReports />;
       case 'trace-product':
         return <TraceProduct />;
       default:
