@@ -14,6 +14,7 @@ function ProductDetails({ pid, role = 'Admin' }) {
     const [productLifeCycle, setProductLifeCycle] = useState({});
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [rolesData, setRolesData] = useState([]);
 
     const checkForStatus = (status) => {
         switch (Number(status)) {
@@ -46,7 +47,39 @@ function ProductDetails({ pid, role = 'Admin' }) {
         }
     };
 
+    const fetchRolesData = async () => {
+        try {
+            const response = await fetch('https://tracechainbd-backend.onrender.com/api/roles');
+            const data = await response.json();
+            setRolesData(data);
+            console.log(data);  // Log the data directly
+        } catch (error) {
+            console.error('Error fetching roles data:', error);
+        }
+    }
+
+    const getRoleData = (address) => {
+        try {
+            // Assuming `rolesData` is an array of roles you have fetched earlier
+            const role = rolesData.find(role => role.address_registered === address);
+
+            if (role) {
+                // Return the formatted string directly
+                return `${role.name} (${role.role}) - ${role.locAddress}`;
+            }
+            // else {
+            //     console.error("Role not found for the provided address.");
+            //     return "Unknown Role"; // or an appropriate fallback value
+            // }
+        } catch (error) {
+            console.error("Error getting role data:", error);
+            return "Error Fetching Role"; // or an appropriate fallback value
+        }
+    };
+
     useEffect(() => {
+        fetchRolesData();
+
         const fetchHistoryData = async () => {
             try {
                 setLoading(true);
@@ -114,26 +147,6 @@ function ProductDetails({ pid, role = 'Admin' }) {
         fetchHistoryData();
     }, [productId]);
 
-    useEffect(() => {
-        const fetchProductDetails = async () => {
-            try {
-                const lifeCycle = await etherContract.productLifeCycles(productId);
-                setProductLifeCycle({
-                    productId: Number(lifeCycle.productId.toString()),
-                    customDispatchId: Number(lifeCycle.customDispatchId.toString()),
-                    importerDispatchId: Number(lifeCycle.importerDispatchId.toString()),
-                    distributorDispatchId: Number(lifeCycle.distributorDispatchId.toString()),
-                    retailerDispatchId: Number(lifeCycle.retailerDispatchId.toString()),
-                    soldDispatchId: lifeCycle.consumerDispatchId,
-                    status: checkForStatus(lifeCycle.status.toString()),
-                });
-            } catch (error) {
-                console.error('Error fetching product details:', error);
-            }
-        };
-        fetchProductDetails();
-    }, [productId]);
-
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -154,9 +167,9 @@ function ProductDetails({ pid, role = 'Admin' }) {
                             >
                                 <h3 className="vertical-timeline-element-title">
                                     {event.type === 'Multi Dispatch' || event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` :
-                                        event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
+                                        event.type === 'Product Accepted' ? `Accepted By: ${getRoleData(event.acceptedBy)}` : ''}
                                 </h3>
-                                <h4 className="vertical-timeline-element-subtitle">{event.from} → {event.to}</h4>
+                                <h4 className="vertical-timeline-element-subtitle">{getRoleData(event.from)} → {getRoleData(event.to)}</h4>
                                 <p>Quantity: {event.quantity} {event.status && `, Status: ${event.status}`}</p>
                             </VerticalTimelineElement>
                         ))}
@@ -176,9 +189,9 @@ function ProductDetails({ pid, role = 'Admin' }) {
                             >
                                 <h3 className="vertical-timeline-element-title">
                                     {event.type === 'Multi Dispatch' || event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` :
-                                        event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
+                                        event.type === 'Product Accepted' ? `Accepted By: ${getRoleData(event.acceptedBy)}` : ''}
                                 </h3>
-                                <h4 className="vertical-timeline-element-subtitle">{event.from} → {event.to}</h4>
+                                <h4 className="vertical-timeline-element-subtitle">{getRoleData(event.from)} → {getRoleData(event.to)}</h4>
                                 <p>Quantity: {event.quantity} {event.status && `, Status: ${event.status}`}</p>
                             </VerticalTimelineElement>
                         ))}
@@ -199,9 +212,9 @@ function ProductDetails({ pid, role = 'Admin' }) {
                             >
                                 <h3 className="vertical-timeline-element-title">
                                     {event.type === 'Multi Dispatch' || event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` :
-                                        event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
+                                        event.type === 'Product Accepted' ? `Accepted By: ${getRoleData(event.acceptedBy)}` : ''}
                                 </h3>
-                                <h4 className="vertical-timeline-element-subtitle">{event.from} → {event.to}</h4>
+                                <h4 className="vertical-timeline-element-subtitle">{getRoleData(event.from)} → {getRoleData(event.to)}</h4>
                                 <p>Quantity: {event.quantity} {event.status && `, Status: ${event.status}`}</p>
                             </VerticalTimelineElement>
                         ))}
@@ -222,9 +235,9 @@ function ProductDetails({ pid, role = 'Admin' }) {
                             >
                                 <h3 className="vertical-timeline-element-title">
                                     {event.type === 'Multi Dispatch' || event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` :
-                                        event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
+                                        event.type === 'Product Accepted' ? `Accepted By: ${getRoleData(event.acceptedBy)}` : ''}
                                 </h3>
-                                <h4 className="vertical-timeline-element-subtitle">{event.from} → {event.to}</h4>
+                                <h4 className="vertical-timeline-element-subtitle">{getRoleData(event.from)} → {getRoleData(event.to)}</h4>
                                 <p>Quantity: {event.quantity} {event.status && `, Status: ${event.status}`}</p>
                             </VerticalTimelineElement>
                         ))}
@@ -245,9 +258,9 @@ function ProductDetails({ pid, role = 'Admin' }) {
                             >
                                 <h3 className="vertical-timeline-element-title">
                                     {event.type === 'Multi Dispatch' || event.type === 'Single Dispatch' ? `Dispatch ID: ${event.dispatchId}` :
-                                        event.type === 'Product Accepted' ? `Accepted By: ${event.acceptedBy}` : ''}
+                                        event.type === 'Product Accepted' ? `Accepted By: ${getRoleData(event.acceptedBy)}` : ''}
                                 </h3>
-                                <h4 className="vertical-timeline-element-subtitle">{event.from} → {event.to}</h4>
+                                <h4 className="vertical-timeline-element-subtitle">{getRoleData(event.from)} → {getRoleData(event.to)}</h4>
                                 <p>Quantity: {event.quantity} {event.status && `, Status: ${event.status}`}</p>
                             </VerticalTimelineElement>
                         ))}
