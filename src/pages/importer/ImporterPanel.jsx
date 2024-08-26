@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Flex, Text, Icon, useColorModeValue } from '@chakra-ui/react';
-import { FiTrendingUp, FiHome, FiCompass, FiStar, FiSettings, FiBox, FiTruck } from 'react-icons/fi';
+import { FiTrendingUp, FiBox, FiTruck } from 'react-icons/fi';
 import { MdOutlineShoppingCart, MdHistory, MdReportGmailerrorred  } from "react-icons/md";
 import { AiOutlineProduct } from "react-icons/ai";
 import { LiaSearchLocationSolid } from "react-icons/lia";
