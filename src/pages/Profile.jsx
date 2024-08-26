@@ -36,7 +36,7 @@ function Profile() {
                 aria-label="Go back"
                 icon={<ArrowLeftIcon />}
                 onClick={goBack}
-                colorScheme="teal"
+                colorScheme="gray"
                 alignSelf="flex-start"  // Aligns the back button to the top left
                 m={4}
             />

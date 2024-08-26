@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Divider, Table, Thead, Tbody, Tr, Th, Td, Box, Text, useToast, Button } from '@chakra-ui/react';
+import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button, Spinner, Center, Image, useToast, keyframes } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
-import { ethers } from 'ethers';
 import useWallet from '../../hooks/userWallet';
+import backgroundImage from "../../img/homeBG3.png";
+import blinkingImage from '../../img/svg.png';  // Replace with your image path
 import { ProductStatus } from '../../utils/ProductStatus';
+import { ethers } from 'ethers';
+
+// Define the blinking animation
+const blinkAnimation = keyframes`
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+`;
+
+// Define the spinning animation for the spinner
+const spinAround = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
 
 function PendingProduct() {
     const [dispatches, setDispatches] = useState([]);
@@ -56,14 +71,11 @@ function PendingProduct() {
         setLoadingStates(prev => ({ ...prev, [_dispatchId]: true }));
 
         try {
-            console.log(_dispatchId)
             const tx = await traceChainBDContract.confirmDelivery(_dispatchId, {
                 gasLimit: 3000000,
                 ...zeroGas
             });
             const response = await tx.wait();
-
-            console.log(response)
 
             if (response) {
                 toast({
@@ -73,6 +85,7 @@ function PendingProduct() {
                     duration: 9000,
                     isClosable: true,
                 });
+                setDispatches(dispatches.filter(dispatch => dispatch.dispatchId !== _dispatchId));
             } else {
                 toast({
                     title: "Not Accepted",
@@ -97,53 +110,80 @@ function PendingProduct() {
     };
 
     if (loading) {
-        return <Text>Loading...</Text>;
+        return (
+            <Center height="100vh" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                <Box textAlign="center" position="relative" display="inline-block">
+                    {/* Image in the center */}
+                    <Image 
+                        src={blinkingImage} 
+                        alt="Loading" 
+                        boxSize="50px" 
+                        animation={`${blinkAnimation} 1.5s infinite`} 
+                        position="absolute" 
+                        top="27%" 
+                        left="50%" 
+                        transform="translate(-50%, -50%)"
+                    />
+
+                    {/* Spinner surrounding the image */}
+                    <Spinner
+                        width="60px" height="60px" color="#5160be"
+                        animation={`${spinAround} 0.9s linear infinite`}
+                        position="relative"
+                        zIndex="0"  // Ensures the spinner stays behind the image
+                    />
+                    <Text mt={4} fontSize="xl" fontWeight="bold">
+                        Please wait while we load the list of pending products. This won't take long.
+                    </Text>
+                </Box>
+            </Center>
+        );
     }
 
     return (
-        <Box p={4}>
-            <Box textAlign='center' mb={4}>
-                <Text fontSize='4xl' fontWeight='bold' mb={2}>Pending Product</Text>
-                <Text>List of all pending products to accept</Text>
+        <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <Box className='flex justify-center'>
+                <Text className='text-center font-bold text-4xl'>Pending Products</Text>
             </Box>
-            <Divider mb={4} />
+            <Text className='text-center mt-4'>List of products sent by retailers and pending for your acceptance </Text>
+            <Divider className='mt-5' borderWidth='1px' borderColor='#5160be' />
             {dispatches.length > 0 ? (
-                <Table variant='simple'>
-                    <Thead>
-                        <Tr>
-                            <Th>Dispatch ID</Th>
-                            <Th>Start ID</Th>
-                            <Th>End ID</Th>
-                            <Th>Receiver</Th>
-                            <Th>Timestamp</Th>
-                            <Th>Quantity</Th>
-                            <Th>Action</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {dispatches
-                        .filter(dispatch => dispatch.receiver === account)
-                        .map((dispatch) => (
-                            <Tr key={dispatch.dispatchId}>
-                                <Td>{dispatch.dispatchId}</Td>
-                                <Td>{dispatch.startId}</Td>
-                                <Td>{dispatch.endId}</Td>
-                                <Td>Self</Td>
-                                <Td>{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
-                                <Td>{dispatch.quantity}</Td>
-                                <Td>
-                                    <Button
-                                        colorScheme='green'
-                                        isLoading={loadingStates[dispatch.dispatchId]}
-                                        onClick={() => handleAccept(dispatch.dispatchId)}
-                                    >
-                                        Accept
-                                    </Button>
-                                </Td>
+                <Box className='mt-5 border bg-white'>
+                    <Table variant='simple' size='md'>
+                        <Thead bg="#5160be">
+                            <Tr>
+                                <Th color="white" textAlign="center">Dispatch ID</Th>
+                                <Th color="white" textAlign="center">Start ID</Th>
+                                <Th color="white" textAlign="center">End ID</Th>
+                                <Th color="white" textAlign="center">Receiver</Th>
+                                <Th color="white" textAlign="center">Timestamp</Th>
+                                <Th color="white" textAlign="center">Quantity</Th>
+                                <Th color="white" textAlign="center">Action</Th>
                             </Tr>
-                        ))}
-                    </Tbody>
-                </Table>
+                        </Thead>
+                        <Tbody>
+                            {dispatches.map((dispatch) => (
+                                <Tr key={dispatch.dispatchId} _hover={{ bg: "gray.100" }}>
+                                    <Td textAlign="center">{dispatch.dispatchId}</Td>
+                                    <Td textAlign="center">{dispatch.startId}</Td>
+                                    <Td textAlign="center">{dispatch.endId}</Td>
+                                    <Td textAlign="center">Self</Td>
+                                    <Td textAlign="center">{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
+                                    <Td textAlign="center">{dispatch.quantity}</Td>
+                                    <Td textAlign="center">
+                                        <Button
+                                            colorScheme='green'
+                                            isLoading={loadingStates[dispatch.dispatchId]}
+                                            onClick={() => handleAccept(dispatch.dispatchId)}
+                                        >
+                                            Accept
+                                        </Button>
+                                    </Td>
+                                </Tr>
+                            ))}
+                        </Tbody>
+                    </Table>
+                </Box>
             ) : (
                 <Text>No pending products.</Text>
             )}

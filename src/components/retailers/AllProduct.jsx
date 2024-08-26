@@ -1,7 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button } from '@chakra-ui/react';
+import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button, Spinner, Center, Image, keyframes } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
+import backgroundImage from "../../img/homeBG3.png";
+import blinkingImage from '../../img/svg.png';  // Replace with your image path
+
+// Define the blinking animation
+const blinkAnimation = keyframes`
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+`;
+
+// Define the spinning animation for the spinner
+const spinAround = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
 
 function AllProduct() {
     const [deliveredProducts, setDeliveredProducts] = useState([]);
@@ -10,11 +25,9 @@ function AllProduct() {
 
     const fetchDeliveredProducts = async () => {
         try {
-            // Fetch ProductAccepted events filtered by the current user's account
             const filter = etherContract.filters.ProductAccepted(null, null, account);
             const events = await etherContract.queryFilter(filter);
 
-            // Parse the events and retrieve dispatch details along with product details
             const parsedEvents = await Promise.all(
                 events.map(async event => {
                     const dispatchId = event.args.dispatchId.toString();
@@ -54,9 +67,6 @@ function AllProduct() {
                 })
             );
 
-            console.log(parsedEvents);
-
-            // Update state with the fetched data
             setDeliveredProducts(parsedEvents);
         } catch (error) {
             console.error('Error fetching delivered products:', error);
@@ -68,7 +78,6 @@ function AllProduct() {
     useEffect(() => {
         fetchDeliveredProducts();
 
-        // Listen for new ProductAccepted events and update state
         const handleProductAccepted = async (dispatchId, productId, acceptedBy, acceptedOn, status) => {
             if (acceptedBy === account) {
                 try {
@@ -111,71 +120,92 @@ function AllProduct() {
 
         etherContract.on('ProductAccepted', handleProductAccepted);
 
-        // Cleanup event listener on component unmount
         return () => {
             etherContract.off('ProductAccepted', handleProductAccepted);
         };
     }, [account]);
 
-
     if (loading) {
-        return <Text>Loading...</Text>;
+        return (
+            <Center height="100vh" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                <Box textAlign="center" position="relative" display="inline-block">
+                    {/* Image in the center */}
+                    <Image 
+                        src={blinkingImage} 
+                        alt="Loading" 
+                        boxSize="50px" 
+                        animation={`${blinkAnimation} 1.5s infinite`} 
+                        position="absolute" 
+                        top="27%" 
+                        left="50%" 
+                        transform="translate(-50%, -50%)"
+                    />
+
+                    {/* Spinner surrounding the image */}
+                    <Spinner
+                        width="60px" height="60px" color="#5160be"
+                        animation={`${spinAround} 0.9s linear infinite`}
+                        position="relative"
+                        zIndex="0"  // Ensures the spinner stays behind the image
+                    />
+                    <Text mt={4} fontSize="xl" fontWeight="bold">
+                        Please wait while we load the accepted product list. This won't take long.
+                    </Text>
+                </Box>
+            </Center>
+        );
     }
 
     return (
-        <Box p={4}>
-            <Box textAlign='center' mb={4}>
-                <Text fontSize='4xl' fontWeight='bold' mb={2}>Accepted Products</Text>
-                <Text>List of products confirmed as delivered (Dispatch ID)</Text>
+        <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <Box className='flex justify-center'>
+                <Text className='text-center font-bold text-4xl'>Accepted Products</Text>
             </Box>
-            <Divider mb={4} />
+            <Text className='text-center mt-4'>List of all the product accepted by you and their distribution status</Text>
+            <Divider className='mt-5' borderWidth='1px' borderColor='#5160be' />
             {deliveredProducts.length > 0 ? (
-                <Table variant='simple'>
-                    <Thead>
-                        <Tr>
-                            <Th>Dispatch ID</Th>
-                            <Th>Product ID</Th>
-                            <Th>Product Name</Th>
-                            <Th>Category</Th>
-                            <Th>Country of Origin</Th>
-                            <Th>Manufacturer</Th>
-                            <Th>Price</Th>
-                            <Th>Recipient</Th>
-                            <Th>Timestamp</Th>
-                            <Th>Quantity</Th>
-                            <Th>Distribution Status</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {deliveredProducts
-                        .filter(product => product.acceptedBy === account)
-                        .map((product, index) => (
-                            <Tr key={index}>
-                                <Td>{product.dispatchId}</Td>
-                                <Td>{product.productId}</Td>
-                                <Td>{product.name}</Td>
-                                <Td>{product.category}</Td>
-                                <Td>{product.countryOfOrigin}</Td>
-                                <Td>{product.manufacturer}</Td>
-                                <Td>{product.price}</Td>
-                                <Td>Self</Td>
-                                <Td>{new Date(product.acceptedOn * 1000).toLocaleString()}</Td>
-                                <Td>{product.quantity}</Td>
-                                {
-                                    product.owner !== account ? (
-                                        <Td>
-                                            <Button colorScheme='green'>Done</Button>
-                                        </Td>
-                                    ) :
-                                        (<Td>
-
-                                            <Button colorScheme='blue'>In House</Button>
-                                        </Td>)
-                                }
+                <Box className='mt-5 border bg-white'>
+                    <Table variant='simple' size='md'>
+                        <Thead bg="#5160be">
+                            <Tr>
+                                <Th color="white" textAlign="center">Dispatch ID</Th>
+                                <Th color="white" textAlign="center">Product ID</Th>
+                                <Th color="white" textAlign="center">Product Name</Th>
+                                <Th color="white" textAlign="center">Category</Th>
+                                <Th color="white" textAlign="center">Country of Origin</Th>
+                                <Th color="white" textAlign="center">Manufacturer</Th>
+                                <Th color="white" textAlign="center">Price</Th>
+                                <Th color="white" textAlign="center">Recipient</Th>
+                                <Th color="white" textAlign="center">Timestamp</Th>
+                                <Th color="white" textAlign="center">Quantity</Th>
+                                <Th color="white" textAlign="center">Distribution Status</Th>
                             </Tr>
-                        ))}
-                    </Tbody>
-                </Table>
+                        </Thead>
+                        <Tbody>
+                            {deliveredProducts.filter(product => product.acceptedBy === account).map((product, index) => (
+                                <Tr key={index} _hover={{ bg: "gray.100" }}>
+                                    <Td textAlign="center">{product.dispatchId}</Td>
+                                    <Td textAlign="center">{product.productId}</Td>
+                                    <Td textAlign="center">{product.name}</Td>
+                                    <Td textAlign="center">{product.category}</Td>
+                                    <Td textAlign="center">{product.countryOfOrigin}</Td>
+                                    <Td textAlign="center">{product.manufacturer}</Td>
+                                    <Td textAlign="center">{product.price}</Td>
+                                    <Td textAlign="center">Self</Td>
+                                    <Td textAlign="center">{new Date(product.acceptedOn * 1000).toLocaleString()}</Td>
+                                    <Td textAlign="center">{product.quantity}</Td>
+                                    <Td textAlign="center">
+                                        {product.owner !== account ? (
+                                            <Button colorScheme='green'>Done</Button>
+                                        ) : (
+                                            <Button colorScheme='blue'>In House</Button>
+                                        )}
+                                    </Td>
+                                </Tr>
+                            ))}
+                        </Tbody>
+                    </Table>
+                </Box>
             ) : (
                 <Text>No products delivered yet.</Text>
             )}

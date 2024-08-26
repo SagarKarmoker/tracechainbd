@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useToast, Spinner, Icon } from '@chakra-ui/react';
+import { Box, Center, Text, useToast, Spinner, Icon } from '@chakra-ui/react';
 import { CheckCircleIcon } from '@chakra-ui/icons';
 import useWallet from '../../hooks/userWallet';
+import backgroundImage from "../../img/homeBG3.png"; // Background image
 
 function SellProduct() {
   const [productId, setProductId] = useState("");
@@ -53,43 +54,43 @@ function SellProduct() {
   }
 
   return (
-    <>
-      <div className='flex justify-center items-center mt-6'>
-        <div className='flex flex-col gap-4 w-[400px]'>
-          <h1 className='text-4xl font-bold mb-5 text-center'>Sell Product by Retailer</h1>
-          <input
-            type="number"
-            className='p-2 border rounded-lg'
-            placeholder='Enter Product Id'
-            value={productId}
-            onChange={(e) => setProductId(e.target.value)}
-          />
+    <Box
+      className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col justify-top items-center'
+      style={{ backgroundImage: `url(${backgroundImage})` }} // Setting the background
+    >
+      <Box className='flex flex-col gap-4 w-96'>
+        <Text className='text-center font-bold text-4xl'>Sell Product by Retailer</Text>
+        
+        <input
+          type="number"
+          className='p-3 bg-white border-2 border-[#5160be] rounded-lg' // Input box design
+          placeholder='Enter Product Id'
+          value={productId}
+          onChange={(e) => setProductId(e.target.value)}
+        />
 
-          <input
-            type="number"
-            className='p-2 border rounded-lg'
-            placeholder='Enter price'
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
+        <input
+          type="number"
+          className='p-3 bg-white border-2 border-[#5160be] rounded-lg' // Input box design
+          placeholder='Enter price'
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
 
-          <div className='flex justify-center'>
-            <button
-              className='bg-blue-600 p-4 text-white rounded-xl w-[300px] font-bold flex justify-center items-center'
-              onClick={handleSellProduct}
-              disabled={loading} // Disable the button while loading
-            >
-              {loading ? (
-                <Spinner size="sm" color="white" />
-              ) : (
-                'Print Slip and Sell'
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
-  )
+        <button
+          className='bg-[#5160be] hover:bg-[#7db6f9] text-white font-bold py-2 px-4 rounded w-full flex justify-center items-center' // Button design
+          onClick={handleSellProduct}
+          disabled={loading} // Disable the button while loading
+        >
+          {loading ? (
+            <Spinner size="sm" color="white" />
+          ) : (
+            'Print Slip and Sell'
+          )}
+        </button>
+      </Box>
+    </Box>
+  );
 }
 
 export default SellProduct;
