@@ -152,7 +152,7 @@ function ProductDetails({ pid, role = 'Admin' }) {
     }
 
     return (
-        <div>
+        <div className='w-full'>
             <h1 className='text-center font-bold text-2xl p-4'>Product #{productId} TraceChain</h1>
 
             {
