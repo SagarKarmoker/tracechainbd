@@ -1,8 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Table, Thead, Tbody, Tr, Th, Td, Text, IconButton, Divider, TableContainer, Spinner, Center } from '@chakra-ui/react';
+import { Box, Table, Thead, Tbody, Tr, Th, Td, Text, Divider, TableContainer, Spinner, Center, Image, keyframes } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
 import backgroundImage from "../../img/homeBG3.png";
+import blinkingImage from '../../img/svg.png'; // Replace with your image path
+
+// Define the blinking animation for the image
+const blinkAnimation = keyframes`
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+`;
+
+// Define the spinning animation for the spinner
+const spinAround = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
 
 function ImporterDispatchHistory() {
     const [dispatches, setDispatches] = useState([]);
@@ -67,10 +81,30 @@ function ImporterDispatchHistory() {
 
     if (loading) {
         return (
-            <Center height="100vh">
-                <Box textAlign="center">
-                    <Spinner size="xl" color="blue.500" />
-                    <Text mt={4} fontSize="xl" fontWeight="bold">Please wait while we load the dispatch history. This won't take long.</Text>
+            <Center height="100vh" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                <Box textAlign="center" position="relative" display="inline-block">
+                    {/* Image in the center */}
+                    <Image
+                        src={blinkingImage}
+                        alt="Loading"
+                        boxSize="50px"
+                        animation={`${blinkAnimation} 1.5s infinite`}
+                        position="absolute"
+                        top="27%"
+                        left="50%"
+                        transform="translate(-50%, -50%)"
+                    />
+
+                    {/* Spinner surrounding the image */}
+                    <Spinner
+                        width="60px" height="60px" color="#5160be"
+                        animation={`${spinAround} 0.9s linear infinite`}
+                        position="relative"
+                        zIndex="0"  // Ensures the spinner stays behind the image
+                    />
+                    <Text mt={4} fontSize="xl" fontWeight="bold">
+                        Please wait while we load the dispatch history. This won't take long.
+                    </Text>
                 </Box>
             </Center>
         );
@@ -80,9 +114,9 @@ function ImporterDispatchHistory() {
         <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
             <Box className='flex justify-center'>
                 <Text className='text-center font-bold text-4xl'>Importer to Distributor Dispatch History</Text>
-                <Box></Box>
             </Box>
-            <Divider className='mt-5' />
+            <Text textAlign='center' mt={4}>List of all the distributors whom you already send products</Text>
+            <Divider className='mt-5' borderWidth='1px' borderColor='#5160be' />
             {dispatches.length > 0 ? (
                 <Box className='mt-5 border bg-white'>
                     <TableContainer>

@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useToast, Box, Button, Input, Heading, Table, Thead, Tbody, Tr, Th, Td, Spinner, IconButton } from '@chakra-ui/react';
-import { ArrowLeftIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
 import { etherContract } from '../../contants';
 import useWallet from '../../hooks/userWallet';
 import useAuth from '../../hooks/userAuth';
@@ -9,6 +7,7 @@ import { QRCode } from "react-qrcode-logo";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import PendingDispatch from './PendingDispatch';
+import backgroundImage from "../../img/homeBG3.png"; 
 
 // Utility function to convert an image to base64
 const convertImageToBase64 = (url) => {
@@ -28,7 +27,7 @@ const convertImageToBase64 = (url) => {
   });
 };
 
-import backgroundImage from "../../img/homeBG2.png"; // Ensure you have this image in the correct path
+
 
 function DispatchToImporter() {
   const toast = useToast();
@@ -47,7 +46,6 @@ function DispatchToImporter() {
 
   const { traceChainBDContract, zeroGas } = useWallet();
   const { account } = useAuth();
-  const navigate = useNavigate();
 
   // Load the logo as base64 when the component mounts
   useEffect(() => {
@@ -245,8 +243,7 @@ function DispatchToImporter() {
   return (
     <div className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
       <Box p={10}>
-        <div className='flex justify-between'>
-          <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(0)} />
+        <div className='flex justify-center'>
           <h1 className='text-center font-bold text-4xl'>Customs Dispatch Dashboard</h1>
           <p></p>
         </div>

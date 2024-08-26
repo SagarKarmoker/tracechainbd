@@ -17,6 +17,7 @@ import { FaExclamationTriangle } from 'react-icons/fa';
 import { create } from 'ipfs-http-client';
 import useAuth from '../hooks/userAuth';
 import useWallet from '../hooks/userWallet';
+import backgroundImage from '../img/homeBG3.png'; // Update the path if necessary
 
 // IPFS client setup
 const ipfs = create({ url: "http://127.0.0.1:5001/api/v0/add" });
@@ -37,8 +38,6 @@ function ReportProduct() {
     const checkProductOwner = async () => {
         try {
             const product = await traceChainBDContract.productLifeCycles(productId);
-            console.log(product)
-
             if (product.owner === account) {
                 return true;
             } else {
@@ -51,7 +50,6 @@ function ReportProduct() {
                 });
                 return false;
             }
-
         } catch (error) {
             toast({
                 title: 'Error',
@@ -67,7 +65,6 @@ function ReportProduct() {
     const uploadProofToIPFS = async (file) => {
         try {
             const addedFile = await ipfs.add(file);
-            console.log(addedFile.cid.toString())
             setIpfsProofHash(addedFile.cid.toString());
             toast({
                 title: "Success",
@@ -101,7 +98,7 @@ function ReportProduct() {
         }
         setLoading(true);
         const isOwner = await checkProductOwner();
-        if(!isOwner) return;
+        if (!isOwner) return;
 
         try {
             if (proof) {
@@ -109,7 +106,7 @@ function ReportProduct() {
                 await uploadProofToIPFS(proofFile);
             }
 
-            const tx = await traceChainBDContract.reportProduct(productId, comment, reporteeAddr, ipfsProofHash , zeroGas);
+            const tx = await traceChainBDContract.reportProduct(productId, comment, reporteeAddr, ipfsProofHash, zeroGas);
             await tx.wait();
 
             toast({
@@ -144,75 +141,80 @@ function ReportProduct() {
     };
 
     return (
-        <Box padding="10" maxW="600px" mx="auto" mt="10" bg="gray.50" boxShadow="lg" borderRadius="lg">
-            <Heading textAlign="center" mb="5">Report Portal</Heading>
-            <Divider mb="5" />
-            <Box as="form" className="flex flex-col gap-4">
-                <FormControl>
-                    <FormLabel>Product ID</FormLabel>
-                    <Input
-                        type="number"
-                        placeholder="Enter Product ID"
-                        value={productId}
-                        onChange={(e) => setProductId(e.target.value)}
-                    />
-                </FormControl>
+        <Box
+            className="min-h-screen bg-cover bg-center flex justify-center items-center"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+        >
+            <Box padding="10" mt="10" bg="white" boxShadow="lg" borderRadius="lg">
+                <Heading textAlign="center" mb="5">Report Portal</Heading>
+                <Divider mb="5" />
+                <Box as="form" className="flex flex-col w-96 gap-4">
+                    <FormControl>
+                        <FormLabel>Product ID</FormLabel>
+                        <Input
+                            type="number"
+                            placeholder="Enter Product ID"
+                            value={productId}
+                            onChange={(e) => setProductId(e.target.value)}
+                        />
+                    </FormControl>
 
-                <FormControl>
-                    <FormLabel>Your Role</FormLabel>
-                    <Select placeholder="Select your role" value={role} onChange={(e) => setRole(e.target.value)}>
-                        <option value="Importer">Importer</option>
-                        <option value="Distributor">Distributor</option>
-                        <option value="Retailer">Retailer</option>
-                    </Select>
-                </FormControl>
+                    <FormControl>
+                        <FormLabel>Your Role</FormLabel>
+                        <Select placeholder="Select your role" value={role} onChange={(e) => setRole(e.target.value)}>
+                            <option value="Importer">Importer</option>
+                            <option value="Distributor">Distributor</option>
+                            <option value="Retailer">Retailer</option>
+                        </Select>
+                    </FormControl>
 
-                <FormControl>
-                    <FormLabel>Against Role</FormLabel>
-                    <Select placeholder="Select the role you are reporting against" value={reportee} onChange={(e) => setReportee(e.target.value)}>
-                        <option value="Importer">Importer</option>
-                        <option value="Distributor">Distributor</option>
-                        <option value="Retailer">Retailer</option>
-                    </Select>
-                </FormControl>
+                    <FormControl>
+                        <FormLabel>Against Role</FormLabel>
+                        <Select placeholder="Select the role you are reporting against" value={reportee} onChange={(e) => setReportee(e.target.value)}>
+                            <option value="Importer">Importer</option>
+                            <option value="Distributor">Distributor</option>
+                            <option value="Retailer">Retailer</option>
+                        </Select>
+                    </FormControl>
 
-                <FormControl>
-                    <FormLabel>Reportee Address</FormLabel>
-                    <Input
-                        type="text"
-                        placeholder="Enter Reportee Address"
-                        value={reporteeAddr}
-                        onChange={(e) => setReporteeAddr(e.target.value)}
-                    />
-                </FormControl>
+                    <FormControl>
+                        <FormLabel>Reportee Address</FormLabel>
+                        <Input
+                            type="text"
+                            placeholder="Enter Reportee Address"
+                            value={reporteeAddr}
+                            onChange={(e) => setReporteeAddr(e.target.value)}
+                        />
+                    </FormControl>
 
-                <FormControl>
-                    <FormLabel>Your Comment</FormLabel>
-                    <Textarea
-                        placeholder="Enter your report details"
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                    />
-                </FormControl>
+                    <FormControl>
+                        <FormLabel>Your Comment</FormLabel>
+                        <Textarea
+                            placeholder="Enter your report details"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                        />
+                    </FormControl>
 
-                <FormControl>
-                    <FormLabel>Proof (if Any)</FormLabel>
-                    <Input
-                        type="file"
-                        onChange={(e) => setProof(e.target.files[0])}
-                    />
-                </FormControl>
+                    <FormControl>
+                        <FormLabel>Proof (if Any)</FormLabel>
+                        <Input
+                            type="file"
+                            onChange={(e) => setProof(e.target.files[0])}
+                        />
+                    </FormControl>
 
-                <Box display="flex" justifyContent="center" mt="5">
-                    <Button
-                        colorScheme="blue"
-                        size="lg"
-                        leftIcon={loading ? <Spinner size="sm" /> : <Icon as={FaExclamationTriangle} />}
-                        onClick={handleReport}
-                        isDisabled={loading}
-                    >
-                        {loading ? 'Reporting...' : 'Report'}
-                    </Button>
+                    <Box display="flex" justifyContent="center" mt="5">
+                        <Button
+                            colorScheme="red"
+                            size="lg"
+                            leftIcon={loading ? <Spinner size="sm" /> : <Icon as={FaExclamationTriangle} />}
+                            onClick={handleReport}
+                            isDisabled={loading}
+                        >
+                            {loading ? 'Reporting...' : 'Report'}
+                        </Button>
+                    </Box>
                 </Box>
             </Box>
         </Box>
