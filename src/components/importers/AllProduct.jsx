@@ -196,7 +196,7 @@ function AllProduct() {
                                     <Td textAlign="center">{product.quantity}</Td>
                                     <Td textAlign="center">
                                         {product.owner !== account ? (
-                                            <Button colorScheme='green'>Done</Button>
+                                            <Button colorScheme='green'>Send</Button>
                                         ) : (
                                             <Button colorScheme='blue'>In House</Button>
                                         )}

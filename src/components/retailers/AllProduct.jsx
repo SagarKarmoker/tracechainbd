@@ -161,7 +161,7 @@ function AllProduct() {
             <Box className='flex justify-center'>
                 <Text className='text-center font-bold text-4xl'>Accepted Products</Text>
             </Box>
-            <Text className='text-center mt-4'>List of all the product accepted by you and their distribution status</Text>
+            <Text className='text-center mt-4'>List of all the product accepted by you and their sell status</Text>
             <Divider className='mt-5' borderWidth='1px' borderColor='#5160be' />
             {deliveredProducts.length > 0 ? (
                 <Box className='mt-5 border bg-white'>
@@ -178,7 +178,7 @@ function AllProduct() {
                                 <Th color="white" textAlign="center">Recipient</Th>
                                 <Th color="white" textAlign="center">Timestamp</Th>
                                 <Th color="white" textAlign="center">Quantity</Th>
-                                <Th color="white" textAlign="center">Distribution Status</Th>
+                                <Th color="white" textAlign="center">Sell Status</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
@@ -196,7 +196,7 @@ function AllProduct() {
                                     <Td textAlign="center">{product.quantity}</Td>
                                     <Td textAlign="center">
                                         {product.owner !== account ? (
-                                            <Button colorScheme='green'>Done</Button>
+                                            <Button colorScheme='green'>Sold</Button>
                                         ) : (
                                             <Button colorScheme='blue'>In House</Button>
                                         )}
