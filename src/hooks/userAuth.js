@@ -1,10 +1,12 @@
 // useAuth.js
 import { useState, useEffect } from 'react';
 import { magic } from '../utils/Magic';
+import { useLocation } from 'react-router-dom';
 
 const useAuth = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [account, setAccount] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     const checkIfUserIsLoggedIn = async () => {
@@ -25,9 +27,13 @@ const useAuth = () => {
       const accounts = await magic.wallet.connectWithUI();
       setIsConnected(true);
       setAccount(accounts[0]);
-      setInterval(() => {
-        window.location.reload();
-      }, 2000);
+
+      // Only reload if the URL does not contain "/android"
+      if (!location.pathname.includes('/android')) {
+        setInterval(() => {
+          window.location.reload();
+        }, 2000);
+      }
     } catch (error) {
       console.error("Failed to connect wallet:", error);
     }
