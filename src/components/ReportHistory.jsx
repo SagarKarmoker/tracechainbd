@@ -40,6 +40,37 @@ function ReportHistory() {
     const { account } = useAuth();
     const [report, setReport] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [rolesData, setRolesData] = useState([]);
+
+    const fetchRolesData = async () => {
+        try {
+            const response = await fetch('https://tracechainbd-backend.onrender.com/api/roles');
+            const data = await response.json();
+            setRolesData(data);
+            console.log(data);  // Log the data directly
+        } catch (error) {
+            console.error('Error fetching roles data:', error);
+        }
+    }
+
+    const getRoleData = (address) => {
+        try {
+            // Assuming `rolesData` is an array of roles you have fetched earlier
+            const role = rolesData.find(role => role.address_registered === address);
+
+            if (role) {
+                // Return the formatted string directly
+                return `${role.name} (${role.role})`;
+            }
+            // else {
+            //     console.error("Role not found for the provided address.");
+            //     return "Unknown Role"; // or an appropriate fallback value
+            // }
+        } catch (error) {
+            console.error("Error getting role data:", error);
+            return "Error Fetching Role"; // or an appropriate fallback value
+        }
+    };
 
     const fetchHistoryData = async () => {
         try {
@@ -65,8 +96,11 @@ function ReportHistory() {
     };
 
     useEffect(() => {
+        fetchRolesData();
         fetchHistoryData();
-    }, []);
+    }, [loading]);
+
+    console.log(report)
 
     if (loading) {
         return (
@@ -124,7 +158,7 @@ function ReportHistory() {
                                     <Td>{index + 1}</Td>
                                     <Td>{item.productID}</Td>
                                     <Td>{item.reportDesc}</Td>
-                                    <Td>{item.reportFor}</Td>
+                                    <Td>{getRoleData(item.reportFor)}</Td>
                                     <Td>{new Date(item.timestamp * 1000).toLocaleString()}</Td>
                                 </Tr>
                             ))}
