@@ -203,7 +203,7 @@ function ProductDetails({ pid, role = 'Admin' }) {
             {
                 role === 'Importer' && (
                     <VerticalTimeline>
-                        {events.slice(0, 4).map((event, index) => (
+                        {events.slice(3, 8).map((event, index) => (
                             <VerticalTimelineElement
                                 key={index}
                                 date={new Date(event.timestamp * 1000).toLocaleString()}
