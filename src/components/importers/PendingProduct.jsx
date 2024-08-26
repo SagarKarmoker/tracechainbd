@@ -6,6 +6,7 @@ import useWallet from '../../hooks/userWallet';
 import backgroundImage from "../../img/homeBG3.png";
 import blinkingImage from '../../img/svg.png';  // Replace with your image path
 import { ProductStatus } from '../../utils/ProductStatus';
+import { ethers } from 'ethers';
 
 // Define the blinking animation
 const blinkAnimation = keyframes`
@@ -64,7 +65,7 @@ function PendingProduct() {
         };
 
         fetchHistoryData();
-    }, [account]);
+    }, [loading]);
 
     const handleAccept = async (_dispatchId) => {
         setLoadingStates(prev => ({ ...prev, [_dispatchId]: true }));
