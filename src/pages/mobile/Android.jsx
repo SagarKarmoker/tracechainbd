@@ -16,8 +16,12 @@ function Android() {
     }
 
     return (
-        <div>
+        <div className='h-[90vh] flex flex-col justify-between'>
             <QRScan />
+
+            <footer className='bottom-0 text-center font-bold'>
+                &copy; TraceChainBD 2024 
+            </footer>
         </div>
     )
 }
