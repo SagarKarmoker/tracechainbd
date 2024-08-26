@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Box, Flex, Text, Icon, useColorModeValue } from '@chakra-ui/react';
-import { FiTrendingUp, FiHome, FiCompass, FiStar, FiSettings, FiBox } from 'react-icons/fi';
+import { FiTrendingUp, FiHome, FiCompass, FiStar, FiSettings, FiBox, FiTruck } from 'react-icons/fi';
+import { MdOutlineShoppingCart, MdHistory, MdReportGmailerrorred  } from "react-icons/md";
+import { AiOutlineProduct } from "react-icons/ai";
+import { LiaSearchLocationSolid } from "react-icons/lia";
+import { TbReport } from "react-icons/tb";
 import userAuth from '../../hooks/userAuth';
 import { isImporter } from '../../components/utils/RoleCheck';
 import Welcome from '../../components/Welcome';
@@ -17,17 +21,19 @@ import ImporterDispatchHistory from '../../components/importers/ImporterDispatch
 import TrackProduct from '../../components/importers/TrackProduct';
 import ReportProduct from '../../components/ReportProduct';
 import sidebarBackgroundImage from '../../img/homeBG4.png';
+import ReportHistory from '../../components/ReportHistory';
 
 const SidebarContent = ({ setActiveComponent, activeComponent }) => {
     const linkItems = [
-        { name: 'All Product', component: 'all-product', icon: FiHome },
+        { name: 'All Product', component: 'all-product', icon: AiOutlineProduct },
         { name: 'Pending Product', component: 'pending-product', icon: FiBox },
-        { name: 'Manage Distributors', component: 'distributor-list', icon: FiCompass },
-        { name: 'Dispatch Product', component: 'dispatch-to-distributor', icon: FiStar },
-        { name: 'Dispatch History', component: 'dispatch-history', icon: FiSettings },
-        { name: 'Track Product', component: 'track-product', icon: FiTrendingUp },
+        { name: 'Manage Distributors', component: 'distributor-list', icon: FiTruck },
+        { name: 'Dispatch Product', component: 'dispatch-to-distributor', icon: MdOutlineShoppingCart },
+        { name: 'Dispatch History', component: 'dispatch-history', icon: MdHistory },
+        { name: 'Track Product', component: 'track-product', icon: LiaSearchLocationSolid },
         { name: 'Update Price', component: 'update-price', icon: FiTrendingUp },
-        { name: 'Report Product', component: 'report-product', icon: FiHome },
+        { name: 'Report Product', component: 'report-product', icon: MdReportGmailerrorred },
+        { name: 'Report history', component: 'report-history', icon: TbReport },
     ];
 
     return (
@@ -124,6 +130,8 @@ function ImporterPanel() {
                 return <TrackProduct />;
             case 'report-product':
                 return <ReportProduct />;
+            case 'report-history':
+                return <ReportHistory/>;
             case 'update-price':
                 return <UpdateProductPrice />;
             default:
