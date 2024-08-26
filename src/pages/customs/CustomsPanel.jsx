@@ -1,44 +1,115 @@
-import { useState, useEffect } from 'react';
-import AddProduct from '../../components/customs/AddProduct';
-import DispatchToImporter from '../../components/customs/DispatchToImporter';
-import CustomsDispatchHistory from '../../components/customs/CustomsDispatchHistory';
-import TrackProduct from '../../components/customs/TrackProduct';
-import AllImporterList from '../../components/customs/AllImporterList';
-import CustomsDashboard from '../../components/customs/CustomsDashboard';
-import AllProductsList from '../../components/customs/AllProductsList';
+import React, { useState, useEffect } from 'react';
+import { Box, Flex, Text, Icon, useColorModeValue } from '@chakra-ui/react';
+import { FiTrendingUp, FiBox, FiTruck } from 'react-icons/fi';
+import { MdOutlineShoppingCart, MdHistory } from "react-icons/md";
+import { LiaSearchLocationSolid } from "react-icons/lia";
+import userAuth from '../../hooks/userAuth';
+import { isCustoms } from '../../components/utils/RoleCheck';
 import { ethers } from 'ethers';
 import { TraceChainContract } from '../../contants';
 import { ABI } from '../../contractABI';
-import userAuth from '../../hooks/userAuth';
+import Welcome from '../../components/Welcome';
+import CustomsDashboard from '../../components/customs/CustomsDashboard';
+import sidebarBackgroundImage from '../../img/homeBG4.png';
+
+// Import your components
+import AddProduct from '../../components/customs/AddProduct';
+import AllImporterList from '../../components/customs/AllImporterList';
+import AllProductsList from '../../components/customs/AllProductsList';
+import DispatchToImporter from '../../components/customs/DispatchToImporter';
+import CustomsDispatchHistory from '../../components/customs/CustomsDispatchHistory';
+import TrackProduct from '../../components/customs/TrackProduct';
+
+const SidebarContent = ({ setActiveComponent, activeComponent }) => {
+    const linkItems = [
+        { name: 'Add Product', component: 'add-product', icon: FiBox },
+        { name: 'Importer List', component: 'importer-list', icon: FiTruck },
+        { name: 'Products List', component: 'products-list', icon: FiBox },
+        { name: 'Dispatch to Importer', component: 'dispatch-to-importer', icon: MdOutlineShoppingCart },
+        { name: 'Dispatch History', component: 'dispatch-history', icon: MdHistory },
+        { name: 'Track Product', component: 'track-product', icon: LiaSearchLocationSolid },
+    ];
+
+    return (
+        <Box
+            bg={useColorModeValue('white', 'gray.900')}
+            borderRight="2px"
+            borderRightColor="#5160be"
+            w="20%"
+            pos="fixed"
+            h="full"
+            p="4"
+            backgroundImage={`url(${sidebarBackgroundImage})`}
+            backgroundSize="cover"
+            backgroundPosition="left"
+            boxShadow="0 4px 6px rgba(0, 0, 0, 0.5)" // Add box shadow here
+        >
+            <Box mt="4">
+                {linkItems.map((link) => (
+                    <NavItem
+                        key={link.name}
+                        icon={link.icon}
+                        isActive={activeComponent === link.component}
+                        onClick={() => setActiveComponent(link.component)}
+                    >
+                        {link.name}
+                    </NavItem>
+                ))}
+            </Box>
+        </Box>
+    );
+};
+
+const NavItem = ({ icon, children, onClick, isActive }) => {
+    return (
+        <Box
+            as="a"
+            href="#"
+            style={{ textDecoration: 'none' }}
+            _focus={{ boxShadow: 'none' }}
+            onClick={onClick}
+        >
+            <Flex
+                align="center"
+                p="3"
+                mt="2"
+                borderRadius="lg"
+                role="group"
+                cursor="pointer"
+                bg={isActive ? '#5160be' : 'transparent'}
+                color={isActive ? 'white' : 'inherit'}
+                _hover={{
+                    bg: '#5160be',
+                    color: 'white',
+                }}
+            >
+                {icon && (
+                    <Icon
+                        mr="4"
+                        fontSize="20"
+                        color={isActive ? 'white' : 'inherit'}
+                        _groupHover={{
+                            color: 'white',
+                        }}
+                        as={icon}
+                    />
+                )}
+                <Text ml="2" fontWeight="medium" textAlign="left">
+                    {children}
+                </Text>
+            </Flex>
+        </Box>
+    );
+};
 
 function CustomsPanel() {
-    const [activeComponent, setActiveComponent] = useState('dashboard');
-    const [isCustoms, setIsCustoms] = useState(false);
+    const [activeComponent, setActiveComponent] = useState('welcome');
     const { account, isConnected } = userAuth();
-    const [contract, setContract] = useState(null);
-
-    useEffect(() => {
-        const provider = new ethers.providers.JsonRpcProvider("https://vercel-blockchain-proxy.vercel.app");
-        const _contract = new ethers.Contract(TraceChainContract, ABI, provider);
-        setContract(_contract);
-    }, []);
-
-    const checkCustoms = async () => {
-        if (contract && account) {
-            const data = await contract.isCustoms(account);
-            setIsCustoms(data);
-        }
-    }
-
-    useEffect(() => {
-        checkCustoms();
-        console.log(isCustoms)
-    }, [account, contract]);
 
     const renderComponent = () => {
         switch (activeComponent) {
-            case 'dashboard':
-                return <CustomsDashboard setActiveComponent={setActiveComponent} />;
+            case 'welcome':
+                return <Welcome />;
             case 'add-product':
                 return <AddProduct />;
             case 'importer-list':
@@ -52,30 +123,32 @@ function CustomsPanel() {
             case 'track-product':
                 return <TrackProduct />;
             default:
-                return <CustomsDashboard />;
+                return <CustomsDashboard setActiveComponent={setActiveComponent} />;
         }
     };
 
-    if (!isConnected) {
+    
+    if (account == null && !isConnected) {
         return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
                 <br />
-                <p className='text-red-400'>Please login to account</p>
-                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4' onClick={() => { window.history.back(); }}>
+                <p className='text-red-400'>Please Login</p>
+                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4'>
                     Go back
                 </button>
             </div>
         );
     }
-    
-    if (isConnected && !isCustoms) {
+
+    if (account !== '' && isConnected && !isCustoms(account)) {
         return (
             <div className='flex flex-col justify-center items-center h-[90vh]'>
                 <h1 className='text-3xl font-bold text-red-500'>Access Denied</h1>
                 <br />
-                <p className='text-red-400'>You are not a customs officer</p>
-                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4' onClick={() => { window.history.back(); }}>
+                <p className='text-red-400'>You are not an customs</p>
+                <p className='text-red-400'>Please apply for registration</p>
+                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4'>
                     Go back
                 </button>
             </div>
@@ -83,11 +156,12 @@ function CustomsPanel() {
     }
 
     return (
-        <div>
-            <div>
+        <Box display="flex">
+            <SidebarContent setActiveComponent={setActiveComponent} activeComponent={activeComponent} />
+            <Box ml="20%" flex="1"> {/* Updated margin-left to 20% */}
                 {renderComponent()}
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 }
 

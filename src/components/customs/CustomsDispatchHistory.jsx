@@ -15,8 +15,6 @@ import {
   Text,
   IconButton,
 } from '@chakra-ui/react';
-import { ArrowLeftIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
 import backgroundImage from "../../img/homeBG3.png";
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
@@ -50,7 +48,6 @@ function CustomsDispatchHistory() {
   const qrRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const navigate = useNavigate();
 
   // Load the logo as base64 when the component mounts
   useEffect(() => {
@@ -111,13 +108,13 @@ function CustomsDispatchHistory() {
 
   return (
     <div className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
-      <div className='flex justify-between'>
-        <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(-1)} />
+      <div className='flex justify-center'>
         <Heading as='h1' size='xl' textAlign='center'>Customs to Importer Dispatch History</Heading>
         <div></div>
       </div>
-      <Divider className='mt-5' />
       <Text textAlign='center' mt={2} mb={4}>Here you can find the history of all dispatches made by customs to importers.</Text>
+      <Divider className='mb-5' borderWidth='1px' borderColor='#5160be' />
+      
       <TableContainer className="rounded-md shadow-lg bg-white">
         <Table variant='simple' size='md'>
           <Thead bg="#5160be">

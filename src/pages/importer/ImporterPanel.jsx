@@ -8,10 +8,11 @@ import { TbReport } from "react-icons/tb";
 import userAuth from '../../hooks/userAuth';
 import { isImporter } from '../../components/utils/RoleCheck';
 import Welcome from '../../components/Welcome';
+import AcceptProduct from '../../components/importers/AcceptProduct';
+import sidebarBackgroundImage from '../../img/homeBG4.png';
+import ImporterDashboard from '../../components/importers/ImporterDashboard';
 
 // Import your components
-import AcceptProduct from '../../components/importers/AcceptProduct';
-import ImporterDashboard from '../../components/importers/ImporterDashboard';
 import AllProduct from '../../components/importers/AllProduct';
 import PendingProduct from '../../components/importers/PendingProduct';
 import AllDistributorList from '../../components/importers/AllDistributorList';
@@ -20,7 +21,6 @@ import UpdateProductPrice from '../../components/importers/UpdateProductPrice';
 import ImporterDispatchHistory from '../../components/importers/ImporterDispatchHistory';
 import TrackProduct from '../../components/importers/TrackProduct';
 import ReportProduct from '../../components/ReportProduct';
-import sidebarBackgroundImage from '../../img/homeBG4.png';
 import ReportHistory from '../../components/ReportHistory';
 
 const SidebarContent = ({ setActiveComponent, activeComponent }) => {
