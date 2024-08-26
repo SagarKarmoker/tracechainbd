@@ -1,10 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Heading, Table, Thead, Tbody, Tr, Th, Td, Text, Divider, Spinner, Center, IconButton } from '@chakra-ui/react';
+import { 
+    Box, 
+    Button, 
+    Heading, 
+    Table, 
+    Thead, 
+    Tbody, 
+    Tr, 
+    Th, 
+    Td, 
+    Text, 
+    Divider, 
+    Spinner, 
+    Center, 
+    IconButton, 
+    Image, 
+    keyframes 
+} from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
 import { etherContract } from '../../contants'; // Adjust the path if necessary
 import backgroundImage from "../../img/homeBG5.png";
-import { keyframes } from '@chakra-ui/react';
+import blinkingImage from '../../img/svg.png'; // Replace with your image path
 
+// Define the blinking animation for the image
+const blinkAnimation = keyframes`
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+`;
+
+// Define the vanishing animation for the selected importer details box
 const vanishAnimation = keyframes`
   0% {
     opacity: 1;
@@ -16,13 +41,12 @@ const vanishAnimation = keyframes`
   }
 `;
 
-
 function AllRetailerList() {
     const [importers, setImporters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedImporter, setSelectedImporter] = useState(null);
     const [isHidden, setIsHidden] = useState(true);
-    const [isCrossed, setIsCrossed] = useState(false); // State to control cross-out animation
+    const [isCrossed, setIsCrossed] = useState(false);
 
     const fetchData = async () => {
         try {
@@ -49,10 +73,31 @@ function AllRetailerList() {
 
     if (loading) {
         return (
-            <Center height="100vh">
+            <Center height="100vh" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
                 <Box textAlign="center">
-                    <Spinner size="xl" color="blue.500" />
-                    <Text mt={4} fontSize="xl" fontWeight="bold">Please wait while we load the retailer list. This won't take long.</Text>
+                    {/* Image in the center */}
+                    <Center textAlign="center" position="relative" display="inline-block">
+                        <Image 
+                            src={blinkingImage} 
+                            alt="Loading" 
+                            boxSize="50px" 
+                            animation={`${blinkAnimation} 1.5s infinite`} 
+                            position="absolute" 
+                            top="27%" 
+                            left="50%" 
+                            transform="translate(-50%, -50%)"
+                        />
+
+                        {/* Spinner surrounding the image */}
+                        <Spinner
+                            width="60px" height="60px" color="#5160be"
+                            position="relative"
+                            zIndex="0"
+                        />
+                        <Text mt={4} fontSize="xl" fontWeight="bold">
+                            Please wait while we load the retailer list. This won't take long.
+                        </Text>
+                    </Center>
                 </Box>
             </Center>
         );
@@ -89,7 +134,7 @@ function AllRetailerList() {
                                     <Button colorScheme='blue' onClick={() => {
                                         getMoreDetailsBtn(importer);
                                         setIsHidden(!isHidden);
-                                        setIsCrossed(false); // Ensure animation resets when showing details
+                                        setIsCrossed(false);
                                     }}>
                                         More
                                     </Button>
@@ -114,7 +159,7 @@ function AllRetailerList() {
                     animation={isCrossed ? `${vanishAnimation} 0.5s forwards` : 'none'}
                 >
                     <Heading as='h2' size='md' mb={2} display="flex" alignItems="center" position="relative">
-                        Distributor Details
+                        Retailer Details
                         <IconButton
                             icon={<CloseIcon />}
                             aria-label="Close"
@@ -125,7 +170,7 @@ function AllRetailerList() {
                             right={2}
                             onClick={() => {
                                 setIsCrossed(true);
-                                setTimeout(() => setIsHidden(true), 500); // Hide the box after animation
+                                setTimeout(() => setIsHidden(true), 500);
                             }}
                         />
                     </Heading>
@@ -134,9 +179,6 @@ function AllRetailerList() {
                     <Text><strong>Location:</strong> {selectedImporter.locAddress}</Text>
                     <Text><strong>Contract Number:</strong> {selectedImporter.contractNumber}</Text>
                     <Text><strong>Country of Origin:</strong> {selectedImporter.countryOfOrigin}</Text>
-                    {/* <Text><strong>TIN Number:</strong> {selectedImporter.tinNumber}</Text>
-                    <Text><strong>VAT Registration Number:</strong> {selectedImporter.vatRegNumber}</Text> */}
-                    {/* <Text><strong>IPFS Document Hash:</strong> {selectedImporter.ipfsDocHash}</Text> */}
                     <Text><strong>Role:</strong> {selectedImporter.role}</Text>
                 </Box>
             )}

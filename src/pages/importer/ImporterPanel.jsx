@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Box, Flex, Text, Icon, useColorModeValue } from '@chakra-ui/react';
-import { FiTrendingUp, FiHome, FiCompass, FiStar, FiSettings, FiBox, FiTruck } from 'react-icons/fi';
+import { FiTrendingUp, FiBox, FiTruck } from 'react-icons/fi';
 import { MdOutlineShoppingCart, MdHistory, MdReportGmailerrorred  } from "react-icons/md";
 import { AiOutlineProduct } from "react-icons/ai";
 import { LiaSearchLocationSolid } from "react-icons/lia";
+import { LuLayoutDashboard } from "react-icons/lu";
 import { TbReport } from "react-icons/tb";
 import userAuth from '../../hooks/userAuth';
 import { isImporter } from '../../components/utils/RoleCheck';
@@ -25,6 +26,7 @@ import ReportHistory from '../../components/ReportHistory';
 
 const SidebarContent = ({ setActiveComponent, activeComponent }) => {
     const linkItems = [
+        { name: 'Importer Dashboard', component: 'welcome', icon: LuLayoutDashboard },
         { name: 'All Product', component: 'all-product', icon: AiOutlineProduct },
         { name: 'Pending Product', component: 'pending-product', icon: FiBox },
         { name: 'Manage Distributors', component: 'distributor-list', icon: FiTruck },

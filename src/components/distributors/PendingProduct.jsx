@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button, IconButton, Spinner, Center, useToast } from '@chakra-ui/react';
+import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button, IconButton, Spinner, Center, Image, useToast, keyframes } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
 import { ethers } from 'ethers';
 import useWallet from '../../hooks/userWallet';
 import { ProductStatus } from '../../utils/ProductStatus';
-import backgroundImage from '../../img/homeBG5.png'; // Ensure the background image is correct
+import backgroundImage from '../../img/homeBG5.png';
+import blinkingImage from '../../img/svg.png'; // Ensure this is the correct path for your image
+
+// Define the blinking animation for the image
+const blinkAnimation = keyframes`
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+`;
 
 function PendingProduct() {
     const [dispatches, setDispatches] = useState([]);
@@ -96,10 +104,31 @@ function PendingProduct() {
 
     if (loading) {
         return (
-            <Center height="100vh">
+            <Center height="100vh" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
                 <Box textAlign="center">
-                    <Spinner size="xl" color="blue.500" />
-                    <Text mt={4} fontSize="xl" fontWeight="bold">Please wait while we load the pending products. This won't take long.</Text>
+                    {/* Image in the center */}
+                    <Center textAlign="center" position="relative" display="inline-block">
+                        <Image 
+                            src={blinkingImage} 
+                            alt="Loading" 
+                            boxSize="50px" 
+                            animation={`${blinkAnimation} 1.5s infinite`} 
+                            position="absolute" 
+                            top="27%" 
+                            left="50%" 
+                            transform="translate(-50%, -50%)"
+                        />
+
+                        {/* Spinner surrounding the image */}
+                        <Spinner
+                            width="60px" height="60px" color="#5160be"
+                            position="relative"
+                            zIndex="0"
+                        />
+                        <Text mt={4} fontSize="xl" fontWeight="bold">
+                            Please wait while we load the pending products. This won't take long.
+                        </Text>
+                    </Center>
                 </Box>
             </Center>
         );

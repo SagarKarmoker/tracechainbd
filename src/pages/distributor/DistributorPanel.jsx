@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Flex, Text, Icon, useColorModeValue } from '@chakra-ui/react';
 import { FiTrendingUp, FiHome, FiCompass, FiStar, FiSettings, FiBox } from 'react-icons/fi';
+import { LuLayoutDashboard } from "react-icons/lu";
+import { LiaSearchLocationSolid } from "react-icons/lia";
+import { AiOutlineProduct } from "react-icons/ai";
+import { MdOutlineShoppingCart, MdHistory, MdReportGmailerrorred  } from "react-icons/md";
+import { BsShop } from "react-icons/bs";
+import { TbReport } from "react-icons/tb";
 import useAuth from '../../hooks/userAuth';
 import { isDistributor } from '../../components/utils/RoleCheck';
 
@@ -13,19 +19,21 @@ import PendingProduct from '../../components/distributors/PendingProduct';
 import DistributorDispatchHistory from '../../components/distributors/DistributorDispatchHistory';
 import ReportProduct from '../../components/ReportProduct';
 import AllProduct from '../../components/distributors/AllProduct';
+import Welcome from '../../components/Welcome';
 import sidebarBackgroundImage from '../../img/homeBG4.png'; 
 import ReportHistory from '../../components/ReportHistory';
 
 const SidebarContent = ({ setActiveComponent, activeComponent }) => {
     const linkItems = [
+        { name: 'Distributor Dashboard', component: 'welcome', icon: LuLayoutDashboard },
         { name: 'Pending Product', component: 'pending-product', icon: FiBox },
-        { name: 'All Product', component: 'all-product', icon: FiHome },
-        { name: 'Manager Retailers', component: 'retailer-list', icon: FiCompass },
-        { name: 'Dispatch Product', component: 'dispatch-to-retailer', icon: FiStar },
-        { name: 'Dispatch History', component: 'dispatch-history', icon: FiSettings },
-        { name: 'Track Product', component: 'track-product', icon: FiTrendingUp },
-        { name: 'Report Product', component: 'report-product', icon: FiHome },
-        { name: 'Report History', component: 'report-history', icon: FiHome },
+        { name: 'All Product', component: 'all-product', icon: AiOutlineProduct },
+        { name: 'Manager Retailers', component: 'retailer-list', icon: BsShop },
+        { name: 'Dispatch Product', component: 'dispatch-to-retailer', icon: MdOutlineShoppingCart },
+        { name: 'Dispatch History', component: 'dispatch-history', icon: MdHistory },
+        { name: 'Track Product', component: 'track-product', icon: LiaSearchLocationSolid },
+        { name: 'Report Product', component: 'report-product', icon: MdReportGmailerrorred },
+        { name: 'Report History', component: 'report-history', icon: TbReport },
     ];
 
     return (
@@ -102,11 +110,13 @@ const NavItem = ({ icon, children, onClick, isActive }) => {
 };
 
 function DistributorPanel() {
-    const [activeComponent, setActiveComponent] = useState('pending-product');
+    const [activeComponent, setActiveComponent] = useState('welcome');
     const { account, isConnected } = useAuth();
 
     const renderComponent = () => {
         switch (activeComponent) {
+            case 'welcome':
+                return <Welcome />;
             case 'all-product':
                 return <AllProduct />;
             case 'pending-product':
