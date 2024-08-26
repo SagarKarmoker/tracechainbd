@@ -1,8 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Heading, Text, Spinner, Center } from '@chakra-ui/react';
+import { 
+    Box, 
+    Table, 
+    Thead, 
+    Divider, 
+    Tbody, 
+    Tr, 
+    Th, 
+    Td, 
+    TableContainer, 
+    Heading, 
+    Text, 
+    Spinner, 
+    Center, 
+    Image, 
+    keyframes 
+} from '@chakra-ui/react';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
 import backgroundImage from "../../img/homeBG5.png";
+import blinkingImage from '../../img/svg.png'; // Replace with your image path
+
+// Define the blinking animation for the image
+const blinkAnimation = keyframes`
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+`;
+
+// Define the spinning animation for the spinner
+const spinAround = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
 
 function DistributorDispatchHistory() {
   const [dispatches, setDispatches] = useState([]);
@@ -26,7 +56,7 @@ function DistributorDispatchHistory() {
             to: to,
             timestamp: Number(dispatchedOn.toString()),
             quantity: quantity.toString(),
-            type: 'Multi' 
+            type: 'Multi'
           };
         });
 
@@ -41,7 +71,7 @@ function DistributorDispatchHistory() {
             to: to,
             timestamp: Number(dispatchedOn.toString()),
             quantity: quantity.toString(),
-            type: 'Single' 
+            type: 'Single'
           };
         });
 
@@ -68,12 +98,32 @@ function DistributorDispatchHistory() {
 
   if (loading) {
     return (
-      <Center height="100vh">
+      <Center height="100vh" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <Box textAlign="center">
-          <Spinner size="xl" color="blue.500" />
-          <Text mt={4} fontSize="xl" fontWeight="bold">
-            Please wait while we load the dispatch history. This won't take long.
-          </Text>
+          {/* Image in the center */}
+          <Center textAlign="center" position="relative" display="inline-block">
+              <Image 
+                  src={blinkingImage} 
+                  alt="Loading" 
+                  boxSize="50px" 
+                  animation={`${blinkAnimation} 1.5s infinite`} 
+                  position="absolute" 
+                  top="27%" 
+                  left="50%" 
+                  transform="translate(-50%, -50%)"
+              />
+
+              {/* Spinner surrounding the image */}
+              <Spinner
+                  width="60px" height="60px" color="#5160be"
+                  animation={`${spinAround} 0.9s linear infinite`}
+                  position="relative"
+                  zIndex="0"  // Ensures the spinner stays behind the image
+              />
+              <Text mt={4} fontSize="xl" fontWeight="bold">
+                  Please wait while we load the dispatch history. This won't take long.
+              </Text>
+          </Center>
         </Box>
       </Center>
     );
@@ -92,6 +142,8 @@ function DistributorDispatchHistory() {
           Distributor to Retailer Dispatch History
         </Heading>
       </Box>
+      <Text textAlign='center' mb={4}>List of product that already send to retailers</Text>
+      <Divider className='mt-5 mb-5' borderWidth='1px' borderColor='#5160be' />
       <TableContainer bg="white" borderRadius="md" boxShadow="md" p={4}>
         <Table variant='simple'>
           <Thead bg="#5160be">

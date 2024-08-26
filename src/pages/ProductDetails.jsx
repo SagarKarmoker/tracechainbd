@@ -180,7 +180,7 @@ function ProductDetails({ pid, role = 'Admin' }) {
             {
                 role === 'Customs' && (
                     <VerticalTimeline>
-                        {events.slice(0, 2).map((event, index) => (
+                        {events.slice(6, 8).map((event, index) => (
                             <VerticalTimelineElement
                                 key={index}
                                 date={new Date(event.timestamp * 1000).toLocaleString()}
