@@ -23,6 +23,7 @@ import useAuth from "../hooks/userAuth";
 import { useActiveAccount } from "thirdweb/react";
 import QRScan from "./QRScan";
 import ProductDetails from "../pages/ProductDetails";
+import Android from '../pages/mobile/Android'
 
 function Navbar() {
   const [role, setRole] = useState("");
@@ -76,7 +77,7 @@ function Navbar() {
 
   return (
     <>
-      <nav className="bg-[#f1f2f7] sticky top-0 z-10">
+      <nav className="bg-[#f1f2f7] sticky top-0 z-10 px-4 lg:px-0">
         <div className="container mx-auto flex justify-between items-center p-2">
           <h1 className="text-2xl font-bold text-red-500">
             {role !== "" ? (
@@ -98,7 +99,7 @@ function Navbar() {
                       Dashboard
                     </Link>
                   </li> */}
-                  <li>
+                  <li className="hidden lg:block">
                     <Link to="/qrscan" className="text-black font-semibold">
                       <div className="flex justify-center items-center border border-black rounded-lg px-4 py-1">
                         <p className="mr-2">Scan QR</p>
@@ -111,7 +112,7 @@ function Navbar() {
                 role != "admin" &&
                 role != "customs" && (
                   <li>
-                    <Link to="/apply" className="text-black font-semibold hover:text-[#5160be]">
+                    <Link to="/apply" className="hidden lg:block text-black font-semibold hover:text-[#5160be]">
                       Apply for Registration
                     </Link>
                   </li>
@@ -146,6 +147,7 @@ function Navbar() {
         <Route path="/retailer" element={<RetailerPanel />} />
 
         {/* common routes */}
+        <Route path="/android" element={<Android />} />
         <Route path="/qrscan" element={<QRScan />} />
         <Route path="/home" element={<Roles />} />
         <Route path="/profile" element={<Profile />} />
