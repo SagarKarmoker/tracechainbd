@@ -23,7 +23,7 @@ import useAuth from "../hooks/userAuth";
 import { useActiveAccount } from "thirdweb/react";
 import QRScan from "./QRScan";
 import ProductDetails from "../pages/ProductDetails";
-import Android from '../pages/mobile/Android'
+import Android from '../pages/mobile/Android';
 
 function Navbar() {
   const [role, setRole] = useState("");
@@ -128,23 +128,6 @@ function Navbar() {
 
       <Routes>
         <Route path="/" element={<Roles />} />
-        {account === adminAddr && (
-          <Route path="/admin" element={<AdminPanel />} />
-        )}
-        {/* admin routes */}
-        <Route path="/admin" element={<AdminPanel />} />
-
-        {/* customs routes */}
-        <Route path="/customs" element={<CustomsPanel />} />
-
-        {/* importer routes */}
-        <Route path="/importer" element={<ImporterPanel />} />
-
-        {/* distributor routes */}
-        <Route path="/distributor" element={<DistributorPanel />} />
-
-        {/* retailer routes */}
-        <Route path="/retailer" element={<RetailerPanel />} />
 
         {/* common routes */}
         <Route path="/android" element={<Android />} />
@@ -163,19 +146,19 @@ function Navbar() {
           />
         )}
         {role === "customs" && (
-          <Route path="/dashboard" element={<CustomsPanel
+          <Route path="/customs" element={<CustomsPanel
             setActiveComponent={setActiveComponent}
             activeComponent={activeComponent}
           />} />
         )}
         {role === "importer" && (
-          <Route path="/dashboard" element={<ImporterPanel />} />
+          <Route path="/importer" element={<ImporterPanel />} />
         )}
         {role === "distributor" && (
-          <Route path="/dashboard" element={<DistributorPanel />} />
+          <Route path="/distributor" element={<DistributorPanel />} />
         )}
         {role === "retailer" && (
-          <Route path="/dashboard" element={<RetailerPanel />} />
+          <Route path="/retailer" element={<RetailerPanel />} />
         )}
       </Routes>
     </>
