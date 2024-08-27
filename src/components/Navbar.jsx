@@ -71,6 +71,7 @@ function Navbar() {
     checkRole();
   }, [activeAccount?.address]);
 
+    
   console.log(account);
   console.log(activeAccount?.address)
   console.log(role);
