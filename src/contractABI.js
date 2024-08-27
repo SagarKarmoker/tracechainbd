@@ -912,7 +912,7 @@ export const ABI = [
   },
   {
     "inputs": [],
-    "name": "getAllAcceptedReport",
+    "name": "getAllAcceptedReports",
     "outputs": [
       {
         "components": [
@@ -988,7 +988,7 @@ export const ABI = [
   },
   {
     "inputs": [],
-    "name": "getAllDeniedReport",
+    "name": "getAllDeniedReports",
     "outputs": [
       {
         "components": [
