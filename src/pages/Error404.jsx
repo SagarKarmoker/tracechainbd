@@ -14,11 +14,11 @@ function Error404() {
       style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <Box className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-lg">
-        <Heading as="h1" size="2xl" mb={4} textAlign="center">
-          404
+        <Heading as="h1" size="xl" mb={4} textAlign="center" color="red">
+          ! Access Denied
         </Heading>
         <Text fontSize="lg" mb={8} textAlign="center">
-          Oops! The page you're looking for could not be found.
+          Check your Login Status and Select your appropriate role.
         </Text>
         <Box display="flex" justifyContent="center">
           <Button
