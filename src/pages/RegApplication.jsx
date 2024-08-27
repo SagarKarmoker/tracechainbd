@@ -246,6 +246,7 @@ function RegApplication() {
                     </label>
 
                     <label htmlFor="tin">
+                        <p className='text-lg'>Upload TIN Certificate</p>
                         <input
                             type="file"
                             className='border p-3 rounded-lg w-full bg-white'
@@ -254,6 +255,7 @@ function RegApplication() {
                         />
                     </label>
                     <label htmlFor="vat">
+                        <p className='text-lg'>Upload Trade License</p>
                         <input
                             type="file"
                             className='border p-3 rounded-lg w-full bg-white'
@@ -262,6 +264,7 @@ function RegApplication() {
                         />
                     </label>
                     <label htmlFor="tradelic">
+                        <p className='text-lg'>Upload VAT Registration Certificate</p>
                         <input
                             type="file"
                             className='border p-3 rounded-lg w-full bg-white'
