@@ -5,7 +5,6 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import useWallet from "../../hooks/userWallet";
 
-
 // Utility function to convert an image to base64
 const convertImageToBase64 = (url) => {
   return new Promise((resolve, reject) => {
@@ -34,6 +33,7 @@ function SingleProductEntry({ customsAddr }) {
   const [quantity, setQuantity] = useState("");
   const [importerAddr, setImporterAddr] = useState("");
   const [showQr, setShowQr] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [oldCounter, setOldCounter] = useState(0);
   const [base64Logo, setBase64Logo] = useState("");
@@ -66,6 +66,7 @@ function SingleProductEntry({ customsAddr }) {
     }
 
     try {
+      setLoading(true);
       const _old = await traceChainBDContract.productCounter();
       setOldCounter(_old.toNumber());
 
@@ -94,8 +95,17 @@ function SingleProductEntry({ customsAddr }) {
           isClosable: true,
         });
 
+        setLoading(false);
         // Show QR code after successful transaction
         setShowQr(true);
+        setName("");
+        setDescription("");
+        setCategory("");
+        setCountryOfOrigin("");
+        setManufacturer("");
+        setPrice("");
+        setQuantity("");
+        setImporterAddr("");
       } else {
         throw new Error("Product not added");
       }
@@ -123,6 +133,7 @@ function SingleProductEntry({ customsAddr }) {
     }
 
     try {
+      setLoading(true);
       const qrElements = qrRef.current.querySelectorAll('div'); // Select all QR code elements
 
       const pdf = new jsPDF({
@@ -160,6 +171,7 @@ function SingleProductEntry({ customsAddr }) {
       }
 
       pdf.save(`product_${oldCounter}-qr-codes.pdf`);
+      setLoading(false);
     } catch (error) {
       console.error("Error generating PDF:", error);
       toast({
@@ -257,7 +269,9 @@ function SingleProductEntry({ customsAddr }) {
               className="bg-[#5160be] hover:bg-[#30486c] text-white font-bold py-2 px-4 rounded"
 
             >
-              Add Product to Ledger
+              {
+                loading ? "Processing..." : "Add Product to Ledger"
+              }
             </button>
           </div>
         </div>
@@ -270,9 +284,9 @@ function SingleProductEntry({ customsAddr }) {
                     <QRCode
                       value={`URL: https://localhost:5173/check-product/${oldCounter + index}`}
                       size={200}
-                      fgColor="#00712D"
-                      bgColor="#D5ED9F"
-                      logoImage={base64Logo}
+                      fgColor="#111111"
+                      bgColor="#ffffff"
+                      logoImage={"https://res.cloudinary.com/dnmehw2un/image/upload/v1724787435/tpxvo1qqimzbqmrazyhn.png"}
                       logoWidth={200}
                       logoHeight={200}
                     />
@@ -283,7 +297,7 @@ function SingleProductEntry({ customsAddr }) {
                 onClick={handleGeneratePdf}
                 className="bg-green-600 p-4 text-white rounded-xl w-[300px] font-bold"
               >
-                Download QR Codes as PDF
+                {loading ? "Generating PDF..." : "Download QR Codes as PDF"}
               </button>
             </div>
           )}
