@@ -7,7 +7,6 @@ import {
     Tr,
     Th,
     Td,
-    TableCaption,
     TableContainer,
     Spinner,
     Heading,
@@ -16,6 +15,7 @@ import {
     Text,
     Image,
     keyframes,
+    Divider
 } from '@chakra-ui/react';
 import { FiAlertCircle } from 'react-icons/fi';
 import useAuth from '../hooks/userAuth';
@@ -47,7 +47,6 @@ function ReportHistory() {
             const response = await fetch('https://tracechainbd-backend.onrender.com/api/roles');
             const data = await response.json();
             setRolesData(data);
-            console.log(data);  // Log the data directly
         } catch (error) {
             console.error('Error fetching roles data:', error);
         }
@@ -55,20 +54,11 @@ function ReportHistory() {
 
     const getRoleData = (address) => {
         try {
-            // Assuming `rolesData` is an array of roles you have fetched earlier
             const role = rolesData.find(role => role.address_registered === address);
-
-            if (role) {
-                // Return the formatted string directly
-                return `${role.name} (${role.role})`;
-            }
-            // else {
-            //     console.error("Role not found for the provided address.");
-            //     return "Unknown Role"; // or an appropriate fallback value
-            // }
+            return role ? `${role.name} (${role.role})` : "Unknown Role";
         } catch (error) {
             console.error("Error getting role data:", error);
-            return "Error Fetching Role"; // or an appropriate fallback value
+            return "Error Fetching Role";
         }
     };
 
@@ -99,8 +89,6 @@ function ReportHistory() {
         fetchRolesData();
         fetchHistoryData();
     }, [loading]);
-
-    console.log(report)
 
     if (loading) {
         return (
@@ -134,32 +122,41 @@ function ReportHistory() {
     }
 
     return (
-        <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
-            <Heading as="h2" size="lg" mb={6} textAlign="center">
-                <Icon as={FiAlertCircle} mr={2} />
-                Report History
-            </Heading>
+        <Box
+            p={5}
+            minH="100vh"
+            bg={`url(${backgroundImage})`}
+            bgSize="cover"
+            bgPosition="center"
+        >
+            <Box className='flex justify-center'>
+                <Heading as='h1' size='xl' mb={5} textAlign='center'>
+                    <Icon as={FiAlertCircle} mr={2} />
+                    Report History
+                </Heading>
+            </Box>
+            <Text textAlign='center' mb={4}>List of reports created for products.</Text>
+            <Divider className='mt-5 mb-5' borderWidth='1px' borderColor='#5160be' />
             {report.length > 0 ? (
-                <TableContainer>
-                    <Table variant="striped" colorScheme="teal">
-                        <TableCaption>Your product report history</TableCaption>
-                        <Thead>
+                <TableContainer bg="white" borderRadius="md" boxShadow="md" p={4}>
+                    <Table variant='simple'>
+                        <Thead bg="#5160be">
                             <Tr>
-                                <Th>SL No</Th>
-                                <Th>Product ID</Th>
-                                <Th>Description</Th>
-                                <Th>Reported For</Th>
-                                <Th>Reported On</Th>
+                                <Th color="white" textAlign="center">SL No</Th>
+                                <Th color="white" textAlign="center">Product ID</Th>
+                                <Th color="white" textAlign="center">Description</Th>
+                                <Th color="white" textAlign="center">Reported For</Th>
+                                <Th color="white" textAlign="center">Reported On</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
                             {report.map((item, index) => (
-                                <Tr key={index}>
-                                    <Td>{index + 1}</Td>
-                                    <Td>{item.productID}</Td>
-                                    <Td>{item.reportDesc}</Td>
-                                    <Td>{getRoleData(item.reportFor)}</Td>
-                                    <Td>{new Date(item.timestamp * 1000).toLocaleString()}</Td>
+                                <Tr key={index} _hover={{ bg: "gray.100" }}>
+                                    <Td textAlign="center">{index + 1}</Td>
+                                    <Td textAlign="center">{item.productID}</Td>
+                                    <Td textAlign="center">{item.reportDesc}</Td>
+                                    <Td textAlign="center">{getRoleData(item.reportFor)}</Td>
+                                    <Td textAlign="center">{new Date(item.timestamp * 1000).toLocaleString()}</Td>
                                 </Tr>
                             ))}
                         </Tbody>
