@@ -8,6 +8,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import PendingDispatch from './PendingDispatch';
 import backgroundImage from "../../img/homeBG3.png"; 
+import EntryHistory from './EntryHistory';
 
 // Utility function to convert an image to base64
 const convertImageToBase64 = (url) => {
@@ -384,7 +385,8 @@ function DispatchToImporter() {
       </Box>
 
       {showPending && boxId === '' && (
-        <PendingDispatch />
+        // <PendingDispatch />
+        <EntryHistory fromDispatch={true}/>
       )}
     </div>
   );

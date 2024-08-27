@@ -18,7 +18,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { etherContract } from '../../contants';
 
-function EntryHistory() {
+function EntryHistory({ fromDispatch }) {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [rolesData, setRolesData] = useState([]);
@@ -53,7 +53,7 @@ function EntryHistory() {
             try {
                 // Fetch the 'ProductAdded' events
                 const events = await etherContract.queryFilter('ProductAdded');
-                
+
                 // Group products by boxId
                 const groupedProducts = events.reduce((acc, event) => {
                     const {
@@ -87,9 +87,9 @@ function EntryHistory() {
                             ids: [],
                         };
                     }
-                    
+
                     acc[boxId].ids.push(id.toString());
-                    
+
                     return acc;
                 }, {});
 
@@ -178,7 +178,7 @@ function EntryHistory() {
     return (
         <Box p={6}>
             <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb={4}>
-                Product History
+                {fromDispatch ? "Pending Product Dispatch" : "Product Entry History"}
             </Text>
 
             {loading ? (
@@ -198,7 +198,11 @@ function EntryHistory() {
                                 <Th>Price</Th>
                                 <Th>Imported Date</Th>
                                 <Th>Importer Address</Th>
-                                <Th>Actions</Th>
+                                {
+                                    !fromDispatch ? (
+                                        <Th>Actions</Th>
+                                    ) : null
+                                }
                             </Tr>
                         </Thead>
                         <Tbody>
@@ -214,14 +218,18 @@ function EntryHistory() {
                                     <Td>{product.price} TAKA</Td>
                                     <Td>{product.importedDate}</Td>
                                     <Td>{getRoleData(product.importerAddr)}</Td>
-                                    <Td>
-                                        <Button 
-                                            colorScheme='blue' 
-                                            onClick={() => setPrintBoxId(product.boxId)}
-                                        >
-                                            Show QR Codes
-                                        </Button>
-                                    </Td>
+                                    {
+                                        !fromDispatch ? (
+                                            <Td>
+                                                <Button
+                                                    colorScheme='blue'
+                                                    onClick={() => setPrintBoxId(product.boxId)}
+                                                >
+                                                    Show QR Codes
+                                                </Button>
+                                            </Td>
+                                        ) : null
+                                    }
                                 </Tr>
                             ))}
                         </Tbody>
