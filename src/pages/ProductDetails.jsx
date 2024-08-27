@@ -155,8 +155,16 @@ function ProductDetails({ pid, role = 'Admin' }) {
     }
 
     return (
-        <div className='w-full'>
-            <h1 className='text-center font-bold text-2xl p-4'>Product #{productId} {product.name} {product.countryOfOrigin} {Number(product.price)} TraceChain</h1>
+        <div className='w-full '>
+            <div className="flex justify-center">
+                <div className="bg-white rounded-lg p-6 shadow-md w-96">
+                    <h1 className="text-center font-bold text-xl pb-4">Product ID: {productId}</h1>
+                    <p className="text-left text-xl">Product Name: {product.name}</p>
+                    <p className="text-left text-xl">Product Originated From: {product.countryOfOrigin}</p>
+                </div>
+            </div>
+
+
 
             {
                 role === 'Admin' && (
