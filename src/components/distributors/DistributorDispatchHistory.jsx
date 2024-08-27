@@ -1,25 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { 
-    Box, 
-    Table, 
-    Thead, 
-    Divider, 
-    Tbody, 
-    Tr, 
-    Th, 
-    Td, 
-    TableContainer, 
-    Heading, 
-    Text, 
-    Spinner, 
-    Center, 
-    Image, 
-    keyframes 
+import React, { useEffect, useState, useRef } from 'react';
+import {
+  Box,
+  Table,
+  Thead,
+  Divider,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Heading,
+  Text,
+  Spinner,
+  Center,
+  Image,
+  keyframes,
+  Button
 } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
 import backgroundImage from "../../img/homeBG5.png";
 import blinkingImage from '../../img/svg.png'; // Replace with your image path
+import { QRCode } from "react-qrcode-logo";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 // Define the blinking animation for the image
 const blinkAnimation = keyframes`
@@ -34,10 +38,56 @@ const spinAround = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
+// Utility function to convert an image to base64
+const convertImageToBase64 = (url) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.src = url;
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL("image/png"));
+    };
+    img.onerror = reject;
+  });
+};
+
+
 function DistributorDispatchHistory() {
   const [dispatches, setDispatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const { account } = useAuth();
+  const [printId, setPrintId] = useState(null);
+  const [base64Logo, setBase64Logo] = useState("");
+  const qrRef = useRef(null);
+
+  // Load the logo as base64 when the component mounts
+  useEffect(() => {
+    const logoUrl = "https://res.cloudinary.com/dnmehw2un/image/upload/v1724790010/josm1wowxjneee0c3fva.png";
+    convertImageToBase64(logoUrl)
+      .then(setBase64Logo)
+      .catch((error) => console.error("Error converting logo to base64:", error));
+  }, []);
+
+  // Function to handle PDF generation and download
+  const handleGeneratePdf = async () => {
+    setLoading(true);
+    try {
+      const canvas = await html2canvas(qrRef.current);
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, 'PNG', 10, 10);
+      pdf.save(`QRCode_${printId}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchHistoryData = async () => {
@@ -102,27 +152,27 @@ function DistributorDispatchHistory() {
         <Box textAlign="center">
           {/* Image in the center */}
           <Center textAlign="center" position="relative" display="inline-block">
-              <Image 
-                  src={blinkingImage} 
-                  alt="Loading" 
-                  boxSize="50px" 
-                  animation={`${blinkAnimation} 1.5s infinite`} 
-                  position="absolute" 
-                  top="27%" 
-                  left="50%" 
-                  transform="translate(-50%, -50%)"
-              />
+            <Image
+              src={blinkingImage}
+              alt="Loading"
+              boxSize="50px"
+              animation={`${blinkAnimation} 1.5s infinite`}
+              position="absolute"
+              top="27%"
+              left="50%"
+              transform="translate(-50%, -50%)"
+            />
 
-              {/* Spinner surrounding the image */}
-              <Spinner
-                  width="60px" height="60px" color="#5160be"
-                  animation={`${spinAround} 0.9s linear infinite`}
-                  position="relative"
-                  zIndex="0"  // Ensures the spinner stays behind the image
-              />
-              <Text mt={4} fontSize="xl" fontWeight="bold">
-                  Please wait while we load the dispatch history. This won't take long.
-              </Text>
+            {/* Spinner surrounding the image */}
+            <Spinner
+              width="60px" height="60px" color="#5160be"
+              animation={`${spinAround} 0.9s linear infinite`}
+              position="relative"
+              zIndex="0"  // Ensures the spinner stays behind the image
+            />
+            <Text mt={4} fontSize="xl" fontWeight="bold">
+              Please wait while we load the dispatch history. This won't take long.
+            </Text>
           </Center>
         </Box>
       </Center>
@@ -156,6 +206,7 @@ function DistributorDispatchHistory() {
               <Th color="white" textAlign="center">Timestamp</Th>
               <Th color="white" textAlign="center">Quantity</Th>
               <Th color="white" textAlign="center">Type</Th>
+              <Th color="white" textAlign="center">QR Code</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -171,11 +222,42 @@ function DistributorDispatchHistory() {
                   <Td textAlign="center">{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
                   <Td textAlign="center">{dispatch.quantity}</Td>
                   <Td textAlign="center">{dispatch.type}</Td>
+                  <Td textAlign="center">
+                    <Button onClick={() => setPrintId(dispatch.dispatchId)}>
+                      QR Code
+                    </Button>
+                  </Td>
                 </Tr>
               ))}
           </Tbody>
         </Table>
       </TableContainer>
+
+
+      {printId && (
+        <div className="flex flex-col items-center mt-8">
+          <div ref={qrRef} className="flex justify-center gap-x-4">
+            <QRCode
+              value={`URL: https://localhost:5173/accept-product/${printId}`}
+              size={200}
+              fgColor="#0e57af"
+              bgColor="#fbfffe"
+              logoImage={base64Logo}
+              logoWidth={50}
+              logoHeight={50}
+              removeQrCodeBehindLogo={true}
+              eyeRadius={10}
+            />
+          </div>
+          <Button
+            onClick={handleGeneratePdf}
+            isLoading={loading}
+            className="bg-green-600 p-4 text-white rounded-xl w-[300px] font-bold mt-4"
+          >
+            {loading ? "Generating PDF..." : "Download QR Codes as PDF"}
+          </Button>
+        </div>
+      )}
     </Box>
   );
 }
