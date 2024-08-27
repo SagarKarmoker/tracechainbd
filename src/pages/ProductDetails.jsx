@@ -11,10 +11,10 @@ import { ProductStatus } from '../utils/ProductStatus';
 function ProductDetails({ pid, role = 'Admin' }) {
     const { id: routeId } = useParams();
     const [productId, setProductId] = useState(pid || routeId);
-    const [productLifeCycle, setProductLifeCycle] = useState({});
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [rolesData, setRolesData] = useState([]);
+    const [product, setProduct] = useState({});
 
     const checkForStatus = (status) => {
         switch (Number(status)) {
@@ -83,6 +83,9 @@ function ProductDetails({ pid, role = 'Admin' }) {
         const fetchHistoryData = async () => {
             try {
                 setLoading(true);
+
+                const product = await etherContract.products(productId);
+                setProduct(product);
 
                 const multiEvents = await etherContract.queryFilter('MultiProductDispatched');
                 const singleEvents = await etherContract.queryFilter('ProductDispatched');
@@ -153,7 +156,7 @@ function ProductDetails({ pid, role = 'Admin' }) {
 
     return (
         <div className='w-full'>
-            <h1 className='text-center font-bold text-2xl p-4'>Product #{productId} TraceChain</h1>
+            <h1 className='text-center font-bold text-2xl p-4'>Product #{productId} {product.name} {product.countryOfOrigin} {Number(product.price)} TraceChain</h1>
 
             {
                 role === 'Admin' && (
