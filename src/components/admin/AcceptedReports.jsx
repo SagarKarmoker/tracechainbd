@@ -7,31 +7,30 @@ import {
     Tr,
     Th,
     Td,
-    TableCaption,
     TableContainer,
     Spinner,
     Heading,
     Icon,
-    Button,
-    useToast
+    Center,
+    Text,
+    Divider
 } from '@chakra-ui/react';
 import { FiAlertCircle } from 'react-icons/fi';
-import { adminSigner } from '../utils/adminWallet';
 import { ethers } from 'ethers';
+import { adminSigner } from '../utils/adminWallet';
 import { TraceChainContract } from '../../contants';
 import { ABI } from '../../contractABI';
+import backgroundImage from "../../img/homeBG3.png"; // Import the background image
 
 function AcceptedReports() {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
-    const toast = useToast();
 
     const etherContract = new ethers.Contract(TraceChainContract, ABI, adminSigner);
 
     const fetchReports = async () => {
         try {
             const listOfReports = await etherContract.getAllReports();
-            console.log(listOfReports)
             setReports(listOfReports);
         } catch (error) {
             console.error('Error fetching reports:', error);
@@ -46,46 +45,65 @@ function AcceptedReports() {
 
     if (loading) {
         return (
-            <Box textAlign="center" py={10}>
-                <Spinner size="xl" />
-            </Box>
+            <Center height="100vh" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                <Box textAlign="center">
+                    <Spinner
+                        thickness="4px"
+                        speed="0.65s"
+                        emptyColor="gray.200"
+                        color="#5160be"
+                        size="xl"
+                    />
+                    <Text mt={4} fontSize="xl" fontWeight="bold">
+                        Please wait while we load the accepted reports.
+                    </Text>
+                </Box>
+            </Center>
         );
     }
 
     return (
-        <Box p={4}>
-            <Heading as="h2" size="lg" mb={6} textAlign="center">
-                <Icon as={FiAlertCircle} mr={2} />
-                Accepted Report History
-            </Heading>
+        <Box
+            p={5}
+            minH="100vh"
+            bg={`url(${backgroundImage})`}
+            bgSize="cover"
+            bgPosition="center"
+        >
+            <Box className='flex justify-center'>
+                <Heading as='h1' size='xl' mb={5} textAlign='center'>
+                    <Icon as={FiAlertCircle} mr={2} />
+                    Accepted Report History
+                </Heading>
+            </Box>
+            <Text textAlign='center' mb={4}>List of accepted reports for products.</Text>
+            <Divider className='mt-5 mb-5' borderWidth='1px' borderColor='#5160be' />
             {reports.length > 0 ? (
-                <TableContainer>
-                    <Table variant="striped" colorScheme="teal">
-                        <TableCaption>Your product report history</TableCaption>
-                        <Thead>
+                <TableContainer bg="white" borderRadius="md" boxShadow="md" p={4}>
+                    <Table variant='simple'>
+                        <Thead bg="#5160be">
                             <Tr>
-                                <Th>SL no</Th>
-                                <Th>Product ID</Th>
-                                <Th>Description</Th>
-                                <Th>Reported By</Th>
-                                <Th>Reported For</Th>
-                                <Th>Proof</Th>
-                                <Th>Reported On</Th>
-                                <Th>Status</Th>
+                                <Th color="white" textAlign="center">SL No</Th>
+                                <Th color="white" textAlign="center">Product ID</Th>
+                                <Th color="white" textAlign="center">Description</Th>
+                                <Th color="white" textAlign="center">Reported By</Th>
+                                <Th color="white" textAlign="center">Reported For</Th>
+                                <Th color="white" textAlign="center">Proof</Th>
+                                <Th color="white" textAlign="center">Reported On</Th>
+                                <Th color="white" textAlign="center">Status</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
                             {reports
-                            .filter(item => item.status === 0 || item.status !== 2)  
-                            .map((item, index) => (
-                                index === 0 ? null : (
-                                    <Tr key={index}>
-                                        <Td>{index}</Td>
-                                        <Td>{item.productID.toString()}</Td>
-                                        <Td>{item.reportDesc}</Td>
-                                        <Td>{item.reportBy}</Td>
-                                        <Td>{item.reportFor}</Td>
-                                        <Td>
+                                .filter(item => item.status === 0 || item.status !== 2)
+                                .map((item, index) => (
+                                    <Tr key={index} _hover={{ bg: "gray.100" }}>
+                                        <Td textAlign="center">{index + 1}</Td>
+                                        <Td textAlign="center">{item.productID.toString()}</Td>
+                                        <Td textAlign="center">{item.reportDesc}</Td>
+                                        <Td textAlign="center">{item.reportBy}</Td>
+                                        <Td textAlign="center">{item.reportFor}</Td>
+                                        <Td textAlign="center">
                                             <a
                                                 href={`http://127.0.0.1:8080/ipfs/${item.proofHash}`}
                                                 target="_blank"
@@ -94,11 +112,10 @@ function AcceptedReports() {
                                                 View more
                                             </a>
                                         </Td>
-                                        <Td>{new Date(item.reportedOn * 1000).toLocaleString()}</Td>
-                                        <Td>{["Pending", "Accepted", "Declined"][item.status]}</Td>
+                                        <Td textAlign="center">{new Date(item.reportedOn * 1000).toLocaleString()}</Td>
+                                        <Td textAlign="center">{["Pending", "Accepted", "Declined"][item.status]}</Td>
                                     </Tr>
-                                )
-                            ))}
+                                ))}
                         </Tbody>
                     </Table>
                 </TableContainer>
