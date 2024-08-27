@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import useAuth from '../../hooks/userAuth';
 import { isDistributor } from '../utils/RoleCheck';
 import { Box, Flex, Text, Icon, useColorModeValue } from '@chakra-ui/react';
-import { FiTrendingUp, FiHome, FiCompass, FiStar, FiSettings } from 'react-icons/fi';
 
 
 function DistributorDashboard() {
@@ -49,21 +48,6 @@ function DistributorDashboard() {
         );
     }
 
-    return (
-        <Box display="flex">
-            <SidebarContent setActiveComponent={setActiveComponent} />
-            <Box ml="20%" p="4" flex="1">
-                {/* Main Content */}
-                {activeComponent === 'Pending Product' && <PendingProductPage />}
-                {activeComponent === 'All Product' && <AllProductPage />}
-                {activeComponent === 'Manager Retailers' && <RetailerListPage />}
-                {activeComponent === 'Dispatch Product' && <DispatchProductPage />}
-                {activeComponent === 'Dispatch History' && <DispatchHistoryPage />}
-                {activeComponent === 'Track Product' && <TrackProductPage />}
-                {activeComponent === 'Report Product' && <ReportProductPage />}
-            </Box>
-        </Box>
-    );
 }
 
 export default DistributorDashboard;
