@@ -13,6 +13,7 @@ import { ABI } from '../../contractABI';
 import Welcome from '../../components/Welcome';
 import CustomsDashboard from '../../components/customs/CustomsDashboard';
 import sidebarBackgroundImage from '../../img/homeBG4.png';
+import EntryHistory from '../../components/customs/EntryHistory';
 
 // Import your components
 import AddProduct from '../../components/customs/AddProduct';
@@ -26,6 +27,7 @@ const SidebarContent = ({ setActiveComponent, activeComponent }) => {
     const linkItems = [
         { name: 'Customs Dashboard', component: 'welcome', icon: LuLayoutDashboard },
         { name: 'Add Product', component: 'add-product', icon: FiBox },
+        { name: 'Entry History', component: 'entry-history', icon: FiBox },
         { name: 'Importer List', component: 'importer-list', icon: LuShip },
         { name: 'Products List', component: 'products-list', icon: FiBox },
         { name: 'Dispatch to Importer', component: 'dispatch-to-importer', icon: MdOutlineShoppingCart },
@@ -125,6 +127,8 @@ function CustomsPanel() {
                 return <CustomsDispatchHistory />;
             case 'track-product':
                 return <TrackProduct />;
+            case 'entry-history':
+                return <EntryHistory />;
             default:
                 return <CustomsDashboard setActiveComponent={setActiveComponent} />;
         }
