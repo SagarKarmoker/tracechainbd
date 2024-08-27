@@ -18,14 +18,41 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { etherContract } from '../../contants';
 
+// Utility function to convert an image to base64
+const convertImageToBase64 = (url) => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.src = url;
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            resolve(canvas.toDataURL("image/png"));
+        };
+        img.onerror = reject;
+    });
+};
+
 function EntryHistory({ fromDispatch }) {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [rolesData, setRolesData] = useState([]);
     const [printBoxId, setPrintBoxId] = useState(null);
     const [qrLoading, setQrLoading] = useState(false);
+    const [base64Logo, setBase64Logo] = useState("");
     const qrRef = useRef([]);
     const toast = useToast();
+
+    // Load the logo as base64 when the component mounts
+    useEffect(() => {
+        const logoUrl = "https://res.cloudinary.com/dnmehw2un/image/upload/v1724790010/josm1wowxjneee0c3fva.png";
+        convertImageToBase64(logoUrl)
+            .then(setBase64Logo)
+            .catch((error) => console.error("Error converting logo to base64:", error));
+    }, []);
 
     const fetchRolesData = async () => {
         try {
@@ -247,7 +274,7 @@ function EntryHistory({ fromDispatch }) {
                                     size={200}
                                     fgColor="#0e57af"
                                     bgColor="#fbfffe"
-                                    logoImage={'https://res.cloudinary.com/dnmehw2un/image/upload/v1724790010/josm1wowxjneee0c3fva.png'}
+                                    logoImage={base64Logo}
                                     logoWidth={50}
                                     logoHeight={50}
                                     removeQrCodeBehindLogo={true}

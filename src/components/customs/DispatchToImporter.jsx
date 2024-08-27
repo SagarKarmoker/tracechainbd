@@ -7,7 +7,7 @@ import { QRCode } from "react-qrcode-logo";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import PendingDispatch from './PendingDispatch';
-import backgroundImage from "../../img/homeBG3.png"; 
+import backgroundImage from "../../img/homeBG3.png";
 import EntryHistory from './EntryHistory';
 
 // Utility function to convert an image to base64
@@ -38,7 +38,7 @@ function DispatchToImporter() {
   const [productDetails, setProductDetails] = useState({});
   const [loading, setLoading] = useState(false);
   const [importerAddr, setImporterAddr] = useState('');
-  const [_ipfsDocHash, setIpfsDocHash] = useState('');
+  const [_ipfsDocHash, setIpfsDocHash] = useState('demohash'); // remove the default value
   const [showQr, setShowQr] = useState(false);
   const [oldCounter, setOldCounter] = useState(0);
   const [base64Logo, setBase64Logo] = useState("");
@@ -50,7 +50,7 @@ function DispatchToImporter() {
 
   // Load the logo as base64 when the component mounts
   useEffect(() => {
-    const logoUrl = "https://ipfs.io/ipfs/QmPNsmbVBDd7Kz6dHNcRwm8fHs8vazgn8VDDPHFRveDYNh";
+    const logoUrl = "https://res.cloudinary.com/dnmehw2un/image/upload/v1724790010/josm1wowxjneee0c3fva.png";
     convertImageToBase64(logoUrl)
       .then(setBase64Logo)
       .catch((error) => console.error("Error converting logo to base64:", error));
@@ -193,7 +193,7 @@ function DispatchToImporter() {
       const qrElements = qrRef.current.querySelectorAll('div');
 
       const pdf = new jsPDF({
-        orientation: "portrait",
+        orientation: "landscape",
         unit: "px",
         format: "a4",
       });
@@ -202,18 +202,18 @@ function DispatchToImporter() {
       let y = 10;
       const maxX = 580;
       const maxY = 800;
-      const padding = 10;
+      const margin = 10;
 
       for (const element of qrElements) {
         const canvas = await html2canvas(element);
         const qrImage = canvas.toDataURL("image/png");
 
-        const width = 200;
-        const height = 200;
+        const width = 210;
+        const height = 210;
 
         if (x + width > maxX) {
           x = 10;
-          y += height + padding;
+          y += height + margin;
         }
 
         if (y + height > maxY) {
@@ -223,7 +223,7 @@ function DispatchToImporter() {
         }
 
         pdf.addImage(qrImage, "PNG", x, y, width, height);
-        x += width + padding;
+        x += width + margin;
       }
 
       pdf.save(`product_${oldCounter}-qr-codes.pdf`);
@@ -338,14 +338,14 @@ function DispatchToImporter() {
                   </Tbody>
                 </Table>
 
-                <Heading as="h1" size="lg" textAlign="center" mb={4}>Enter Dispatch Details</Heading>
-                <Input
+                {/* <Heading as="h1" size="lg" textAlign="center" mb={4}>Enter Dispatch Details</Heading> */}
+                {/* <Input
                   type="text"
                   placeholder="Enter IPFS Document Hash"
                   value={_ipfsDocHash}
                   onChange={(e) => setIpfsDocHash(e.target.value)}
                   isRequired
-                />
+                /> */}
                 <div className='flex justify-center'>
                   <Button mt={4} colorScheme="blue" onClick={handleDispatch} isLoading={loading}>
                     {loading ? "Dispatching..." : "Dispatch Product to Importer"}
@@ -359,11 +359,13 @@ function DispatchToImporter() {
                         <QRCode
                           value={`URL: https://localhost:5173/check-product/${oldCounter}`}
                           size={200}
-                          fgColor="#00712D"
-                          bgColor="#D5ED9F"
+                          fgColor="#0e57af"
+                          bgColor="#fbfffe"
                           logoImage={base64Logo}
-                          logoWidth={200}
-                          logoHeight={200}
+                          logoWidth={50}
+                          logoHeight={50}
+                          removeQrCodeBehindLogo={true}
+                          eyeRadius={10}
                         />
                       </div>
                     </div>
@@ -386,7 +388,7 @@ function DispatchToImporter() {
 
       {showPending && boxId === '' && (
         // <PendingDispatch />
-        <EntryHistory fromDispatch={true}/>
+        <EntryHistory fromDispatch={true} />
       )}
     </div>
   );
