@@ -114,7 +114,7 @@ function CustomsDispatchHistory() {
       </div>
       <Text textAlign='center' mt={2} mb={4}>Here you can find the history of all dispatches made by customs to importers.</Text>
       <Divider className='mb-5' borderWidth='1px' borderColor='#5160be' />
-      
+
       <TableContainer className="rounded-md shadow-lg bg-white">
         <Table variant='simple' size='md'>
           <Thead bg="#5160be">
@@ -161,11 +161,13 @@ function CustomsDispatchHistory() {
             <QRCode
               value={`URL: https://localhost:5173/accept-product/${printId}`}
               size={200}
-              fgColor="#00712D"
-              bgColor="#D5ED9F"
-              logoImage={base64Logo}
-              logoWidth={200}
-              logoHeight={200}
+              fgColor="#0e57af"
+              bgColor="#fbfffe"
+              logoImage={'https://res.cloudinary.com/dnmehw2un/image/upload/v1724790010/josm1wowxjneee0c3fva.png'}
+              logoWidth={50}
+              logoHeight={50}
+              removeQrCodeBehindLogo={true}
+              eyeRadius={10}
             />
           </div>
           <Button

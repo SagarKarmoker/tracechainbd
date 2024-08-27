@@ -284,11 +284,13 @@ function SingleProductEntry({ customsAddr }) {
                     <QRCode
                       value={`URL: https://localhost:5173/check-product/${oldCounter + index}`}
                       size={200}
-                      fgColor="#111111"
-                      bgColor="#ffffff"
-                      logoImage={"https://res.cloudinary.com/dnmehw2un/image/upload/v1724787435/tpxvo1qqimzbqmrazyhn.png"}
-                      logoWidth={200}
-                      logoHeight={200}
+                      fgColor="#0e57af"
+                      bgColor="#fbfffe"
+                      logoImage={'https://res.cloudinary.com/dnmehw2un/image/upload/v1724790010/josm1wowxjneee0c3fva.png'}
+                      logoWidth={50}
+                      logoHeight={50}
+                      removeQrCodeBehindLogo={true}
+                      eyeRadius={10}
                     />
                   </div>
                 ))}

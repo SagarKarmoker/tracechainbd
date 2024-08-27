@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     Box,
     Text,
@@ -10,13 +10,22 @@ import {
     Td,
     Spinner,
     TableContainer,
+    Button,
+    useToast,
 } from '@chakra-ui/react';
+import { QRCode } from "react-qrcode-logo";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { etherContract } from '../../contants';
 
 function EntryHistory() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [rolesData, setRolesData] = useState([]);
+    const [printBoxId, setPrintBoxId] = useState(null);
+    const [qrLoading, setQrLoading] = useState(false);
+    const qrRef = useRef([]);
+    const toast = useToast();
 
     const fetchRolesData = async () => {
         try {
@@ -26,7 +35,7 @@ function EntryHistory() {
         } catch (error) {
             console.error('Error fetching roles data:', error);
         }
-    }
+    };
 
     const getRoleData = (address) => {
         try {
@@ -37,7 +46,6 @@ function EntryHistory() {
             return "Error Fetching Role";
         }
     };
-
 
     useEffect(() => {
         fetchRolesData();
@@ -100,6 +108,73 @@ function EntryHistory() {
         fetchProductHistory();
     }, []);
 
+    const handleGeneratePdf = async () => {
+        setQrLoading(true);
+        try {
+            // Ensure qrRef elements exist
+            if (!qrRef.current || qrRef.current.length === 0) {
+                toast({
+                    title: "Error",
+                    description: "No QR codes to generate.",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                });
+                setQrLoading(false);
+                return;
+            }
+
+            const pdf = new jsPDF({
+                orientation: "portrait",
+                unit: "px",
+                format: "a4",
+            });
+
+            let x = 10;
+            let y = 10;
+            const maxX = 580;
+            const maxY = 800;
+            const padding = 10;
+            const width = 200;
+            const height = 200;
+
+            for (let i = 0; i < qrRef.current.length; i++) {
+                const qrElement = qrRef.current[i];
+                if (!qrElement) continue;
+
+                const canvas = await html2canvas(qrElement);
+                const qrImage = canvas.toDataURL("image/png");
+
+                if (x + width > maxX) {
+                    x = 10;
+                    y += height + padding;
+                }
+
+                if (y + height > maxY) {
+                    pdf.addPage();
+                    x = 10;
+                    y = 10;
+                }
+
+                pdf.addImage(qrImage, "PNG", x, y, width, height);
+                x += width + padding;
+            }
+
+            pdf.save(`QRCode_${printBoxId}.pdf`);
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            toast({
+                title: "Error",
+                description: "Failed to generate PDF.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
+        } finally {
+            setQrLoading(false);
+        }
+    };
+
     return (
         <Box p={6}>
             <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb={4}>
@@ -121,10 +196,9 @@ function EntryHistory() {
                                 <Th>Country of Origin</Th>
                                 <Th>Manufacturer</Th>
                                 <Th>Price</Th>
-                                {/* <Th>Quantity</Th> */}
                                 <Th>Imported Date</Th>
                                 <Th>Importer Address</Th>
-                                {/* <Th>Customs Address</Th> */}
+                                <Th>Actions</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
@@ -138,15 +212,51 @@ function EntryHistory() {
                                     <Td>{product.countryOfOrigin}</Td>
                                     <Td>{product.manufacturer}</Td>
                                     <Td>{product.price} TAKA</Td>
-                                    {/* <Td>{product.quantity}</Td> */}
                                     <Td>{product.importedDate}</Td>
                                     <Td>{getRoleData(product.importerAddr)}</Td>
-                                    {/* <Td>{product.customsAddr}</Td> */}
+                                    <Td>
+                                        <Button 
+                                            colorScheme='blue' 
+                                            onClick={() => setPrintBoxId(product.boxId)}
+                                        >
+                                            Show QR Codes
+                                        </Button>
+                                    </Td>
                                 </Tr>
                             ))}
                         </Tbody>
                     </Table>
                 </TableContainer>
+            )}
+
+            {printBoxId && (
+                <div className="flex flex-col items-center mt-8">
+                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-4">
+                        {products.find(product => product.boxId === printBoxId)?.ids.map((id, index) => (
+                            <div key={index} ref={el => qrRef.current[index] = el} className="mb-4">
+                                <QRCode
+                                    value={`URL: https://localhost:5173/check-product/${id}`}
+                                    size={200}
+                                    fgColor="#0e57af"
+                                    bgColor="#fbfffe"
+                                    logoImage={'https://res.cloudinary.com/dnmehw2un/image/upload/v1724790010/josm1wowxjneee0c3fva.png'}
+                                    logoWidth={50}
+                                    logoHeight={50}
+                                    removeQrCodeBehindLogo={true}
+                                    eyeRadius={10}
+                                />
+                                <Text textAlign="center" mt={2}>Product ID: {id}</Text>
+                            </div>
+                        ))}
+                    </div>
+                    <Button
+                        onClick={handleGeneratePdf}
+                        isLoading={qrLoading}
+                        className="bg-green-600 p-4 text-white rounded-xl w-[300px] font-bold mt-4"
+                    >
+                        {qrLoading ? "Generating PDF..." : "Download QR Codes as PDF"}
+                    </Button>
+                </div>
             )}
         </Box>
     );
