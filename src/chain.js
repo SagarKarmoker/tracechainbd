@@ -14,6 +14,6 @@ export const contract = getContract({
       decimals: 18,
     },
   }),
-  address: "0xf2aC16BcF4647dA288D56c985c78739BEFAC45C3",
+  address: "0x1009368Dc2537A23429Bb1E0434111caf1732DF5",
   // abi: ABI
 });
