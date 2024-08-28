@@ -270,22 +270,6 @@ function EntryHistory({ fromDispatch }) {
                                         {!fromDispatch && (
                                             <Td textAlign="center">
                                                 <Button colorScheme="blue" onClick={() => setPrintBoxId(product.boxId)}>Print QR Code</Button>
-                                                <div style={{ display: printBoxId === product.boxId ? 'block' : 'none' }}>
-                                                    <Box mt={2} ref={el => qrRef.current[index] = el}>
-                                                        <QRCode
-                                                            value={product.boxId}
-                                                            size={128}
-                                                            bgColor="#ffffff"
-                                                            fgColor="#000000"
-                                                            logoImage={base64Logo}
-                                                            logoWidth={30}
-                                                            logoHeight={30}
-                                                            logoOpacity={0.6}
-                                                            qrStyle="dots"
-                                                            eyeRadius={5}
-                                                        />
-                                                    </Box>
-                                                </div>
                                             </Td>
                                         )}
                                         <Td textAlign="center">
@@ -310,11 +294,33 @@ function EntryHistory({ fromDispatch }) {
             )}
 
             {printBoxId && (
-                <Box mt={4} textAlign="center">
-                    <Button colorScheme="blue" isLoading={qrLoading} onClick={handleGeneratePdf}>
-                        Generate PDF with QR Codes
+                <div className="flex flex-col items-center mt-8">
+                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-4">
+                        {products.find(product => product.boxId === printBoxId)?.ids.map((id, index) => (
+                            <div key={index} ref={el => qrRef.current[index] = el} className="mb-4">
+                                <QRCode
+                                    value={`URL: https://localhost:5173/check-product/${id}`}
+                                    size={200}
+                                    fgColor="#0e57af"
+                                    bgColor="#fbfffe"
+                                    logoImage={base64Logo}
+                                    logoWidth={50}
+                                    logoHeight={50}
+                                    removeQrCodeBehindLogo={true}
+                                    eyeRadius={10}
+                                />
+                                <Text textAlign="center" mt={2}>Product ID: {id}</Text>
+                            </div>
+                        ))}
+                    </div>
+                    <Button
+                        onClick={handleGeneratePdf}
+                        isLoading={qrLoading}
+                        className="bg-green-600 p-4 text-white rounded-xl w-[300px] font-bold mt-4"
+                    >
+                        {qrLoading ? "Generating PDF..." : "Download QR Codes as PDF"}
                     </Button>
-                </Box>
+                </div>
             )}
         </div>
     );
