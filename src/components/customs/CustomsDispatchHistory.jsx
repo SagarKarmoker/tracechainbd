@@ -13,7 +13,6 @@ import {
   useToast,
   Divider,
   Text,
-  IconButton,
 } from '@chakra-ui/react';
 import backgroundImage from "../../img/homeBG3.png";
 import { etherContract } from '../../contants';
@@ -115,45 +114,47 @@ function CustomsDispatchHistory() {
       <Text textAlign='center' mt={2} mb={4}>Here you can find the history of all dispatches made by customs to importers.</Text>
       <Divider className='mb-5' borderWidth='1px' borderColor='#5160be' />
 
-      <TableContainer className="rounded-md shadow-lg bg-white">
-        <Table variant='simple' size='md'>
-          <Thead bg="#5160be">
-            <Tr>
-              <Th color="white" fontSize="md" textAlign="center">Dispatch ID</Th>
-              <Th color="white" fontSize="md" textAlign="center">Start PID</Th>
-              <Th color="white" fontSize="md" textAlign="center">End PID</Th>
-              <Th color="white" fontSize="md" textAlign="center">From</Th>
-              <Th color="white" fontSize="md" textAlign="center">Importer</Th>
-              <Th color="white" fontSize="md" textAlign="center">Timestamp</Th>
-              <Th color="white" fontSize="md" textAlign="center">Quantity</Th>
-              <Th color="white" fontSize="md" textAlign="center">Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {dispatches
-              .filter(dispatch => dispatch.quantity > 0 && dispatch.from === account)
-              .map(dispatch => (
-                <Tr key={dispatch.dispatchId} _hover={{ bg: "gray.100" }}>
-                  <Td textAlign="center">{dispatch.dispatchId}</Td>
-                  <Td textAlign="center">{dispatch.startId}</Td>
-                  <Td textAlign="center">{dispatch.endId}</Td>
-                  <Td textAlign="center">Self</Td>
-                  <Td textAlign="center">{formatAddress(dispatch.to)}</Td>
-                  <Td textAlign="center">{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
-                  <Td textAlign="center">{dispatch.quantity}</Td>
-                  <Td>
-                    <Button
-                      onClick={() => setPrintId(dispatch.dispatchId)}
-                      className="bg-green-600 p-4 text-white rounded-xl w-[300px] font-bold"
-                    >
-                      Show QR Codes
-                    </Button>
-                  </Td>
-                </Tr>
-              ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+      <Box overflowX="auto" className="rounded-md shadow-lg bg-white max-w-screen-xl mx-auto overflow-x-auto">
+        <TableContainer>
+          <Table variant='simple' size='md'>
+            <Thead bg="#5160be">
+              <Tr>
+                <Th color="white" fontSize="md" textAlign="center">Dispatch ID</Th>
+                <Th color="white" fontSize="md" textAlign="center">Start PID</Th>
+                <Th color="white" fontSize="md" textAlign="center">End PID</Th>
+                <Th color="white" fontSize="md" textAlign="center">From</Th>
+                <Th color="white" fontSize="md" textAlign="center">Importer</Th>
+                <Th color="white" fontSize="md" textAlign="center">Timestamp</Th>
+                <Th color="white" fontSize="md" textAlign="center">Quantity</Th>
+                <Th color="white" fontSize="md" textAlign="center">Actions</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {dispatches
+                .filter(dispatch => dispatch.quantity > 0 && dispatch.from === account)
+                .map(dispatch => (
+                  <Tr key={dispatch.dispatchId} _hover={{ bg: "gray.100" }}>
+                    <Td textAlign="center">{dispatch.dispatchId}</Td>
+                    <Td textAlign="center">{dispatch.startId}</Td>
+                    <Td textAlign="center">{dispatch.endId}</Td>
+                    <Td textAlign="center">Self</Td>
+                    <Td textAlign="center">{formatAddress(dispatch.to)}</Td>
+                    <Td textAlign="center">{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
+                    <Td textAlign="center">{dispatch.quantity}</Td>
+                    <Td>
+                      <Button
+                        onClick={() => setPrintId(dispatch.dispatchId)}
+                        className="bg-green-600 p-4 text-white rounded-xl w-[300px] font-bold"
+                      >
+                        Show QR Codes
+                      </Button>
+                    </Td>
+                  </Tr>
+                ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </Box>
 
       {printId && (
         <div className="flex flex-col items-center mt-8">
