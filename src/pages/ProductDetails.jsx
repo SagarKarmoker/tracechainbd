@@ -156,6 +156,15 @@ function ProductDetails({ pid, role = 'Admin' }) {
         return <div>Loading...</div>;
     }
 
+    const eventLength = events.length;
+    let importerLength;
+    if (eventLength === 3) {
+        importerLength = 3;
+    } else {
+        importerLength = 4;
+    }
+    console.log(eventLength);
+
     return (
         <div className='w-full '>
             <div className="flex justify-center">
@@ -193,7 +202,7 @@ function ProductDetails({ pid, role = 'Admin' }) {
             {
                 role === 'Customs' && (
                     <VerticalTimeline>
-                        {events.slice(0, 4).map((event, index) => (
+                        {events.slice(eventLength-2, eventLength).map((event, index) => (
                             <VerticalTimelineElement
                                 key={index}
                                 date={new Date(event.timestamp * 1000).toLocaleString()}
@@ -216,7 +225,7 @@ function ProductDetails({ pid, role = 'Admin' }) {
             {
                 role === 'Importer' && (
                     <VerticalTimeline>
-                        {events.slice(3, 8).map((event, index) => (
+                        {events.slice((eventLength)-importerLength, events.length).map((event, index) => (
                             <VerticalTimelineElement
                                 key={index}
                                 date={new Date(event.timestamp * 1000).toLocaleString()}

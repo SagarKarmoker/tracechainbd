@@ -196,7 +196,7 @@ function ImporterDispatchHistory() {
                                             <Td textAlign="center">{dispatch.quantity}</Td>
                                             <Td textAlign="center">{dispatch.type}</Td>
                                             <Td textAlign="center">
-                                                <Button onClick={() => setPrintId(dispatch.dispatchId)}>
+                                                <Button colorScheme='blue' onClick={() => setPrintId(dispatch.dispatchId)}>
                                                     QR Code
                                                 </Button>
                                             </Td>
