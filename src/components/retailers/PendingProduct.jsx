@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button, Spinner, Center, Image, useToast, keyframes } from '@chakra-ui/react';
+import { Box, Divider, Table, Thead, Tbody, Tr, Th, Td, Text, Button, IconButton, Spinner, Center, Image, useToast, keyframes } from '@chakra-ui/react';
 import { etherContract } from '../../contants';
 import useAuth from '../../hooks/userAuth';
-import useWallet from '../../hooks/userWallet';
-import backgroundImage from "../../img/homeBG3.png";
-import blinkingImage from '../../img/svg.png';  // Replace with your image path
-import { ProductStatus } from '../../utils/ProductStatus';
 import { ethers } from 'ethers';
+import useWallet from '../../hooks/userWallet';
+import { ProductStatus } from '../../utils/ProductStatus';
+import backgroundImage from '../../img/homeBG5.png';
+import blinkingImage from '../../img/svg.png'; // Ensure this is the correct path for your image
 
-// Define the blinking animation
+// Define the blinking animation for the image
 const blinkAnimation = keyframes`
   0% { opacity: 1; }
   50% { opacity: 0; }
   100% { opacity: 1; }
-`;
-
-// Define the spinning animation for the spinner
-const spinAround = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 `;
 
 function PendingProduct() {
@@ -32,34 +26,64 @@ function PendingProduct() {
     useEffect(() => {
         const fetchHistoryData = async () => {
             try {
-                const events = await etherContract.queryFilter('MultiProductDispatched');
-                const dispatchesList = events.map(event => {
-                    const { dispatchId, startId, endId, to, dispatchedOn, quantity } = event.args;
+                const multiProductEvents = await etherContract.queryFilter('MultiProductDispatched');
+                const singleProductEvents = await etherContract.queryFilter('ProductDispatched');
+
+                const multiProductDispatches = multiProductEvents.map(event => {
+                    const { dispatchId, dispatchedOn, endId, quantity, from, startId, to } = event.args;
+
                     return {
-                        dispatchId: Number(dispatchId.toString()),
+                        dispatchId: dispatchId.toString(),
                         startId: Number(startId.toString()),
                         endId: Number(endId.toString()),
-                        receiver: to,
-                        quantity: Number(quantity.toString()),
-                        timestamp: dispatchedOn.toNumber()
+                        from: from,
+                        to: to,
+                        timestamp: Number(dispatchedOn.toString()),
+                        quantity: quantity.toString(),
+                        type: 'Multi'
                     };
                 });
 
-                const validDispatches = [];
+                const singleProductDispatches = singleProductEvents.map(event => {
+                    const { dispatchId, dispatchedOn, productId, quantity, from, to } = event.args;
 
-                for (const dispatch of dispatchesList) {
-                    const confirmed1st = await etherContract.productLifeCycles(ethers.BigNumber.from(dispatch.startId));
-                    const confirmedLast = await etherContract.productLifeCycles(ethers.BigNumber.from(dispatch.endId));
+                    return {
+                        dispatchId: dispatchId.toString(),
+                        startId: Number(productId.toString()),
+                        endId: 'N/A',
+                        from: from,
+                        to: to,
+                        timestamp: Number(dispatchedOn.toString()),
+                        quantity: quantity.toString(),
+                        type: 'Single'
+                    };
+                });
 
-                    if (Number(confirmed1st.retailerDispatchId.toString()) === 0 && Number(confirmedLast.retailerDispatchId.toString()) === 0 && confirmed1st.owner === account && confirmed1st.status != ProductStatus.AcceptedByRetailer) {
-                        validDispatches.push(dispatch);
-                    }
-                }
+                const allDispatches = [...multiProductDispatches, ...singleProductDispatches];
+                console.log(allDispatches)
 
+                const filteredDispatches = await Promise.all(
+                    allDispatches
+                        .filter(dispatch => dispatch.to.toLowerCase() === account.toLowerCase())
+                        .map(async (dispatch) => {
+                            const checkOwner = await etherContract.productLifeCycles(dispatch.startId);
+                            console.log(Number(checkOwner.status));
+
+                            // Check the conditions and return the dispatch or null
+                            return (checkOwner.status === ProductStatus.Dispatched && checkOwner.owner === account)
+                                ? dispatch
+                                : null;
+                        })
+                );
+
+                // Filter out any null values (those that didn't meet the status condition)
+                const validDispatches = filteredDispatches.filter(dispatch => dispatch !== null);
+
+                console.log(validDispatches);
                 setDispatches(validDispatches);
-                setLoading(false);
             } catch (error) {
                 console.error('Error fetching history data:', error);
+            } finally {
                 setLoading(false);
             }
         };
@@ -85,7 +109,6 @@ function PendingProduct() {
                     duration: 9000,
                     isClosable: true,
                 });
-                setDispatches(dispatches.filter(dispatch => dispatch.dispatchId !== _dispatchId));
             } else {
                 toast({
                     title: "Not Accepted",
@@ -103,7 +126,7 @@ function PendingProduct() {
                 status: "error",
                 duration: 9000,
                 isClosable: true,
-            })
+            });
         } finally {
             setLoadingStates(prev => ({ ...prev, [_dispatchId]: false }));
         }
@@ -112,40 +135,45 @@ function PendingProduct() {
     if (loading) {
         return (
             <Center height="100vh" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                <Box textAlign="center" position="relative" display="inline-block">
+                <Box textAlign="center">
                     {/* Image in the center */}
-                    <Image 
-                        src={blinkingImage} 
-                        alt="Loading" 
-                        boxSize="50px" 
-                        animation={`${blinkAnimation} 1.5s infinite`} 
-                        position="absolute" 
-                        top="27%" 
-                        left="50%" 
-                        transform="translate(-50%, -50%)"
-                    />
+                    <Center textAlign="center" position="relative" display="inline-block">
+                        <Image
+                            src={blinkingImage}
+                            alt="Loading"
+                            boxSize="50px"
+                            animation={`${blinkAnimation} 1.5s infinite`}
+                            position="absolute"
+                            top="27%"
+                            left="50%"
+                            transform="translate(-50%, -50%)"
+                        />
 
-                    {/* Spinner surrounding the image */}
-                    <Spinner
-                        width="60px" height="60px" color="#5160be"
-                        animation={`${spinAround} 0.9s linear infinite`}
-                        position="relative"
-                        zIndex="0"  // Ensures the spinner stays behind the image
-                    />
-                    <Text mt={4} fontSize="xl" fontWeight="bold">
-                        Please wait while we load the list of pending products. This won't take long.
-                    </Text>
+                        {/* Spinner surrounding the image */}
+                        <Spinner
+                            width="60px" height="60px" color="#5160be"
+                            position="relative"
+                            zIndex="0"
+                        />
+                        <Text mt={4} fontSize="xl" fontWeight="bold">
+                            Please wait while we load the pending products. This won't take long.
+                        </Text>
+                    </Center>
                 </Box>
             </Center>
         );
     }
 
     return (
-        <Box className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <Box
+            className='px-10 py-5 w-full min-h-screen bg-cover bg-center flex flex-col'
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+        >
             <Box className='flex justify-center'>
                 <Text className='text-center font-bold text-4xl'>Pending Products</Text>
+                <Box></Box>
             </Box>
-            <Text className='text-center mt-4'>List of products sent by retailers and pending for your acceptance </Text>
+            <Text className='text-center mt-4'>List of all pending products to accept</Text>
             <Divider className='mt-5' borderWidth='1px' borderColor='#5160be' />
             {dispatches.length > 0 ? (
                 <Box className='mt-5 border bg-white'>
