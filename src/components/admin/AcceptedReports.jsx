@@ -95,7 +95,7 @@ function AcceptedReports() {
                         </Thead>
                         <Tbody>
                             {reports
-                                .filter(item => item.status === 0 || item.status !== 2)
+                                .filter(item => item.status !== 0 && item.status !== 2)
                                 .map((item, index) => (
                                     <Tr key={index} _hover={{ bg: "gray.100" }}>
                                         <Td textAlign="center">{index + 1}</Td>

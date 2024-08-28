@@ -170,7 +170,9 @@ function AllReport() {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {reports.map((item, index) => (
+                            {reports
+                            .filter((item, index) => index !== 0)
+                            .map((item, index) => (
                                 <Tr key={index} _hover={{ bg: "gray.100" }}>
                                     <Td textAlign="center">{index}</Td>
                                     <Td textAlign="center">{item.productID.toString()}</Td>
