@@ -44,7 +44,7 @@ function SingleProductEntry({ customsAddr }) {
 
   // Load the logo as base64 when the component mounts
   useEffect(() => {
-    const logoUrl = "https://ipfs.io/ipfs/QmPNsmbVBDd7Kz6dHNcRwm8fHs8vazgn8VDDPHFRveDYNh";
+    const logoUrl = "https://res.cloudinary.com/dnmehw2un/image/upload/v1724790010/josm1wowxjneee0c3fva.png";
     convertImageToBase64(logoUrl)
       .then(setBase64Logo)
       .catch((error) => console.error("Error converting logo to base64:", error));
@@ -286,7 +286,7 @@ function SingleProductEntry({ customsAddr }) {
                       size={200}
                       fgColor="#0e57af"
                       bgColor="#fbfffe"
-                      logoImage={'https://res.cloudinary.com/dnmehw2un/image/upload/v1724790010/josm1wowxjneee0c3fva.png'}
+                      logoImage={base64Logo}
                       logoWidth={50}
                       logoHeight={50}
                       removeQrCodeBehindLogo={true}
