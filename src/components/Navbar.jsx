@@ -78,8 +78,8 @@ function Navbar() {
 
   return (
     <>
-      <nav className="bg-[#f1f2f7] sticky top-0 z-10 px-4 lg:px-0">
-        <div className="mx-auto flex justify-between items-center p-2 pl-16 pr-16">
+      <nav className="bg-[#f1f2f7] sticky top-0 z-10 px-2 lg:px-0">
+        <div className="mx-auto flex justify-between items-center p-2 lg:pl-16 lg:pr-16">
           <h1 className="text-2xl font-bold text-red-500">
             {role !== "" ? (
               <Link to="/home">
