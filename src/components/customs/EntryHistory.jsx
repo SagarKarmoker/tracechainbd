@@ -12,10 +12,13 @@ import {
     TableContainer,
     Button,
     useToast,
+    Heading,
+    Divider,
 } from '@chakra-ui/react';
 import { QRCode } from "react-qrcode-logo";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import backgroundImage from "../../img/homeBG3.png";
 import { etherContract } from '../../contants';
 
 // Utility function to convert an image to base64
@@ -203,97 +206,94 @@ function EntryHistory({ fromDispatch }) {
     };
 
     return (
-        <Box p={6}>
-            <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb={4}>
-                {fromDispatch ? "Pending Product Dispatch" : "Product Entry History"}
+        <div className='px-5 py-5 w-full min-h-screen bg-cover bg-center flex flex-col' style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <div className='flex justify-center'>
+                <Heading as='h1' size='xl' textAlign='center'>{fromDispatch ? "Pending Product Dispatch" : "Product Entry History"}</Heading>
+                <div></div>
+            </div>
+            <Text textAlign='center' mt={2} mb={4}>
+                {fromDispatch ? "List of products pending for dispatch." : "View the history of all products added to the system."}
             </Text>
+            <Divider className='mb-5' borderWidth='1px' borderColor='#5160be' />
 
             {loading ? (
                 <Spinner size="xl" thickness="4px" color="blue.500" />
             ) : (
-                <TableContainer>
-                    <Table variant="striped" colorScheme="gray">
-                        <Thead>
-                            <Tr>
-                                <Th>Box ID</Th>
-                                <Th>IDs</Th>
-                                <Th>Name</Th>
-                                <Th>Description</Th>
-                                <Th>Category</Th>
-                                <Th>Country of Origin</Th>
-                                <Th>Manufacturer</Th>
-                                <Th>Price</Th>
-                                <Th>Imported Date</Th>
-                                <Th>Importer Address</Th>
-                                {
-                                    !fromDispatch ? (
-                                        <Th>Actions</Th>
-                                    ) : null
-                                }
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {products.map((product, index) => (
-                                <Tr key={index}>
-                                    <Td>{product.boxId}</Td>
-                                    <Td>{product.ids.join(', ')}</Td>
-                                    <Td>{product.name}</Td>
-                                    <Td>{product.description}</Td>
-                                    <Td>{product.category}</Td>
-                                    <Td>{product.countryOfOrigin}</Td>
-                                    <Td>{product.manufacturer}</Td>
-                                    <Td>{product.price} TAKA</Td>
-                                    <Td>{product.importedDate}</Td>
-                                    <Td>{getRoleData(product.importerAddr)}</Td>
-                                    {
-                                        !fromDispatch ? (
-                                            <Td>
-                                                <Button
-                                                    colorScheme='blue'
-                                                    onClick={() => setPrintBoxId(product.boxId)}
-                                                >
-                                                    Show QR Codes
-                                                </Button>
-                                            </Td>
-                                        ) : null
-                                    }
+                <Box
+                    width="100%"
+                    overflowX="auto"
+                    className="rounded-md shadow-lg bg-white max-w-screen-xl mx-auto overflow-x-auto"
+                >
+
+                    <TableContainer>
+                        <Table variant="simple" size="md">
+                            <Thead bg="#5160be">
+                                <Tr>
+                                    <Th color="white" fontSize="md" textAlign="center">Box ID</Th>
+                                    <Th color="white" fontSize="md" textAlign="center">IDs</Th>
+                                    <Th color="white" fontSize="md" textAlign="center">Name</Th>
+                                    <Th color="white" fontSize="md" textAlign="center">Description</Th>
+                                    <Th color="white" fontSize="md" textAlign="center">Category</Th>
+                                    <Th color="white" fontSize="md" textAlign="center">Country of Origin</Th>
+                                    <Th color="white" fontSize="md" textAlign="center">Manufacturer</Th>
+                                    <Th color="white" fontSize="md" textAlign="center">Price</Th>
+                                    <Th color="white" fontSize="md" textAlign="center">Imported Date</Th>
+                                    <Th color="white" fontSize="md" textAlign="center">Importer Address</Th>
+                                    {!fromDispatch && (
+                                        <Th color="white" fontSize="md" textAlign="center">Actions</Th>
+                                    )}
                                 </Tr>
-                            ))}
-                        </Tbody>
-                    </Table>
-                </TableContainer>
+                            </Thead>
+                            <Tbody>
+                                {products.map((product, index) => (
+                                    <Tr key={index} _hover={{ bg: "gray.100" }}>
+                                        <Td textAlign="center">{product.boxId}</Td>
+                                        <Td textAlign="center">{product.ids.join(', ')}</Td>
+                                        <Td textAlign="center">{product.name}</Td>
+                                        <Td textAlign="center">{product.description}</Td>
+                                        <Td textAlign="center">{product.category}</Td>
+                                        <Td textAlign="center">{product.countryOfOrigin}</Td>
+                                        <Td textAlign="center">{product.manufacturer}</Td>
+                                        <Td textAlign="center">{product.price} TAKA</Td>
+                                        <Td textAlign="center">{product.importedDate}</Td>
+                                        <Td textAlign="center">{getRoleData(product.importerAddr)}</Td>
+                                        {!fromDispatch && (
+                                            <Td textAlign="center">
+                                                <Button colorScheme="blue" onClick={() => setPrintBoxId(product.boxId)}>Print QR Code</Button>
+                                                <div style={{ display: printBoxId === product.boxId ? 'block' : 'none' }}>
+                                                    <Box mt={2} ref={el => qrRef.current[index] = el}>
+                                                        <QRCode
+                                                            value={product.boxId}
+                                                            size={128}
+                                                            bgColor="#ffffff"
+                                                            fgColor="#000000"
+                                                            logoImage={base64Logo}
+                                                            logoWidth={30}
+                                                            logoHeight={30}
+                                                            logoOpacity={0.6}
+                                                            qrStyle="dots"
+                                                            eyeRadius={5}
+                                                        />
+                                                    </Box>
+                                                </div>
+                                            </Td>
+                                        )}
+                                    </Tr>
+                                ))}
+                            </Tbody>
+                        </Table>
+                    </TableContainer>
+                </Box>
             )}
 
             {printBoxId && (
-                <div className="flex flex-col items-center mt-8">
-                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-4">
-                        {products.find(product => product.boxId === printBoxId)?.ids.map((id, index) => (
-                            <div key={index} ref={el => qrRef.current[index] = el} className="mb-4">
-                                <QRCode
-                                    value={`URL: https://localhost:5173/check-product/${id}`}
-                                    size={200}
-                                    fgColor="#0e57af"
-                                    bgColor="#fbfffe"
-                                    logoImage={base64Logo}
-                                    logoWidth={50}
-                                    logoHeight={50}
-                                    removeQrCodeBehindLogo={true}
-                                    eyeRadius={10}
-                                />
-                                <Text textAlign="center" mt={2}>Product ID: {id}</Text>
-                            </div>
-                        ))}
-                    </div>
-                    <Button
-                        onClick={handleGeneratePdf}
-                        isLoading={qrLoading}
-                        className="bg-green-600 p-4 text-white rounded-xl w-[300px] font-bold mt-4"
-                    >
-                        {qrLoading ? "Generating PDF..." : "Download QR Codes as PDF"}
+                <Box mt={4} textAlign="center">
+                    <Button colorScheme="blue" isLoading={qrLoading} onClick={handleGeneratePdf}>
+                        Generate PDF with QR Codes
                     </Button>
-                </div>
+                </Box>
             )}
-        </Box>
+        </div>
     );
 }
 
