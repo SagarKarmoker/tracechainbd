@@ -26,31 +26,60 @@ function PendingProduct() {
     useEffect(() => {
         const fetchHistoryData = async () => {
             try {
-                const events = await etherContract.queryFilter('MultiProductDispatched');
-                c
-                const dispatchesList = events.map(event => {
-                    const { dispatchId, startId, endId, to, dispatchedOn, quantity } = event.args;
+                const multiProductEvents = await etherContract.queryFilter('MultiProductDispatched');
+                const singleProductEvents = await etherContract.queryFilter('ProductDispatched');
+
+                const multiProductDispatches = multiProductEvents.map(event => {
+                    const { dispatchId, dispatchedOn, endId, quantity, from, startId, to } = event.args;
+
                     return {
-                        dispatchId: Number(dispatchId.toString()),
+                        dispatchId: dispatchId.toString(),
                         startId: Number(startId.toString()),
                         endId: Number(endId.toString()),
-                        receiver: to,
-                        quantity: Number(quantity.toString()),
-                        timestamp: dispatchedOn.toNumber()
+                        from: from,
+                        to: to,
+                        timestamp: Number(dispatchedOn.toString()),
+                        quantity: quantity.toString(),
+                        type: 'Multi'
                     };
                 });
 
-                const validDispatches = [];
+                const singleProductDispatches = singleProductEvents.map(event => {
+                    const { dispatchId, dispatchedOn, productId, quantity, from, to } = event.args;
 
-                for (const dispatch of dispatchesList) {
-                    const confirmed1st = await etherContract.productLifeCycles(ethers.BigNumber.from(dispatch.startId));
-                    const confirmedLast = await etherContract.productLifeCycles(ethers.BigNumber.from(dispatch.endId));
+                    return {
+                        dispatchId: dispatchId.toString(),
+                        startId: Number(productId.toString()),
+                        endId: 'N/A',
+                        from: from,
+                        to: to,
+                        timestamp: Number(dispatchedOn.toString()),
+                        quantity: quantity.toString(),
+                        type: 'Single'
+                    };
+                });
 
-                    if (Number(confirmed1st.distributorDispatchId.toString()) === 0 && Number(confirmedLast.distributorDispatchId.toString()) === 0 && confirmed1st.owner === account && confirmedLast.owner === account && confirmed1st.status !== ProductStatus.AcceptedByDistributor && confirmedLast.status !== ProductStatus.AcceptedByDistributor) {
-                        validDispatches.push(dispatch);
-                    }
-                }
+                const allDispatches = [...multiProductDispatches, ...singleProductDispatches];
+                console.log(allDispatches)
 
+                const filteredDispatches = await Promise.all(
+                    allDispatches
+                        .filter(dispatch => dispatch.to.toLowerCase() === account.toLowerCase())
+                        .map(async (dispatch) => {
+                            const checkOwner = await etherContract.productLifeCycles(dispatch.startId);
+                            console.log(Number(checkOwner.status));
+
+                            // Check the conditions and return the dispatch or null
+                            return (checkOwner.status === ProductStatus.Dispatched && checkOwner.owner === account)
+                                ? dispatch
+                                : null;
+                        })
+                );
+
+                // Filter out any null values (those that didn't meet the status condition)
+                const validDispatches = filteredDispatches.filter(dispatch => dispatch !== null);
+
+                console.log(validDispatches);
                 setDispatches(validDispatches);
             } catch (error) {
                 console.error('Error fetching history data:', error);
@@ -109,14 +138,14 @@ function PendingProduct() {
                 <Box textAlign="center">
                     {/* Image in the center */}
                     <Center textAlign="center" position="relative" display="inline-block">
-                        <Image 
-                            src={blinkingImage} 
-                            alt="Loading" 
-                            boxSize="50px" 
-                            animation={`${blinkAnimation} 1.5s infinite`} 
-                            position="absolute" 
-                            top="27%" 
-                            left="50%" 
+                        <Image
+                            src={blinkingImage}
+                            alt="Loading"
+                            boxSize="50px"
+                            animation={`${blinkAnimation} 1.5s infinite`}
+                            position="absolute"
+                            top="27%"
+                            left="50%"
                             transform="translate(-50%, -50%)"
                         />
 
