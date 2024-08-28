@@ -158,12 +158,26 @@ function ProductDetails({ pid, role = 'Admin' }) {
 
     const eventLength = events.length;
     let importerLength;
-    if (eventLength === 3) {
+    if (eventLength === 2) {
+        importerLength = 2;
+    } else if (eventLength === 3) {
         importerLength = 3;
     } else {
         importerLength = 4;
     }
+
+
+    let distLength;
+    if (eventLength === 4) {
+        distLength = 4;
+    } else if (eventLength === 5) {
+        distLength = 5;
+    } else {
+        distLength = 6;
+    }
     console.log(eventLength);
+
+
 
     return (
         <div className='w-full '>
@@ -248,7 +262,7 @@ function ProductDetails({ pid, role = 'Admin' }) {
             {
                 role === 'Distributor' && (
                     <VerticalTimeline>
-                        {events.slice(2, 6).map((event, index) => (
+                        {events.slice(eventLength-distLength, eventLength-1).map((event, index) => (
                             <VerticalTimelineElement
                                 key={index}
                                 date={new Date(event.timestamp * 1000).toLocaleString()}
