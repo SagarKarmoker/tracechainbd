@@ -44,6 +44,8 @@ function DeniedReports() {
         fetchReports();
     }, []);
 
+    console.log(reports)
+
     if (loading) {
         return (
             <Box textAlign="center" py={10}>

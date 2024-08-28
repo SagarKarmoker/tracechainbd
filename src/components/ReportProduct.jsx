@@ -86,7 +86,7 @@ function ReportProduct() {
     };
 
     const handleReport = async () => {
-        if (!productId || !role || !comment || !reportee || !reporteeAddr) {
+        if (!productId || !role || !comment || !reportee || !reporteeAddr || !ipfsProofHash) {
             toast({
                 title: 'Error',
                 description: 'Please fill all the fields',
