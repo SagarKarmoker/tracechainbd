@@ -27,6 +27,7 @@ function PendingProduct() {
         const fetchHistoryData = async () => {
             try {
                 const events = await etherContract.queryFilter('MultiProductDispatched');
+                c
                 const dispatchesList = events.map(event => {
                     const { dispatchId, startId, endId, to, dispatchedOn, quantity } = event.args;
                     return {

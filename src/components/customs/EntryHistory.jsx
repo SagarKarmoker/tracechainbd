@@ -79,6 +79,7 @@ function EntryHistory({ fromDispatch }) {
 
     useEffect(() => {
         fetchRolesData();
+
         const fetchProductHistory = async () => {
             try {
                 // Fetch the 'ProductAdded' events
@@ -109,12 +110,13 @@ function EntryHistory({ fromDispatch }) {
                             category,
                             countryOfOrigin,
                             manufacturer,
-                            price: Number(price), // Format price if it's in wei
+                            price: Number(price), // Assuming price is in wei or some other unit
                             quantity: quantity.toString(),
                             importedDate: new Date(importedDate.toNumber() * 1000).toLocaleString(), // Convert timestamp to date
                             importerAddr,
                             customsAddr,
-                            ids: [],
+                            ids: [], // Initialize the ids array
+                            status: null, // Initialize status as null
                         };
                     }
 
@@ -126,11 +128,18 @@ function EntryHistory({ fromDispatch }) {
                 // Convert the object into an array of products
                 const productData = Object.values(groupedProducts);
 
-                // Update state with the grouped data
+                // Fetch the status for the first product's first ID
+                if (productData.length > 0 && productData[0].ids.length > 0) {
+                    const firstProductId = productData[0].ids[0];
+                    const status = await etherContract.productLifeCycles(firstProductId);
+                    productData[0].status = status;
+                }
+
+                // Update state with the grouped data and status
                 setProducts(productData);
-                setLoading(false);
             } catch (error) {
-                console.error('Error fetching ProductAdded events:', error);
+                console.error('Error fetching ProductAdded events or status:', error);
+            } finally {
                 setLoading(false);
             }
         };
@@ -242,6 +251,7 @@ function EntryHistory({ fromDispatch }) {
                                     {!fromDispatch && (
                                         <Th color="white" fontSize="md" textAlign="center">Actions</Th>
                                     )}
+                                    <Th color="white" fontSize="md" textAlign="center">Status</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>
@@ -278,6 +288,19 @@ function EntryHistory({ fromDispatch }) {
                                                 </div>
                                             </Td>
                                         )}
+                                        <Td textAlign="center">
+                                            {
+                                                Number(product.status) === 0 ? (
+                                                    <Button colorScheme='blue'>
+                                                        In House
+                                                    </Button>
+                                                ) : (
+                                                    <Button colorScheme='green'>
+                                                        Done
+                                                    </Button>
+                                                )
+                                            }
+                                        </Td>
                                     </Tr>
                                 ))}
                             </Tbody>
