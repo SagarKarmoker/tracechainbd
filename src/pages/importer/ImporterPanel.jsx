@@ -87,7 +87,7 @@ const NavItem = ({ icon, children, onClick, isActive }) => {
                 bg={isActive ? '#5160be' : 'transparent'}
                 color={isActive ? 'white' : 'inherit'}
                 _hover={{
-                    bg: '#5160be',
+                    bg: '#7db6f9',
                     color: 'white',
                 }}
             >
