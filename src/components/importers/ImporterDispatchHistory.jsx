@@ -45,6 +45,7 @@ function ImporterDispatchHistory() {
     const { account } = useAuth();
     const [printId, setPrintId] = useState(null);
     const [base64Logo, setBase64Logo] = useState("");
+    const [rolesData, setRolesData] = useState([]);
     const qrRef = useRef(null);
 
     // Load the logo as base64 when the component mounts
@@ -54,6 +55,26 @@ function ImporterDispatchHistory() {
             .then(setBase64Logo)
             .catch((error) => console.error("Error converting logo to base64:", error));
     }, []);
+
+    const fetchRolesData = async () => {
+        try {
+            const response = await fetch('https://tracechainbd-backend.onrender.com/api/roles');
+            const data = await response.json();
+            setRolesData(data);
+        } catch (error) {
+            console.error('Error fetching roles data:', error);
+        }
+    };
+
+    const getRoleData = (address) => {
+        try {
+            const role = rolesData.find(role => role.address_registered === address);
+            return role ? `${role.name} (${role.role})` : "Unknown Role";
+        } catch (error) {
+            console.error("Error getting role data:", error);
+            return "Error Fetching Role";
+        }
+    };
 
     // Function to handle PDF generation and download
     const handleGeneratePdf = async () => {
@@ -72,6 +93,7 @@ function ImporterDispatchHistory() {
     };
 
     useEffect(() => {
+        fetchRolesData();
         const fetchHistoryData = async () => {
             try {
                 const multiProductEvents = await etherContract.queryFilter('MultiProductDispatched');
@@ -191,7 +213,7 @@ function ImporterDispatchHistory() {
                                             <Td textAlign="center">{dispatch.startId}</Td>
                                             <Td textAlign="center">{dispatch.endId}</Td>
                                             <Td textAlign="center">Self</Td>
-                                            <Td textAlign="center">{formatAddress(dispatch.to)}</Td>
+                                            <Td textAlign="center">{getRoleData(dispatch.to)}</Td>
                                             <Td textAlign="center">{new Date(dispatch.timestamp * 1000).toLocaleString()}</Td>
                                             <Td textAlign="center">{dispatch.quantity}</Td>
                                             <Td textAlign="center">{dispatch.type}</Td>
