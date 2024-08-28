@@ -3,10 +3,12 @@ import { Box, Flex, Text, Icon, useColorModeValue } from '@chakra-ui/react';
 import { FiTrendingUp, FiBox, FiTruck } from 'react-icons/fi';
 import { MdOutlineShoppingCart, MdHistory } from "react-icons/md";
 import { LiaSearchLocationSolid } from "react-icons/lia";
+import { AiOutlineProduct } from "react-icons/ai";
 import { LuShip } from "react-icons/lu";
 import { LuLayoutDashboard } from "react-icons/lu";
 import userAuth from '../../hooks/userAuth';
 import { isCustoms } from '../../components/utils/RoleCheck';
+import { GoChecklist } from "react-icons/go";
 import { ethers } from 'ethers';
 import { TraceChainContract } from '../../contants';
 import { ABI } from '../../contractABI';
@@ -27,9 +29,9 @@ const SidebarContent = ({ setActiveComponent, activeComponent }) => {
     const linkItems = [
         { name: 'Customs Dashboard', component: 'welcome', icon: LuLayoutDashboard },
         { name: 'Add Product', component: 'add-product', icon: FiBox },
-        { name: 'Entry History', component: 'entry-history', icon: FiBox },
+        { name: 'Entry History', component: 'entry-history', icon: GoChecklist },
         { name: 'Importer List', component: 'importer-list', icon: LuShip },
-        { name: 'Products List', component: 'products-list', icon: FiBox },
+        { name: 'All Products', component: 'products-list', icon: AiOutlineProduct },
         { name: 'Dispatch to Importer', component: 'dispatch-to-importer', icon: MdOutlineShoppingCart },
         { name: 'Dispatch History', component: 'dispatch-history', icon: MdHistory },
         { name: 'Track Product', component: 'track-product', icon: LiaSearchLocationSolid },
@@ -84,7 +86,7 @@ const NavItem = ({ icon, children, onClick, isActive }) => {
                 bg={isActive ? '#5160be' : 'transparent'}
                 color={isActive ? 'white' : 'inherit'}
                 _hover={{
-                    bg: '#5160be',
+                    bg: '#7db6f9',
                     color: 'white',
                 }}
             >
