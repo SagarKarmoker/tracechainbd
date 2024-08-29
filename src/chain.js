@@ -7,7 +7,7 @@ export const contract = getContract({
   client,
   chain: defineChain({
     id: 148460,
-    rpc: "https://vercel-blockchain-proxy.onrender.com",
+    rpc: "https://vercel-blockchain-proxy.vercel.app/",
     nativeCurrency: {
       name: "Ether",
       symbol: "ETH",

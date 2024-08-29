@@ -1,7 +1,7 @@
 import { Magic } from "magic-sdk";
 
 const customNodeOptions = {
-    rpcUrl: "https://vercel-blockchain-proxy.onrender.com",
+    rpcUrl: "https://vercel-blockchain-proxy.vercel.app/",
     chainId: 148460,
 };
 
