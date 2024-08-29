@@ -28,7 +28,7 @@ const wallets = [
     smartAccount: {
       chain: defineChain({
         id: 148460,
-        rpc: "https://vercel-blockchain-proxy.vercel.app",
+        rpc: "https://vercel-blockchain-proxy.onrender.com",
         nativeCurrency: {
           name: "Ether",
           symbol: "ETH",
@@ -41,7 +41,7 @@ const wallets = [
 ];
 
 
-const provider = new ethers.providers.JsonRpcProvider("https://vercel-blockchain-proxy.vercel.app");
+const provider = new ethers.providers.JsonRpcProvider("https://vercel-blockchain-proxy.onrender.com");
 const etherContract = new ethers.Contract(TraceChainContract, ABI, provider);
 
 export { client, wallets, AAFactory, adminAddr, TraceChainContract, etherContract };
