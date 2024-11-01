@@ -3,7 +3,7 @@ import { TraceChainContract } from "../../contants";
 import { ethers } from "ethers";
 
 const provider = new ethers.providers.JsonRpcProvider(
-  "https://vercel-blockchain-proxy.vercel.app/"
+  "https://vercel-blockchain-proxy-nine.vercel.app/"
 );
 const contract = new ethers.Contract(TraceChainContract, ABI, provider);
 

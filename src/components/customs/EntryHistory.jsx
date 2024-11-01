@@ -59,7 +59,7 @@ function EntryHistory({ fromDispatch }) {
 
     const fetchRolesData = async () => {
         try {
-            const response = await fetch('https://tracechainbd-backend.onrender.com/api/roles');
+            const response = await fetch('http://localhost:3001/api/roles');
             const data = await response.json();
             setRolesData(data);
         } catch (error) {
