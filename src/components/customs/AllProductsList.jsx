@@ -36,55 +36,78 @@ function AllProductsList() {
     const [expandedProductIds, setExpandedProductIds] = useState({}); // Track which products are expanded
     const { account } = useAuth();
 
+    // useEffect(() => {
+    //     const productCounter = async () => {
+    //         try {
+    //             const total = await etherContract.productCounter();
+    //             if (total) {
+    //                 setTotalProducts(Number(total.toString())); // Convert BigNumber to number
+    //             }
+    //         } catch (error) {
+    //             console.error("Error fetching total products:", error);
+    //         }
+    //     }
+    //     productCounter();
+    // }, []);
+
+    // useEffect(() => {
+    //     if (totalProducts > 0) {
+    //         const fetchProducts = async () => {
+    //             try {
+    //                 setLoading(true);
+    //                 const fetchedProducts = [];
+    //                 for (let i = 1; i < totalProducts; i++) {
+    //                     const product = await etherContract.products(i);
+    //                     if (product) {
+    //                         const formattedProduct = {
+    //                             id: i,
+    //                             name: product.name,
+    //                             description: product.description,
+    //                             category: product.category,
+    //                             countryOfOrigin: product.countryOfOrigin,
+    //                             manufacturer: product.manufacturer,
+    //                             price: Number(product.price.toString()), // Assuming price is in wei
+    //                             quantity: Number(product.quantity.toString()), // Convert BigNumber to number
+    //                             importedDate: Number(product.importedDate.toString()), // Convert BigNumber to number
+    //                             importerAddr: product.importerAddr,
+    //                             customsAddr: product.customsAddr
+    //                         };
+    //                         fetchedProducts.push(formattedProduct);
+    //                     }
+    //                 }
+    //                 setProducts(fetchedProducts);
+    //             } catch (error) {
+    //                 console.error("Error fetching products:", error);
+    //             } finally {
+    //                 setLoading(false);
+    //             }
+    //         };
+    //         fetchProducts();
+    //     }
+    // }, [totalProducts]);
+
     useEffect(() => {
-        const productCounter = async () => {
+        const fetchProducts = async () => {
             try {
+                setLoading(true);
+
                 const total = await etherContract.productCounter();
                 if (total) {
                     setTotalProducts(Number(total.toString())); // Convert BigNumber to number
                 }
-            } catch (error) {
-                console.error("Error fetching total products:", error);
-            }
-        }
-        productCounter();
-    }, []);
 
-    useEffect(() => {
-        if (totalProducts > 0) {
-            const fetchProducts = async () => {
-                try {
-                    setLoading(true);
-                    const fetchedProducts = [];
-                    for (let i = 1; i < totalProducts; i++) {
-                        const product = await etherContract.products(i);
-                        if (product) {
-                            const formattedProduct = {
-                                proId: i,
-                                name: product.name,
-                                description: product.description,
-                                category: product.category,
-                                countryOfOrigin: product.countryOfOrigin,
-                                manufacturer: product.manufacturer,
-                                price: Number(product.price.toString()), // Assuming price is in wei
-                                quantity: Number(product.quantity.toString()), // Convert BigNumber to number
-                                importedDate: Number(product.importedDate.toString()), // Convert BigNumber to number
-                                importerAddr: product.importerAddr,
-                                customsAddr: product.customsAddr
-                            };
-                            fetchedProducts.push(formattedProduct);
-                        }
-                    }
-                    setProducts(fetchedProducts);
-                } catch (error) {
-                    console.error("Error fetching products:", error);
-                } finally {
-                    setLoading(false);
-                }
-            };
-            fetchProducts();
-        }
-    }, [totalProducts]);
+                const response = await fetch("http://localhost:3001/api/getProductDetails");
+                const data = await response.json();
+                setProducts(data);
+                console.log(products);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProducts();
+    }, []);
 
     const toggleExpand = (productId) => {
         setExpandedProductIds(prevState => ({
@@ -129,24 +152,24 @@ function AllProductsList() {
                     products.length > 0 ? (
                         <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
                             {products
-                                .filter(product => product.customsAddr === account)
+                                .filter(product => product.customsAddr !== account)
                                 .map((product, index) => (
                                     <Box key={index} p={4} borderWidth={1} borderRadius="md" boxShadow="sm" className='bg-white'>
                                         <Stack spacing={2}>
-                                            <Heading as="h3" size="md">{product.name} (ID: {product.proId})</Heading>
+                                            <Heading as="h3" size="md">{product.name} (ID: {product.id})</Heading>
                                             <Text fontSize="sm">{product.description}</Text>
                                             <Button
                                                 size="sm"
                                                 bg="#5160be"
                                                 color="white"
                                                 _hover={{ bg: "#7db6f9" }}
-                                                onClick={() => toggleExpand(product.proId)}
+                                                onClick={() => toggleExpand(product.id)}
                                             >
-                                                {expandedProductIds[product.proId] ? "Collapse" : "Expand"}
+                                                {expandedProductIds[product.id] ? "Collapse" : "Expand"}
                                             </Button>
 
 
-                                            <Collapse in={expandedProductIds[product.proId]} animateOpacity>
+                                            <Collapse in={expandedProductIds[product.id]} animateOpacity>
                                                 <Stack spacing={2} mt={4}>
                                                     <Text>Category: {product.category}</Text>
                                                     <Text>Country of Origin: {product.countryOfOrigin}</Text>
