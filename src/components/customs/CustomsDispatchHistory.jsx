@@ -160,7 +160,7 @@ function CustomsDispatchHistory() {
         <div className="flex flex-col items-center mt-8">
           <div ref={qrRef} className="flex justify-center gap-x-4">
             <QRCode
-              value={`URL: https://localhost:5173/accept-product/${printId}`}
+              value={`URL: https://tracechainbd-three.vercel.app/accept-product/${printId}`}
               size={200}
               fgColor="#0e57af"
               bgColor="#fbfffe"

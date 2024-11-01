@@ -299,7 +299,7 @@ function EntryHistory({ fromDispatch }) {
                         {products.find(product => product.boxId === printBoxId)?.ids.map((id, index) => (
                             <div key={index} ref={el => qrRef.current[index] = el} className="mb-4">
                                 <QRCode
-                                    value={`URL: https://localhost:5173/check-product/${id}`}
+                                    value={`URL: https://tracechainbd-three.vercel.app/check-product/${id}`}
                                     size={200}
                                     fgColor="#0e57af"
                                     bgColor="#fbfffe"

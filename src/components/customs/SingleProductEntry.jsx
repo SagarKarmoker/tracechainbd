@@ -282,7 +282,7 @@ function SingleProductEntry({ customsAddr }) {
                 {Array.from({ length: quantity }, (_, index) => (
                   <div key={index} className="mb-4">
                     <QRCode
-                      value={`URL: https://localhost:5173/check-product/${oldCounter + index}`}
+                      value={`URL: https://tracechainbd-three.vercel.app/check-product/${oldCounter + index}`}
                       size={200}
                       fgColor="#0e57af"
                       bgColor="#fbfffe"

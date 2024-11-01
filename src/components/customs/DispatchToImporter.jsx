@@ -357,7 +357,7 @@ function DispatchToImporter() {
                     <div ref={qrRef} className="grid grid-cols-5 gap-x-4">
                       <div className="mb-4">
                         <QRCode
-                          value={`URL: https://localhost:5173/check-product/${oldCounter}`}
+                          value={`URL: https://tracechainbd-three.vercel.app/check-product/${oldCounter}`}
                           size={200}
                           fgColor="#0e57af"
                           bgColor="#fbfffe"
